@@ -1,6 +1,6 @@
 <div class="products-main">
     <header class="prod-header">
-        <h1>Products</h1>
+        <h1>Productos</h1>
         <div class="prod-actions">
             <button class="button-chips">
                 <img src="upload-cloud.svg" alt="">
@@ -17,4 +17,20 @@
 
         </div>
     </header>
+
+    <div class="filters">
+        @for (cat of CategoryFilter; track $index) {
+        <button class="button-chips">
+            <label>
+                {{cat}}
+            </label>
+            <img src="x.svg" alt="">
+        </button>
+        }
+        <button class="button-chips">
+            <img src="Filters lines.svg" alt="">
+            <label>Filtros</label>
+        </button>
+
+    </div>
 </div>

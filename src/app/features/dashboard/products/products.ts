@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Category } from '../../../shared/models/Product';
 
 @Component({
   selector: 'app-products',
@@ -8,4 +9,7 @@ import { Component } from '@angular/core';
 })
 export class Products {
 
+  CategoryFilter: Category[] = [
+    Category.tableLumin,
+  ];
 }
