@@ -1,0 +1,39 @@
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #007981;
+    
+}
+.navigation{
+    width: 81px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 32px;
+    gap: 24px;
+}
+.nav-header{
+    display: flex;
+    justify-content: center;
+    padding-inline: 24px 20px;
+}
+.nav-items{
+    display: flex;
+    flex-direction: column;
+    padding-inline: 16px;
+    gap: 8px;
+}
+.nav-item{
+    display: flex;
+    padding: 12px;
+}
+.route{
+    display: flex;
+    flex-direction: column;
+    padding-block: 32px 48px;
+    border-radius: 40px 0px 0px 0px;
+    background-color: white;
+    margin-top: 12px;
+    flex: 1;
+}
