@@ -8,7 +8,7 @@
                     Importar
                 </label>
             </button>
-            <button class="button-base">
+            <button class="button-base" (click)="router.navigate(['dashboard/create-product'])">
                 <img src="plus.svg" alt="">
                 <label>
                     Agregar Producto
@@ -20,17 +20,117 @@
 
     <div class="filters">
         @for (cat of CategoryFilter; track $index) {
-        <button class="button-chips">
+        <div class="button-chips">
             <label>
                 {{cat}}
             </label>
-            <img src="x.svg" alt="">
-        </button>
+            <img src="x.svg" alt="" (click)="onDeleteFilter($index)" >
+        </div>
         }
         <button class="button-chips">
             <img src="Filters lines.svg" alt="">
             <label>Filtros</label>
         </button>
 
+        <div class="spacing" style="flex: 1;"></div>
+        <div class="input-base">
+            <img src="search.svg" alt="">
+            <input type="text" placeholder="Buscar" />
+        </div>
+
     </div>
+
+    <div class="prod-container">
+        <header class="product-list-header">
+            <h2>Mis productos</h2>
+            <div class="count">
+                <p>{{count}} productos</p>
+            </div>
+        </header>
+
+        <div class="head-bar">
+            @for (item of ['Nombre', 'Categoría', 'Precio', 'Stock', 'Tipología', 'Estado', '']; track $index) {
+            <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+                <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                    <p>{{item}}</p>
+                </div>
+                @for (prod of products; track $index) {
+                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                    @if (item === 'Nombre') {
+                    <p>{{prod.name}}</p>
+                    }
+                    @if (item === 'Categoría') {
+                    <div class="category">
+                        <p>{{prod.category.nombre}}</p>
+                    </div>
+                    }
+                    @if (item === 'Precio') {
+                    <p>{{ prod.variants[0].price | currency:'USD': 'symbol':'1.2-2'}}</p>
+                    }
+                    @if (item === 'Stock') {
+                    <p>{{getStock(prod)}}</p>
+                    }
+                    @if( item === 'Tipología') {
+                    <p>{{prod.typology}}</p>
+                    }
+                    @if (item === 'Estado') {
+                    <div class="status">
+                        <img [src]="'Activo'==='Activo' ? './_Dot_green.svg' : './_Dot_red.svg'" alt="">
+                        <p>{{'active' === 'active' ? 'Activo' : 'Inactivo'}}</p>
+                    </div>
+                    }
+                    @if(item === '') {
+                    <div class="actions">
+                        <button class="action-button">
+                            <img src="copy.svg" alt="">
+                        </button>
+                        <button class="action-button">
+                            <img src="trash-2.svg" alt="">
+                        </button>
+                        <button class="action-button">
+                            <img src="edit-2.svg" alt="">
+                        </button>
+                    </div>
+                    }
+                </div>
+                }
+
+
+            </div>
+            }
+        </div>
+
+        <div class="pagination">
+            <button class="button-chips" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1 ">
+                <img src="arrow-left.svg" alt="">
+                <label>Anterior</label>
+            </button>
+
+            <div class="pages">
+                @for (page of pagesArray; track $index) {
+                @if (page === pages && currentPage-pages > 2 ) {
+                <div class="page">
+                    <label>...</label>
+                </div>
+                }
+                <div class="page" [ngClass]="{'active': currentPage == page}" (click)="onPageChange(page)">
+                    <label>{{page}}</label>
+                </div>
+                @if(currentPage > 3 && page+2 == currentPage){
+                <div class="page">
+                    <label>...</label>
+                </div>
+                }
+                }
+            </div>
+
+            <button class="button-chips" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === pages"  >
+                <label>Siguiente</label>
+                <img src="arrow-right.svg" alt="">
+            </button>
+
+        </div>
+
+    </div>
+
 </div>

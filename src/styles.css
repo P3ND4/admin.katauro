@@ -40,7 +40,8 @@ body {
     box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
     line-height: 24px;
     margin: 0px;
-    
+    gap: 8px;
+
 }
 
 .button-base label {
@@ -96,19 +97,21 @@ body {
     gap: 8px;
     box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
     transition: background 0.5s ease;
+    cursor: pointer;
 }
 
 .button-chips label {
     color: var(--Gray-700, #414651);
 
-    /* Text md/Semibold */
+    /* Text sm/Semibold */
     font-family: var(--montser-font);
-    font-size: 16px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 600;
-    line-height: 24px;
-    transition: color 0.5s ease;
-    /* 150% */
+    line-height: 20px;
+    /* 142.857% */
+    margin: 0px;
+    cursor: pointer;
 }
 
 .button-chips:active,
@@ -121,23 +124,15 @@ body {
     background: var(--Brand-50, #F0FEFF);
 }
 
-.button-chips:hover,
-.button-chips label:hover {
-    cursor: pointer;
-}
+
 
 .button-chips:active label,
 .button-chips.active label {
     color: var(--Brand-700, #007981);
-
-    /* Text md/Semibold */
-    font-family: var(--montser-font);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 24px;
-    /* 150% */
 }
+
+
+
 
 @keyframes enter {
     0% {

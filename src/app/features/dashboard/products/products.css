@@ -1,4 +1,4 @@
-.products-main{
+.products-main {
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -31,8 +31,223 @@ h1 {
     /* 126.667% */
 }
 
-.filters{
+.filters {
     display: flex;
     gap: 12px;
     padding-inline: 32px;
+}
+
+.product-list-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    gap: 8px;
+
+}
+
+.product-list-header h2 {
+    color: var(--Gray-900, #181D27);
+
+    /* Text lg/Medium */
+    font-family: var(--montser-font);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    /* 155.556% */
+    margin: 0px;
+}
+
+.product-list-header p {
+    color: var(--Brand-700, #007981);
+    text-align: center;
+
+    /* Text xs/Medium */
+    font-family: var(--montser-font);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    /* 150% */
+    margin: 0px;
+
+}
+
+.prod-container {
+    margin-inline: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+
+    border-radius: 12px;
+    border: 1px solid var(--Gray-200, #E9EAEB);
+    background: var(--White, #FFF);
+
+    /* Shadow/sm */
+    box-shadow: 0 1px 3px 0 rgba(10, 13, 18, 0.10), 0 1px 2px 0 rgba(10, 13, 18, 0.06);
+}
+
+.count {
+    display: flex;
+    padding: 2px 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    background: var(--Brand-50, #F0FEFF);
+}
+
+.head-bar {
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.head-bar-item {
+    display: flex;
+    flex: 1;
+    height: 44px;
+    padding: 12px 24px;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    border-bottom: 1px solid var(--Gray-200, #E9EAEB);
+    background: var(--Gray-50, #FAFAFA);
+    box-sizing: border-box;
+}
+
+.head-bar-item.action {
+    min-height: 44px;
+}
+
+.head-bar p {
+    color: var(--Gray-600, #535862);
+
+    /* Text xs/Medium */
+    font-family: var(--montser-font);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    /* 150% */
+    margin: 0px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.column.nombre {
+    min-width: 312px;
+}
+
+.column.action {
+    flex: none;
+    width: 160px;
+}
+
+
+.product-item {
+    display: flex;
+    height: 72px;
+    padding: 16px 24px;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    border-bottom: 1px solid var(--Gray-200, #E9EAEB);
+    box-sizing: border-box;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.action-button {
+    border: none;
+    background: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.status {
+    display: flex;
+    padding: 2px 8px 2px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    border-radius: 16px;
+    background: var(--Success-50, #ECFDF3);
+}
+
+.category {
+    display: flex;
+    padding: 2px 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    background: var(--Gray-100, #F5F5F5);
+}
+
+.status p {
+    color: var(--Success-700, #027A48);
+    text-align: center;
+
+    /* Text xs/Medium */
+    font-family: var(--montser-font);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    /* 150% */
+}
+
+
+.pagination {
+    display: flex;
+    padding: 12px 24px 16px 24px;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border: 0 solid var(--Gray-200, #E9EAEB);
+}
+
+.pages {
+    display: flex;
+}
+
+.page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 12px;
+}
+
+.page label {
+    color: var(--Gray-500, #717680);
+    text-align: center;
+
+    /* Text sm/Medium */
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.page.active {
+    background: #F0FEFF;
+}
+
+.page.active label {
+    color: var(--Brand-900, #175659);
 }
