@@ -16,7 +16,12 @@
         </header>
 
         <form [formGroup]="createProductForm" class="create-form" (ngSubmit)="onSubmit()">
-
+            <div class="form-text">
+                <label for="name">Nombre del producto</label>
+                <div class="input-base">
+                    <input id="name" formControlName="name" type="text" />
+                </div>
+            </div>
 
         </form>
 
