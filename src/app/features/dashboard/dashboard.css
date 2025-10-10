@@ -4,6 +4,7 @@
     width: 100vw;
     min-height: 100vh;
     background-color: #007981;
+    box-sizing: border-box;
     
 }
 .navigation{
@@ -36,4 +37,5 @@
     background-color: white;
     margin-top: 12px;
     flex: 1;
+    box-sizing: border-box;
 }

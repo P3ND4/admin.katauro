@@ -21,12 +21,246 @@
                 <div class="input-base">
                     <input id="name" formControlName="name" type="text" />
                 </div>
+                <div class="line"></div>
+            </div>
+
+            <div class="form-text">
+                <label for="subtitle">Subtítulo</label>
+                <div class="input-base">
+                    <input id="subtitle" formControlName="subtitle" type="text" />
+                </div>
+                <div class="line"></div>
+            </div>
+
+            <div class="form-text">
+                <label for="description">Descripción</label>
+                <div class="desc">
+                    <div class="input-base">
+                        <textarea id="description" formControlName="description" class="description"
+                            maxlength="500"></textarea>
+                    </div>
+                    <p class="word-count">{{createProductForm.value.description.length}}/500</p>
+                </div>
+
+                <div class="line"></div>
+            </div>
+
+            <div class="form-text">
+                <div class="labels">
+                    <label for="vector">Ícono representativo</label>
+                    <p>Comparte un ícono que sintetice su producto.</p>
+                </div>
+
+                <div class="drag-n-drop">
+                    @if (canPreview()) {
+                    <div class="vcontainer">
+                        <img [src]="imagePreview" class="icon-preview" alt="">
+                    </div>
+                    }
+                    <div class="input-base dragndrop" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event)" [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event)">
+                        <input type="file" #fileInput (change)="onFileChange($event)" accept="image/*"
+                            style="display: none;" />
+                        <div class="upload">
+                            <img src="upload-cloud.svg" alt="">
+                        </div>
+
+                        <div class="info-upload">
+                            <p>
+                                <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
+                            </p>
+                            <p>SVG, PNG, JPG or GIF</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+            <div class="form-text">
+                <label for="subtitle">Acabados</label>
+                <div class="finishes">
+                    <div class="input-base add-finish" (click)="openFinishModal()">
+                        <label>
+                            Selecciona los materiales del producto
+                        </label>
+                    </div>
+                    @for (finish of finishes; track $index) {
+                    <div class="input-base">
+                        <img [src]="finish.image" alt="">
+                    </div>
+                    }
+                </div>
+                <div class="line"></div>
+            </div>
+
+            <div class="form-text">
+                <label for="details">Descripción</label>
+                <div class="desc">
+                    <div class="input-base">
+                        <textarea id="details" formControlName="details" class="description" maxlength="80"></textarea>
+                    </div>
+                    <p class="word-count">{{createProductForm.value.details.length}}/80</p>
+                </div>
+
+                <div class="line"></div>
+            </div>
+
+            <div class="form-text">
+                <label for="name">Tipologia</label>
+
+                <div class="radio">
+                    <div class="radio-option-container">
+                        <div class="radio-option" [ngClass]="{'selected': typology === true}"
+                            (click)="onTypologyChange(true)">
+                            @if (typology === true) {
+                            <div class="selected-circle"></div>
+                            }
+                        </div>
+                        <p class="radio-label">Simple</p>
+                    </div>
+                    <div class="radio-option-container">
+                        <div class="radio-option" [ngClass]="{'selected': typology === false}"
+                            (click)="onTypologyChange(false)">
+                            @if (typology === false) {
+                            <div class="selected-circle"></div>
+                            }
+                        </div>
+                        <p class="radio-label">Variable</p>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+
+            <div formArrayName="variants" class="varaints-container">
+
+                @if(!typology) {
+                <div class="variant-tab">
+                    <div cass="tabs">
+                        @for(variant of variants.controls; track $index) {
+                        <div class="tab">
+                            <p>Variable {{$index+1}}</p>
+                            @if(currentVariant === $index) {
+                            <div class="selected-tab"></div>
+                            }
+                        </div>
+                        }
+                        <div class="tab-line"></div>
+                    </div>
+
+                    <button class="button-light" (click)="addVariant()">
+                        <img src="plus.svg" alt="">
+                        <label>Agregar variable</label>
+                    </button>
+                </div>
+                }
+
+                @for (item of variants.controls; track $index) {
+                <div [formGroupName]="$index" class="variant-item">
+
+                    @if(!typology) {
+                    <div class="default-variant">
+                        <div class="togle">
+                            <div class="switch" [ngClass]="{'non-active': defaultVAriant !== $index}">
+                                <img src="Button.svg" alt="">
+                            </div>
+                        </div>
+                        <div class="label">
+                            <p>Producto predeterminado
+                                <br>
+                                <span>Este producto aparecerá como opción predeterminada en la galería de
+                                    productos.</span>
+                            </p>
+                        </div>
+                    </div>
+                    }
+
+                    <div class="form-text">
+                        <label>Color</label>
+                        <div class="finishes">
+                            <div class="input-base add-finish" (click)="openFinishModal()">
+                                <label>
+                                    Selecciona el color del producto
+                                </label>
+                            </div>
+                            @for (finish of finishes; track $index) {
+                            <div class="input-base">
+                                <img [src]="finish.image" alt="">
+                            </div>
+                            }
+                        </div>
+                        <div class="line"></div>
+                    </div>
+
+                    <div class="form-text">
+                        <label for="price">Precio</label>
+                        <div class="input-base">
+                            <input id="price" formControlName="price" type="number" />
+                        </div>
+                        <div class="line"></div>
+                    </div>
+
+                    <div class="form-text">
+                        <label for="stock">Precio</label>
+                        <div class="count">
+                            <button (click)="minus()">
+                                <img src="/minus.svg" alt="minus">
+                            </button>
+                            <input class="prod-count" formControlName="stock" type="number" min="0" />
+                            <button (click)="plus()">
+                                <img src="/plus-black.svg" alt="plus">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-text">
+                        <div class="labels">
+                            <label for="vector">Ícono representativo</label>
+                            <p>Comparte un ícono que sintetice su producto.</p>
+                        </div>
+
+                        <div class="variant-images">
+                            <div class="input-base dragndrop" (dragover)="onDragOver($event, true)"
+                                (dragleave)="onDragLeave($event, true)" (drop)="onDrop($event, true)"
+                                [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event, true)">
+                                <input type="file" #fileInputVariants (change)="onFileChange($event, true)"
+                                    accept="image/*" style="display: none;" multiple />
+
+                                <div class="upload">
+                                    <img src="upload-cloud.svg" alt="">
+                                </div>
+
+                                <div class="info-upload">
+                                    <p>
+                                        <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
+                                    </p>
+                                    <p>SVG, PNG, JPG or GIF</p>
+                                </div>
+                            </div>
+                            <div class="imges-container">
+                                @for (preview of variantPreviews[currentVariant]; track $index) {
+                                <div class="images">
+                                    <img [src]="preview" class="icon-preview" alt="preview">
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="line"></div>
+                    </div>
+
+
+                </div>
+                }
+
             </div>
 
         </form>
 
 
     </div>
+
+
+
+
 
 
 </div>

@@ -23,7 +23,7 @@ export class Product {
 
 export class Finish {
     id!: string
-    productId!: string
+    image!: string
     text!: string
 }
 export class detail {

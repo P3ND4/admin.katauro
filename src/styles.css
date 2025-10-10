@@ -221,7 +221,8 @@ body {
     box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
 }
 
-input {
+input,
+textarea {
     border: none;
     width: 100%;
     height: 100%;
@@ -239,7 +240,9 @@ input {
 
 }
 
-input:focus {
+
+input:focus,
+textarea:focus {
     border: none;
     outline: none;
 }
@@ -288,4 +291,30 @@ input:focus {
     align-items: center;
     border-radius: 50%;
     background: lightgray;
+}
+
+.button-light {
+    display: flex;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--Brand-50, #F0FEFF);
+    background: var(--Brand-50, #F0FEFF);
+
+    /* Shadow/xs */
+    box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+}
+
+.button-light label {
+    color: var(--Brand-700, #007981);
+
+    /* Text sm/Semibold */
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
 }
