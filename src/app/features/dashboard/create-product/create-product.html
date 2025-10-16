@@ -12,7 +12,11 @@
                 Update your photo and personal details here.
             </p>
 
+
+
             <div class="line"></div>
+
+
         </header>
 
         <form [formGroup]="createProductForm" class="create-form" (ngSubmit)="onSubmit()">
@@ -46,20 +50,46 @@
             </div>
 
             <div class="form-text">
+                <label for="subtitle">Categoría</label>
+                <div class="finishes">
+                    <div class="input-base add-finish" (click)="openFinishModal(1)">
+                        <label style="flex: 1;">
+                            {{getCategory()}}
+                        </label>
+                        <img src="chevron-down.svg" alt="">
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+
+            @if(showDialog === 1){
+            <div class="overlay" (click)="closeDialog()">
+                <div class="dialog" (click)="$event.stopPropagation()">
+                    @for (item of categories; track $index) {
+                    <div class="dialog-item" (click)="selectCategory(item.id)">
+                        <p>{{item.nombre}}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+
+            <div class="form-text">
                 <div class="labels">
                     <label for="vector">Ícono representativo</label>
                     <p>Comparte un ícono que sintetice su producto.</p>
                 </div>
 
                 <div class="drag-n-drop">
-                    @if (canPreview()) {
+                    @if (canPreview(0)) {
                     <div class="vcontainer">
-                        <img [src]="imagePreview" class="icon-preview" alt="">
+                        <img [src]="imagePreview[0]" class="icon-preview" alt="">
                     </div>
                     }
-                    <div class="input-base dragndrop" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                        (drop)="onDrop($event)" [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event)">
-                        <input type="file" #fileInput (change)="onFileChange($event)" accept="image/*"
+                    <div class="input-base dragndrop" (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event, 0)" (drop)="onDrop($event, 0)"
+                        [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event, 0)">
+                        <input type="file" #fileInput (change)="onFileChange($event, 0)" accept="image/*"
                             style="display: none;" />
                         <div class="upload">
                             <img src="upload-cloud.svg" alt="">
@@ -70,6 +100,7 @@
                                 <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
                             </p>
                             <p>SVG, PNG, JPG or GIF</p>
+                            {{progress}}
                         </div>
                     </div>
                 </div>
@@ -78,19 +109,48 @@
             <div class="form-text">
                 <label for="subtitle">Acabados</label>
                 <div class="finishes">
-                    <div class="input-base add-finish" (click)="openFinishModal()">
-                        <label>
+                    <div class="input-base add-finish" (click)="openFinishModal(2)">
+                        <label style="flex: 1;">
                             Selecciona los materiales del producto
                         </label>
+                        <!-- dialog.component.html -->
+                        <img src="chevron-down.svg" alt="">
                     </div>
                     @for (finish of finishes; track $index) {
-                    <div class="input-base">
-                        <img [src]="finish.image" alt="">
+                    <div class="input-base propierty">
+                        <div class="finish-data">
+                            <div class="avatar">
+                                <img [src]="finish.image" alt="">
+                            </div>
+                            <p>{{finish.text}}</p>
+                        </div>
+                        <img src="divide-circle.svg" alt="delete">
                     </div>
                     }
                 </div>
                 <div class="line"></div>
             </div>
+            @if(showDialog === 2){
+            <div class="overlay" (click)="closeDialog()">
+                <div class="dialog" (click)="$event.stopPropagation()">
+                    <div class="dialog-item" (click)="showDialog = 4">
+                        <img src="plus-circle.svg" alt="">
+                        <p>Agregar terminación</p>
+                    </div>
+
+                    @for (item of aviableFinishes; track $index) {
+                    <div class="dialog-item" (click)="addFinish(item)">
+                        <div class="avatar">
+                            <img [src]="item.image" alt="item.text">
+                        </div>
+                        <p>{{item.text}}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+
+
 
             <div class="form-text">
                 <label for="details">Descripción</label>
@@ -134,9 +194,9 @@
 
                 @if(!typology) {
                 <div class="variant-tab">
-                    <div cass="tabs">
+                    <div class="tabs">
                         @for(variant of variants.controls; track $index) {
-                        <div class="tab">
+                        <div class="tab" (click)="currentVariant = $index">
                             <p>Variable {{$index+1}}</p>
                             @if(currentVariant === $index) {
                             <div class="selected-tab"></div>
@@ -147,19 +207,22 @@
                     </div>
 
                     <button class="button-light" (click)="addVariant()">
-                        <img src="plus.svg" alt="">
+                        <img src="plus-green.svg" alt="">
                         <label>Agregar variable</label>
                     </button>
                 </div>
                 }
 
                 @for (item of variants.controls; track $index) {
+                @if (currentVariant==$index)
+                {
                 <div [formGroupName]="$index" class="variant-item">
 
                     @if(!typology) {
                     <div class="default-variant">
-                        <div class="togle">
-                            <div class="switch" [ngClass]="{'non-active': defaultVAriant !== $index}">
+                        <div class="togle" [ngClass]="{'non-active': defaultVAriant !== currentVariant}"
+                            (click)="defaultVAriant = currentVariant">
+                            <div class="switch" [ngClass]="{'non-active': defaultVAriant !== currentVariant}">
                                 <img src="Button.svg" alt="">
                             </div>
                         </div>
@@ -176,19 +239,45 @@
                     <div class="form-text">
                         <label>Color</label>
                         <div class="finishes">
-                            <div class="input-base add-finish" (click)="openFinishModal()">
-                                <label>
+                            <div class="input-base add-finish" (click)="openFinishModal(3)">
+                                <label style="flex: 1;">
                                     Selecciona el color del producto
                                 </label>
+                                <img src="chevron-down.svg" alt="">
                             </div>
-                            @for (finish of finishes; track $index) {
-                            <div class="input-base">
-                                <img [src]="finish.image" alt="">
+                            @if(color[currentVariant]) {
+                            <div class="input-base propierty">
+                                <div class="finish-data">
+                                    <div class="avatar">
+                                        <img [src]="color[currentVariant]?.image" alt="">
+                                    </div>
+                                    <p>{{color[currentVariant]?.name}}</p>
+                                </div>
+                                <img src="divide-circle.svg" alt="delete">
                             </div>
                             }
                         </div>
                         <div class="line"></div>
                     </div>
+                    @if(showDialog === 3){
+                    <div class="overlay" (click)="closeDialog()">
+                        <div class="dialog" (click)="$event.stopPropagation()">
+                            <div class="dialog-item">
+                                <img src="plus-circle.svg" alt="">
+                                <p>Agregar color</p>
+                            </div>
+
+                            @for (item of aviavleColors; track $index) {
+                            <div class="dialog-item">
+                                <div class="avatar">
+                                    <img [src]="item.image" alt="">
+                                </div>
+                                <p>{{item.name}}</p>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    }
 
                     <div class="form-text">
                         <label for="price">Precio</label>
@@ -218,11 +307,11 @@
                         </div>
 
                         <div class="variant-images">
-                            <div class="input-base dragndrop" (dragover)="onDragOver($event, true)"
-                                (dragleave)="onDragLeave($event, true)" (drop)="onDrop($event, true)"
-                                [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event, true)">
-                                <input type="file" #fileInputVariants (change)="onFileChange($event, true)"
-                                    accept="image/*" style="display: none;" multiple />
+                            <div class="input-base dragndrop" (dragover)="onDragOver($event)"
+                                (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+                                [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event)">
+                                <input type="file" #fileInputVariants (change)="onFileChange($event)" accept="image/*"
+                                    style="display: none;" multiple />
 
                                 <div class="upload">
                                     <img src="upload-cloud.svg" alt="">
@@ -250,8 +339,138 @@
 
                 </div>
                 }
+                }
 
             </div>
+
+            <footer>
+                <button class="button-base" type="submit">
+                    <label>
+                        Guardar
+                    </label>
+                </button>
+
+                <button class="button-chips">
+                    <label>
+                        Cancelar
+                    </label>
+
+                </button>
+            </footer>
+        </form>
+        <form [formGroup]="createFinish" (submit)="onCreateFinish()">
+            @if(showDialog == 4){
+            <div class="overlay" (click)="closeDialog()">
+                <div class="creation-dialog" (click)="$event.stopPropagation()">
+                    <h2>Agregar terminación</h2>
+                    <div class="input-container">
+                        <label class="form-label">
+                            Nombre
+                        </label>
+                        <div class="input-content">
+                            <input type="text" formControlName='name'>
+                        </div>
+                    </div>
+                    <p>Imagen</p>
+                    <div class="upload-img-prop">
+                        <div class="drag-n-drop">
+                            <div class="input-base dragndrop add-prop" (dragover)="onDragOver($event,1)"
+                                (dragleave)="onDragLeave($event,1)" (drop)="onDrop($event,1)"
+                                [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event,1)">
+                                <input type="file" #finish (change)="onFileChange($event, 1)" accept="image/*"
+                                    style="display: none;" />
+                                <div class="upload">
+                                    <img src="upload-cloud.svg" alt="">
+                                </div>
+
+                                <div class="info-upload">
+                                    <p>
+                                        <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
+                                    </p>
+                                    <p>SVG, PNG, JPG or GIF</p>
+                                </div>
+                            </div>
+                            @if (canPreview(1)) {
+                            <div class="vcontainer">
+                                <img [src]="imagePreview[1]" class="icon-preview" alt="">
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="creat-actions">
+                        <button class="button-chips" style="flex: 1;" (click)="showDialog = 0">
+                            <label style="font-size: 16px; line-height: 24px;">
+                                Cancelar
+                            </label>
+                        </button>
+                        <button class="button-base" style="flex:1; padding: 10px 18px;" type="submit">
+                            <label>
+                                Guardar
+                            </label>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            }
+
+
+        </form>
+        <form [formGroup]="createColor" (submit)="onCreateColor()">
+            @if(showDialog == 5){
+            <div class="overlay" (click)="closeDialog()">
+                <div class="creation-dialog" (click)="$event.stopPropagation()">
+                    <h2>Agregar </h2>
+                    <div class="input-container">
+                        <label class="form-label">
+                            Nombre
+                        </label>
+                        <div class="input-content">
+                            <input type="text" formControlName='name'>
+                        </div>
+                    </div>
+                    <p>Imagen</p>
+                    <div class="upload-img-prop">
+                        <div class="drag-n-drop">
+                            <div class="input-base dragndrop add-prop" (dragover)="onDragOver($event,2)"
+                                (dragleave)="onDragLeave($event,2)" (drop)="onDrop($event,2)"
+                                [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event,2)">
+                                <input type="file" #color (change)="onFileChange($event, 2)" accept="image/*"
+                                    style="display: none;" />
+                                <div class="upload">
+                                    <img src="upload-cloud.svg" alt="">
+                                </div>
+
+                                <div class="info-upload">
+                                    <p>
+                                        <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
+                                    </p>
+                                    <p>SVG, PNG, JPG or GIF</p>
+                                </div>
+                            </div>
+                            @if (canPreview(2)) {
+                            <div class="vcontainer">
+                                <img [src]="imagePreview[2]" class="icon-preview" alt="">
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="creat-actions">
+                        <button class="button-chips" style="flex: 1;" (click)="showDialog = 0">
+                            <label style="font-size: 16px; line-height: 24px;">
+                                Cancelar
+                            </label>
+                        </button>
+                        <button class="button-base" style="flex:1; padding: 10px 18px;" type="submit">
+                            <label>
+                                Guardar
+                            </label>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            }
 
         </form>
 

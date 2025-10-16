@@ -1,35 +1,40 @@
 .dashboard {
     display: flex;
     flex-direction: row;
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     background-color: #007981;
     box-sizing: border-box;
-    
+
 }
-.navigation{
+
+.navigation {
     width: 81px;
     display: flex;
     flex-direction: column;
     padding-top: 32px;
     gap: 24px;
 }
-.nav-header{
+
+.nav-header {
     display: flex;
     justify-content: center;
     padding-inline: 24px 20px;
 }
-.nav-items{
+
+.nav-items {
     display: flex;
     flex-direction: column;
     padding-inline: 16px;
     gap: 8px;
 }
-.nav-item{
+
+.nav-item {
     display: flex;
     padding: 12px;
 }
-.route{
+
+.route {
     display: flex;
     flex-direction: column;
     padding-block: 32px 48px;
@@ -38,4 +43,9 @@
     margin-top: 12px;
     flex: 1;
     box-sizing: border-box;
+}
+
+.nav-icon {
+    stroke-width: 2px;
+    stroke: var(--Brand-300, #98CDD2);
 }
