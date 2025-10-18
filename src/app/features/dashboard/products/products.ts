@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Category, Product, Typology } from '../../../shared/models/Product';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { httpService } from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-products',
@@ -33,26 +34,28 @@ export class Products implements OnInit {
 
   queryParamSubs: Subscription | undefined;
 
-  constructor(readonly router: Router, private route: ActivatedRoute) {
-    this.products.push({
-      id: "ajyyhsbodihjbqouh",
-      name: "tubo e lu fria",
-      description: "un tubo que alumbra y no se calienta",
-      details: [],
-      subtitle: '',
-      typology: Typology.variant,
-      finish: [],
-      vector: "/assets/bombillo.svg",
-      category: { id: 'asda', nombre: Category.footLumin },
-      variants: [{
-        variantName: "",
-        price: 200,
-        stock: 13,
-        image: "/assets/Image.png",
-        images: [],
-        id: ""
-      }]
-    });
+  constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) {
+//    this.products.push({
+//      id: "ajyyhsbodihjbqouh",
+//      name: "tubo e lu fria",
+//      description: "un tubo que alumbra y no se calienta",
+//      details: [],
+//      subtitle: '',
+//      typology: Typology.variant,
+//      finish: [],
+//      vector: "/assets/bombillo.svg",
+//      category: { id: 'asda', nombre: Category.footLumin },
+//      variants: [{
+//        variantName: "",
+//        price: 200,
+//        stock: 13,
+//        image: "/assets/Image.png",
+//        images: [],
+//        id: ""
+//      }]
+//    });
+
+
   }
   ngOnInit(): void {
     this.queryParamSubs = this.route.queryParamMap.subscribe(()=>{
@@ -69,6 +72,16 @@ export class Products implements OnInit {
       const catList = cat.split('-');
       catList.map((x: string)=>this.CategoryFilter.push(this.CatParser[+x < 5 && 0<= +x ? +x: 1]))
     }
+
+    this.http.getProducts().subscribe({
+      next: val => {
+        this.products = val as Product[];
+        console.log(val);
+        this.cdr.detectChanges();
+      },
+      error: err => console.log(err)
+    })
+
   }
 
 

@@ -5,14 +5,20 @@ export class CreateProductDto {
     description!: string;
     subtitle!: string;
     categoryId!: string;
-    vector!: string;
     typology!: Typology
+    vector!: string;
+    finishId!: string[]
     variants!: CreateSpecProductDTO[]
     details!: string[]
 }
+
+
+
 
 export class CreateSpecProductDTO {
     price!: number;
     stock!: number;
     colorId!: string
+    image!: string
+    images!: string[]
 }

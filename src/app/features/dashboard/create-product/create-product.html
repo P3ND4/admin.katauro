@@ -100,7 +100,6 @@
                                 <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar
                             </p>
                             <p>SVG, PNG, JPG or GIF</p>
-                            {{progress}}
                         </div>
                     </div>
                 </div>
@@ -259,36 +258,18 @@
                         </div>
                         <div class="line"></div>
                     </div>
-                    @if(showDialog === 3){
-                    <div class="overlay" (click)="closeDialog()">
-                        <div class="dialog" (click)="$event.stopPropagation()">
-                            <div class="dialog-item">
-                                <img src="plus-circle.svg" alt="">
-                                <p>Agregar color</p>
-                            </div>
 
-                            @for (item of aviavleColors; track $index) {
-                            <div class="dialog-item">
-                                <div class="avatar">
-                                    <img [src]="item.image" alt="">
-                                </div>
-                                <p>{{item.name}}</p>
-                            </div>
-                            }
-                        </div>
-                    </div>
-                    }
 
                     <div class="form-text">
                         <label for="price">Precio</label>
                         <div class="input-base">
-                            <input id="price" formControlName="price" type="number" />
+                            <input id="price" formControlName="price" type="number"/>
                         </div>
                         <div class="line"></div>
                     </div>
 
                     <div class="form-text">
-                        <label for="stock">Precio</label>
+                        <label for="stock">Stock</label>
                         <div class="count">
                             <button (click)="minus()">
                                 <img src="/minus.svg" alt="minus">
@@ -311,7 +292,7 @@
                                 (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
                                 [ngClass]="{'hover': isHovering}" (click)="onFilesSelected($event)">
                                 <input type="file" #fileInputVariants (change)="onFileChange($event)" accept="image/*"
-                                    style="display: none;" multiple />
+                                    style="display: none;" multiple maxlength="5" />
 
                                 <div class="upload">
                                     <img src="upload-cloud.svg" alt="">
@@ -350,13 +331,33 @@
                     </label>
                 </button>
 
-                <button class="button-chips">
+                <button class="button-chips" (click)="cancel()">
                     <label>
                         Cancelar
                     </label>
 
                 </button>
             </footer>
+
+            @if(showDialog === 3){
+            <div class="overlay" (click)="closeDialog()">
+                <div class="dialog" (click)="$event.stopPropagation()">
+                    <div class="dialog-item" (click)="showDialog = 5">
+                        <img src="plus-circle.svg" alt="">
+                        <p>Agregar color</p>
+                    </div>
+
+                    @for (item of aviavleColors; track $index) {
+                    <div class="dialog-item" (click)="onSelectColor(item)">
+                        <div class="avatar">
+                            <img [src]="item.image" alt="">
+                        </div>
+                        <p>{{item.name}}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
         </form>
         <form [formGroup]="createFinish" (submit)="onCreateFinish()">
             @if(showDialog == 4){
@@ -477,8 +478,13 @@
 
     </div>
 
-
-
+    @if (progress > -1) {
+    <div class="upload-progress">
+        <label>
+            {{progress}}%
+        </label>
+    </div>
+    }
 
 
 

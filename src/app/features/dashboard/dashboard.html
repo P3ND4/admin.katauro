@@ -1,22 +1,25 @@
 <div class="dashboard">
     <div class="navigation">
-        <header class="nav-header">
-            <img src="K.png" alt="katauro logo" class="logo">
-        </header>
-        <div class="nav-items">
-            <div class="nav-item">
-                <img class="nav-icon" src="bar-chart-2.svg" alt="">
-            </div>
-            <div class="nav-item">
-                <img src="tag.svg" alt="">
-            </div>
-            <div class="nav-item">
-                <img src="layout.svg" alt="">
-            </div>
-            <div class="nav-item">
-                <img src="users.svg" alt="">
+        <div class="nav-items-container">
+            <header class="nav-header">
+                <img src="K.png" alt="katauro logo" class="logo">
+            </header>
+            <div class="nav-items">
+                <div class="nav-item" [ngClass]="{'active': isRoute('/dashboard/products')}" (click)="navigate('/dashboard/products')">
+                    <img class="nav-icon" src="bar-chart-2.svg" alt="">
+                </div>
+                <div class="nav-item">
+                    <img src="tag.svg" alt="">
+                </div>
+                <div class="nav-item">
+                    <img src="layout.svg" alt="">
+                </div>
+                <div class="nav-item">
+                    <img src="users.svg" alt="">
+                </div>
             </div>
         </div>
+
     </div>
 
     <div class="route">

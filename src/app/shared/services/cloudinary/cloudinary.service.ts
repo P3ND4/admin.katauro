@@ -8,9 +8,10 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 export class CloudinaryService {
   public progress = -1;
   cloudName = ''
-
+  url ='https://api.katauro.com/cloudinary/';
   constructor(private http: HttpClient) {
-    this.http.get('http://localhost:3000/cloudinary/signature').subscribe(
+    //this.url = 'http://localhost:3000/cloudinary/';
+    this.http.get(`${this.url}signature`).subscribe(
       {next: (val) => this.cloudName = (val as {cloud_name: string}).cloud_name}
     );
 

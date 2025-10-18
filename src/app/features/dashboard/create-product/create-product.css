@@ -428,11 +428,12 @@ input[type=number] {
     align-items: center;
     justify-content: center;
     border-radius: 12px;
-    padding: 2px;
+    border: 2px solid #178C94;
     box-sizing: border-box;
     overflow: hidden;
     cursor: pointer;
     background-color: #178C94;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .back {
@@ -453,6 +454,7 @@ input[type=number] {
     height: 20px;
     justify-content: flex-end;
     align-items: center;
+    margin-right: -2px;
     border-radius: 12px;
     box-sizing: border-box;
     background-color: #178C94;
@@ -460,7 +462,10 @@ input[type=number] {
 }
 
 .switch.non-active {
-    transform: translate(-40%);
+    transform: translate(-48%);
+}
+.togle.non-active {
+    background-color: white;
 }
 
 .default-variant p {
@@ -639,6 +644,45 @@ footer {
 
 .finish-data p {
     margin: 0px;
+    color: var(--Gray-700, #414651);
+
+    /* Text sm/Medium */
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+.upload-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 20px;
+    border-radius: 50%;
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    bottom: 32px;
+    right: 32px;
+    background-color: #007981;
+    opacity: 0.5;
+
+}
+
+.upload-progress label {
+    color: var(--White, #FFF);
+    /* Text md/Semibold */
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+.input-base.add-finish label {
     color: var(--Gray-700, #414651);
 
     /* Text sm/Medium */

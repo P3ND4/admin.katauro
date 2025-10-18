@@ -147,6 +147,10 @@ h1 {
     flex: none;
     width: 160px;
 }
+.column.categoría{
+    width: 225px;
+    flex: none;
+}
 
 
 .product-item {

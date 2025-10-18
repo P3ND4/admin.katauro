@@ -32,6 +32,7 @@
 .nav-item {
     display: flex;
     padding: 12px;
+    cursor: pointer;
 }
 
 .route {
@@ -48,4 +49,19 @@
 .nav-icon {
     stroke-width: 2px;
     stroke: var(--Brand-300, #98CDD2);
+}
+
+.nav-items-container {
+    position: fixed;
+    padding-top: 32px;
+    width: 81px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    top: 0px;
+}
+
+.nav-item.active {
+    border-radius: 6px;
+    background: var(--Brand-600, #178C94);
 }

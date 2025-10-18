@@ -6,6 +6,7 @@ import { CreateProductDto, CreateSpecProductDTO } from '../../../shared/models/c
 import { httpService } from '../../../shared/services/http/http.service';
 import { CloudinaryService } from '../../../shared/services/cloudinary/cloudinary.service';
 import { HttpEventType } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-product',
@@ -40,7 +41,7 @@ export class CreateProduct implements OnInit {
 
   progress = -1;
 
-  constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef, private http: httpService, readonly cloudy: CloudinaryService) {
+  constructor(private router: Router ,private fb: FormBuilder, private cdr: ChangeDetectorRef, private http: httpService, readonly cloudy: CloudinaryService) {
 
     this.createColor = fb.group({
       name: ['', Validators.required],
@@ -61,6 +62,7 @@ export class CreateProduct implements OnInit {
       details: ['', [Validators.required, Validators.maxLength(80)]],
       vector: [null, Validators.required],
       categoryId: ['', Validators.required],
+      finishesId: [[], Validators.minLength(1)],
       variants: this.fb.array([]),
     });
 
@@ -102,7 +104,7 @@ export class CreateProduct implements OnInit {
 
   selectCategory(id: string) {
     this.createProductForm.get('categoryId')?.setValue(id);
-    this.showDialog = 0;
+    this.closeDialog();
   }
 
   getCategory() {
@@ -129,11 +131,7 @@ export class CreateProduct implements OnInit {
       this.isHoveringVariant = false;
       if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
         var files = [...event.dataTransfer.files];
-        var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as File[];
-        currentFiles.push(...files);
-        currentFiles = currentFiles.slice(currentFiles.length < 5 ? 0 : -5);
-        this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles);
-        this.loadImageVariants(currentFiles);
+        this.uploadMulti(files);
         event.dataTransfer.clearData();
       }
       return;
@@ -141,7 +139,7 @@ export class CreateProduct implements OnInit {
     this.isHovering = false;
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       const file = event.dataTransfer.files[0]
-      this.createProductForm.get('vector')?.setValue(file);
+      //this.createProductForm.get('vector')?.setValue(file);
       this.upload(file, option);
       //this.loadImage(file);
       event.dataTransfer.clearData();
@@ -169,11 +167,7 @@ export class CreateProduct implements OnInit {
     if (option == undefined) {
       if (input.files && input.files.length > 0) {
         const files = [...input.files];
-        var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as File[];
-        currentFiles.push(...files);
-        currentFiles = currentFiles.slice(currentFiles.length < 5 ? 0 : -5);
-        this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles);
-        this.loadImageVariants(currentFiles);
+        this.uploadMulti(files);
       }
       return;
     }
@@ -223,7 +217,8 @@ export class CreateProduct implements OnInit {
     const variantGroup = this.fb.group({
       stock: [0, Validators.required],
       price: [0, Validators.required],
-      variantImages: [[], [Validators.required, Validators.minLength(4)]]  // para los archivos
+      colorId: ['', Validators.required],
+      variantImages: [[], [Validators.required, Validators.minLength(5)]]  // para los archivos
     });
     this.variants.push(variantGroup);
     this.color.push(undefined);
@@ -252,23 +247,72 @@ export class CreateProduct implements OnInit {
       const body: CreateProductDto = {
         name: this.createProductForm.get('name')?.value,
         description: this.createProductForm.get('description')?.value,
-        subtitle: this.createProductForm.get('subtitle')?.value.split('\n'),
+        subtitle: this.createProductForm.get('subtitle')?.value,
         categoryId: this.createProductForm.get('categoryId')?.value, // Example category ID
         typology: this.typology ? Typology.simple : Typology.variant,
-        vector: "", // Placeholder, handle file upload separately
+        vector: this.createProductForm.get('vector')?.value, // Placeholder, handle file upload separately
         details: this.createProductForm.get('details')?.value.split('\n'),
+        finishId: this.createProductForm.get('finishesId')?.value,
         variants: (this.createProductForm.get('variants') as FormArray).controls.map(
           (variant: any): CreateSpecProductDTO =>
           ({
             stock: variant.get('stock')?.value,
             price: variant.get('price')?.value,
-            colorId: ""
+            colorId: this.color[0]!.id,
+            image: variant.get('variantImages').value[0],
+            images: variant.get('variantImages').value
+
           }))
       }
       console.log(body);
+      this.http.createProduct(body).subscribe(
+        {
+          next: val => {
+            console.log(val);
+            this.router.navigate(['dashboard/products']);
+            
+          },
+            error: err => console.log(err)
+        }
+      );
     }
 
   }
+
+  uploadMulti(files: File[]) {
+    this.progress = 0;
+    const count = files.length
+    var urls: string[] = files.map(file => "");
+    files.forEach((file, index: number) => {
+      var fileProgress = 0
+      this.cloudy.uploadFile(file).subscribe(event => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress = this.progress - fileProgress
+          fileProgress = Math.round(((event.loaded / event.total) * 100)/count);
+          this.progress += fileProgress
+          this.cdr.detectChanges();
+        } else if (event.type === HttpEventType.Response) {
+          console.log('✅ Subida completa:', event.body);
+          const optimizedUrl = (event.body as { secure_url: string }).secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+          this.progress = this.progress - fileProgress
+          fileProgress = Math.round(100 / count);
+          this.progress += fileProgress;
+          urls[index] = optimizedUrl
+          if (this.progress === 100) {
+            var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as string[];
+            currentFiles = files.length < 5 ? currentFiles.slice((5 - files.length - currentFiles.length)) : []
+            currentFiles.push(...urls);
+            this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles)
+            this.variantPreviews[this.currentVariant] = currentFiles;
+          }
+
+          this.cdr.detectChanges();
+        }
+      });
+    })
+
+  }
+
   upload(file: File, i: number) {
     this.progress = 0;
     this.cloudy.uploadFile(file).subscribe(event => {
@@ -325,7 +369,7 @@ export class CreateProduct implements OnInit {
         {
           next: val => {
             console.log(val);
-            this.showDialog = 0;
+            this.closeDialog()
             this.cdr.detectChanges();
             this.chargeComponentData();
           },
@@ -339,8 +383,21 @@ export class CreateProduct implements OnInit {
 
 
   addFinish(item: Finish) {
-    this.finishes.push(item)
+    this.finishes.push(item);
+    var current = this.createProductForm.get('finishesId')?.value
+    current.push(item.id);
+    this.createProductForm.get('finishesId')?.patchValue(current); 
   }
 
+  onSelectColor(color: Color) {
+    this.color[this.currentVariant] = color;
+    this.variants.controls[this.currentVariant].get('colorId')?.setValue(color.id)
+    this.closeDialog();
+    this.cdr.detectChanges();
+  }
 
+  cancel(){
+    this.router.navigate(['dashboard/products'])
+  }
 }
+
