@@ -29,48 +29,48 @@ export class Products implements OnInit {
   ]
 
   CategoryFilter: Category[] = [
-    
+
   ];
 
   queryParamSubs: Subscription | undefined;
 
   constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) {
-//    this.products.push({
-//      id: "ajyyhsbodihjbqouh",
-//      name: "tubo e lu fria",
-//      description: "un tubo que alumbra y no se calienta",
-//      details: [],
-//      subtitle: '',
-//      typology: Typology.variant,
-//      finish: [],
-//      vector: "/assets/bombillo.svg",
-//      category: { id: 'asda', nombre: Category.footLumin },
-//      variants: [{
-//        variantName: "",
-//        price: 200,
-//        stock: 13,
-//        image: "/assets/Image.png",
-//        images: [],
-//        id: ""
-//      }]
-//    });
+    //    this.products.push({
+    //      id: "ajyyhsbodihjbqouh",
+    //      name: "tubo e lu fria",
+    //      description: "un tubo que alumbra y no se calienta",
+    //      details: [],
+    //      subtitle: '',
+    //      typology: Typology.variant,
+    //      finish: [],
+    //      vector: "/assets/bombillo.svg",
+    //      category: { id: 'asda', nombre: Category.footLumin },
+    //      variants: [{
+    //        variantName: "",
+    //        price: 200,
+    //        stock: 13,
+    //        image: "/assets/Image.png",
+    //        images: [],
+    //        id: ""
+    //      }]
+    //    });
 
 
   }
   ngOnInit(): void {
-    this.queryParamSubs = this.route.queryParamMap.subscribe(()=>{
+    this.queryParamSubs = this.route.queryParamMap.subscribe(() => {
       this.ReadData();
 
     })
   }
 
 
-  private ReadData(){
+  private ReadData() {
     const cat = this.route.snapshot.queryParamMap.get('categories');
     if (cat) {
       this.CategoryFilter = [];
       const catList = cat.split('-');
-      catList.map((x: string)=>this.CategoryFilter.push(this.CatParser[+x < 5 && 0<= +x ? +x: 1]))
+      catList.map((x: string) => this.CategoryFilter.push(this.CatParser[+x < 5 && 0 <= +x ? +x : 1]))
     }
 
     this.http.getProducts().subscribe({
@@ -95,9 +95,19 @@ export class Products implements OnInit {
     console.log(page);
   }
 
-  onDeleteFilter(index: number){
+  onDeleteFilter(index: number) {
     this.CategoryFilter.splice(index, 1);
-    this.router.navigate([],{queryParams: {categories: this.CategoryFilter.map(x=>this.CatParser.indexOf(x)).join('-')}, queryParamsHandling: 'merge'});
+    this.router.navigate([], { queryParams: { categories: this.CategoryFilter.map(x => this.CatParser.indexOf(x)).join('-') }, queryParamsHandling: 'merge' });
   }
 
+  delete(id: string) {
+    this.http.deleteProduct(id).subscribe({
+      next: val => {
+        console.log(val);
+        this.ReadData();
+        this.cdr.detectChanges();
+      },
+      error: err => console.log(err)
+    });
+  }
 }

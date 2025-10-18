@@ -54,4 +54,8 @@ export class httpService {
     return this.httpClient.get(`${this.apiUrl}products/finish`);
   }
 
+  deleteProduct(id: string){
+    return this.httpClient.delete(`${this.apiUrl}products/${id}`);
+  }
+
 }
