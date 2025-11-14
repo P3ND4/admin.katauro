@@ -298,7 +298,7 @@ textarea {
     background-color: white;
 }
 
-.count button {
+.count .button-base {
     background: none;
     border: none;
     width: 40px;
