@@ -12,7 +12,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    this.apiUrl = 'http://localhost:3000/';
+    // this.apiUrl = 'http://localhost:3000/';
   }
   getProducts(options?: { page?: number, category?: string }) {
     if (options?.page && !options.category) {
@@ -60,6 +60,14 @@ export class httpService {
 
   deleteProduct(id: string) {
     return this.httpClient.delete(`${this.apiUrl}products/${id}`);
+  }
+
+  deleteFinish(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}products/finish/${id}`);
+  }
+
+  deleteColor(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}products/colorssd/${id}`);
   }
 
 }

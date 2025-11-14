@@ -539,9 +539,14 @@ footer {
     padding: 10px 14px;
     gap: 16px;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .dialog-item p {
+    display: flex;
+    flex: 1;
+
     color: var(--Gray-700, #414651);
 
     /* Text sm/Medium */
@@ -553,6 +558,7 @@ footer {
     /* 142.857% */
     margin: 0px;
     cursor: pointer;
+    
 }
 
 .creation-dialog {

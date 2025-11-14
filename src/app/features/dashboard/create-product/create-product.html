@@ -63,7 +63,7 @@
                         @if(showDialog === 1){
                         <div class="dialog" (click)="$event.stopPropagation()">
                             @for (item of categories; track $index) {
-                            <div class="dialog-item" (click)="selectCategory(item.id)">
+                            <div class="dialog-item" (click)="selectCategory(item.id); $event.stopPropagation()">
                                 <p>{{item.nombre}}</p>
                             </div>
                             }
@@ -126,11 +126,12 @@
                             </div>
 
                             @for (item of aviableFinishes; track $index) {
-                            <div class="dialog-item" (click)="addFinish(item)">
+                            <div class="dialog-item" (click)="addFinish(item); $event.stopPropagation()">
                                 <div class="avatar">
                                     <img [src]="item.image" alt="item.text">
                                 </div>
                                 <p>{{item.text}}</p>
+                                <img src="divide-circle.svg" (click)=" deleteFinish(item.id); $event.stopPropagation();">
                             </div>
                             }
                         </div>
@@ -257,11 +258,12 @@
                                     </div>
 
                                     @for (item of aviavleColors; track $index) {
-                                    <div class="dialog-item" (click)="onSelectColor(item)">
+                                    <div class="dialog-item" (click)="onSelectColor(item); $event.stopPropagation()">
                                         <div class="avatar">
                                             <img [src]="item.image" alt="">
                                         </div>
                                         <p>{{item.name}}</p>
+                                        <img src="divide-circle.svg" (click)=" deleteColor(item.id); $event.stopPropagation();">
                                     </div>
                                     }
                                 </div>

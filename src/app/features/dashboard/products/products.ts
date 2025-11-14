@@ -82,7 +82,7 @@ export class Products implements OnInit {
   getProducts(cat?: string) {
     this.http.getProducts({ category: cat }).subscribe({
       next: val => {
-        this.products = val as Product[];
+        this.products = (val as Product[])//.filter(x => x.variants.length > 0);
         console.log(val);
         this.cdr.detectChanges();
       },

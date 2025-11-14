@@ -437,6 +437,40 @@ export class CreateProduct implements OnInit {
       )
     }
   }
+  deleteFinish(id: string) {
+    this.http.deleteFinish(id).subscribe(
+      {
+        next: val => {
+          console.log(val);
+          this.closeDialog()
+          this.chargeComponentData()
+          this.cdr.detectChanges()
+        },
+        error: err => {
+          console.log(err);
+          this.closeDialog()
+          this.cdr.detectChanges()
+        }
+      }
+    )
+  }
+    deleteColor(id: string) {
+    this.http.deleteColor(id).subscribe(
+      {
+        next: val => {
+          console.log(val);
+          this.closeDialog();
+          this.chargeComponentData();
+          this.cdr.detectChanges();
+        },
+        error: err => {
+          console.log(err);
+          this.closeDialog();
+          this.cdr.detectChanges();
+        }
+      }
+    )
+  }
 
   onCreateColor() {
     if (this.createColor.valid) {
@@ -468,12 +502,14 @@ export class CreateProduct implements OnInit {
     var current = this.createProductForm.get('finishesId')?.value
     current.push(item.id);
     this.createProductForm.get('finishesId')?.patchValue(current);
+    this.closeDialog();
   }
 
   onSelectColor(color: Color) {
     this.color[this.currentVariant] = color;
     this.variants.controls[this.currentVariant].get('colorId')?.setValue(color.id)
     this.closeDialog();
+    this.showDialog = 0;
     this.cdr.detectChanges();
   }
 

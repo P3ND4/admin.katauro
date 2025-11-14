@@ -78,7 +78,7 @@
                     </div>
                     }
                     @if (item === 'Precio') {
-                    <p>{{ prod.variants[0].price | currency:'USD': 'symbol':'1.2-2'}}</p>
+                    <p>{{prod.variants.length==0? "": prod.variants[0].price | currency:'USD': 'symbol':'1.2-2'}}</p>
                     }
                     @if (item === 'Stock') {
                     <p>{{getStock(prod)}}</p>
