@@ -67,7 +67,7 @@ export class httpService {
   }
 
   deleteColor(id: string) {
-    return this.httpClient.delete(`${this.apiUrl}products/colorssd/${id}`);
+    return this.httpClient.delete(`${this.apiUrl}products/colors/${id}`);
   }
 
 }

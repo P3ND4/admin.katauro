@@ -129,8 +129,10 @@ export class CreateProduct implements OnInit {
       this.typology = this.editProduct.typology == Typology.simple ? true : false;
       this.finishes = this.editProduct.finish.map(x => this.aviableFinishes.find(f => f.id == x.finishId!)).filter(x => x != undefined);
       this.imagePreview[0] = this.editProduct.vector;
-      for (let i = 0; i < this.editProduct.variants.length - 1; i++) {
-        this.addVariant();
+      if (this.variants.controls.length != this.editProduct.variants.length) {
+        for (let i = 0; i < this.editProduct.variants.length - 1; i++) {
+          this.addVariant();
+        }
       }
       this.currentVariant = 0;
       this.editProduct.variants.forEach((variant, index) => {
@@ -148,6 +150,7 @@ export class CreateProduct implements OnInit {
 
   onTypologyChange(value: boolean) {
     this.typology = value;
+    if(this.typology == true) this.currentVariant = this.defaultVAriant;
     this.cdr.detectChanges();
   }
 
@@ -318,7 +321,7 @@ export class CreateProduct implements OnInit {
         vector: this.createProductForm.get('vector')?.value, // Placeholder, handle file upload separately
         details: this.createProductForm.get('details')?.value.split('\n'),
         finishId: this.createProductForm.get('finishesId')?.value,
-        variants: reorderedVariants.map(
+        variants:  reorderedVariants.map(
           (variant: any): CreateSpecProductDTO =>
           ({
             stock: variant.stock,
@@ -329,6 +332,7 @@ export class CreateProduct implements OnInit {
 
           }))
       }
+      body.variants = this.typology? [body.variants[0]]: body.variants
       console.log(body);
       if (!this.edit) {
         this.http.createProduct(body).subscribe(
@@ -454,7 +458,7 @@ export class CreateProduct implements OnInit {
       }
     )
   }
-    deleteColor(id: string) {
+  deleteColor(id: string) {
     this.http.deleteColor(id).subscribe(
       {
         next: val => {
