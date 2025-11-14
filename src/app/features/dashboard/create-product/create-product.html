@@ -297,13 +297,13 @@
                     <div class="form-text">
                         <label for="stock">Stock</label>
                         <div class="count">
-                            <button (click)="minus()">
+                            <div (click)="minus()">
                                 <img src="/minus.svg" alt="minus">
-                            </button>
+                            </div>
                             <input class="prod-count" formControlName="stock" type="number" min="0" />
-                            <button (click)="plus()">
+                            <div (click)="plus()">
                                 <img src="/plus-black.svg" alt="plus">
-                            </button>
+                            </div>
                         </div>
                     </div>
 
