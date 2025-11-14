@@ -20,7 +20,7 @@ export class Products implements OnInit {
   pages = 1;
   currentPage = 1;
 
-  private CatParser = [
+  readonly CatParser = [
     Category.footLumin,
     Category.lightBulb,
     Category.roofLumin,
@@ -33,7 +33,7 @@ export class Products implements OnInit {
   ];
 
   queryParamSubs: Subscription | undefined;
-
+  filterMenu = false;
   constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) {
     //    this.products.push({
     //      id: "ajyyhsbodihjbqouh",
@@ -60,10 +60,12 @@ export class Products implements OnInit {
   ngOnInit(): void {
     this.queryParamSubs = this.route.queryParamMap.subscribe(() => {
       this.ReadData();
-
     })
   }
 
+  edit(id: string) {
+    this.router.navigate(['/dashboard/create-product'], { queryParams: { id: id, edit: 'true' } });
+  }
 
   private ReadData() {
     const cat = this.route.snapshot.queryParamMap.get('categories');
@@ -71,9 +73,14 @@ export class Products implements OnInit {
       this.CategoryFilter = [];
       const catList = cat.split('-');
       catList.map((x: string) => this.CategoryFilter.push(this.CatParser[+x < 5 && 0 <= +x ? +x : 1]))
+      this.getProducts(cat);
     }
-
-    this.http.getProducts().subscribe({
+    else {
+      this.getProducts();
+    }
+  }
+  getProducts(cat?: string) {
+    this.http.getProducts({ category: cat }).subscribe({
       next: val => {
         this.products = val as Product[];
         console.log(val);
@@ -81,7 +88,6 @@ export class Products implements OnInit {
       },
       error: err => console.log(err)
     })
-
   }
 
 
@@ -93,6 +99,12 @@ export class Products implements OnInit {
   onPageChange(page: number) {
     this.currentPage = page;
     console.log(page);
+  }
+  onAddFilter(filter: Category) {
+    if (!this.CategoryFilter.includes(filter)) {
+      this.CategoryFilter.push(filter);
+      this.router.navigate([], { queryParams: { categories: this.CategoryFilter.map(x => this.CatParser.indexOf(x)).join('-') }, queryParamsHandling: 'merge' });
+    }
   }
 
   onDeleteFilter(index: number) {

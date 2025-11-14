@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, viewChild, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CatModel, Color, Finish, Product, Typology } from '../../../shared/models/Product';
+import { Category, CatModel, Color, Finish, Product, Typology } from '../../../shared/models/Product';
 import { CreateProductDto, CreateSpecProductDTO } from '../../../shared/models/create-product-dto';
 import { httpService } from '../../../shared/services/http/http.service';
 import { CloudinaryService } from '../../../shared/services/cloudinary/cloudinary.service';
 import { HttpEventType } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-product',
@@ -25,6 +26,7 @@ export class CreateProduct implements OnInit {
   finishes: Finish[] = [];
   color: (Color | undefined)[] = [undefined];
   editProduct: Product | undefined;
+  subscript: Subscription | undefined;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fileInputVariants') fileInputVariants!: ElementRef<HTMLInputElement>;
   @ViewChild('finish') finishInput!: ElementRef<HTMLInputElement>;
@@ -38,10 +40,10 @@ export class CreateProduct implements OnInit {
   aviableFinishes: Finish[] = [];
   aviavleColors: Color[] = [];
   categories: CatModel[] = [];
-
+  edit = false;
   progress = -1;
 
-  constructor(private router: Router ,private fb: FormBuilder, private cdr: ChangeDetectorRef, private http: httpService, readonly cloudy: CloudinaryService) {
+  constructor(private router: Router, private fb: FormBuilder, private cdr: ChangeDetectorRef, private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService) {
 
     this.createColor = fb.group({
       name: ['', Validators.required],
@@ -70,15 +72,22 @@ export class CreateProduct implements OnInit {
   }
   ngOnInit(): void {
 
-    this.chargeComponentData();
+    this.subscript = this.route.queryParams.subscribe(() => {
+      this.chargeComponentData();
+    })
 
 
   }
 
   chargeComponentData() {
+
+    const edit = this.route.snapshot.queryParamMap.get('edit');
+    this.edit = edit == 'true';
+
     this.http.getCategories().subscribe({
       next: (val) => {
         this.categories = val as CatModel[];
+        this.categories = this.categories.filter(x => x.nombre != Category.other)
         console.log(this.categories);
         console.log(val);
       },
@@ -94,8 +103,48 @@ export class CreateProduct implements OnInit {
       next: val => this.aviableFinishes = val as Finish[],
       error: err => console.log(err)
     })
-  }
 
+    if (this.edit) {
+      const id = this.route.snapshot.queryParamMap.get('id');
+      this.http.getProductById(id ? id : '').subscribe({
+        next: val => {
+          this.editProduct = val as Product;
+          console.log(this.editProduct);
+          if (edit) this.setValuesForEdit();
+        },
+        error: err => console.log(err)
+      });
+    }
+
+  }
+  setValuesForEdit() {
+    if (this.editProduct) {
+      this.createProductForm.get('name')?.setValue(this.editProduct.name);
+      this.createProductForm.get('subtitle')?.setValue(this.editProduct.subtitle);
+      this.createProductForm.get('description')?.setValue(this.editProduct.description);
+      this.createProductForm.get('details')?.setValue(this.editProduct.details.map(x => x.text).join('\n'));
+      this.createProductForm.get('vector')?.setValue(this.editProduct.vector);
+      this.createProductForm.get('categoryId')?.setValue(this.editProduct.category.id);
+      this.createProductForm.get('finishesId')?.setValue(this.editProduct.finish.map(x => x.finishId));
+      this.typology = this.editProduct.typology == Typology.simple ? true : false;
+      this.finishes = this.editProduct.finish.map(x => this.aviableFinishes.find(f => f.id == x.finishId!)).filter(x => x != undefined);
+      this.imagePreview[0] = this.editProduct.vector;
+      for (let i = 0; i < this.editProduct.variants.length - 1; i++) {
+        this.addVariant();
+      }
+      this.currentVariant = 0;
+      this.editProduct.variants.forEach((variant, index) => {
+        this.variants.controls[index].get('colorId')?.setValue(variant.color?.id);
+        this.color[index] = variant.color;
+        this.variants.controls[index].get('stock')?.setValue(variant.stock);
+        this.variants.controls[index].get('price')?.setValue(variant.price);
+        this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => img.link));
+        this.variantPreviews[index] = variant.images.map(img => img.link);
+      });
+
+      this.cdr.detectChanges();
+    }
+  }
 
   onTypologyChange(value: boolean) {
     this.typology = value;
@@ -131,6 +180,9 @@ export class CreateProduct implements OnInit {
       this.isHoveringVariant = false;
       if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
         var files = [...event.dataTransfer.files];
+        if (files.length > 5) {
+          files = files.slice(0, 5);
+        }
         this.uploadMulti(files);
         event.dataTransfer.clearData();
       }
@@ -166,7 +218,10 @@ export class CreateProduct implements OnInit {
     const input = event.target as HTMLInputElement;
     if (option == undefined) {
       if (input.files && input.files.length > 0) {
-        const files = [...input.files];
+        var files = [...input.files];
+        if (files.length > 5) {
+          files = files.slice(0, 5);
+        }
         this.uploadMulti(files);
       }
       return;
@@ -200,8 +255,7 @@ export class CreateProduct implements OnInit {
   }
 
   openFinishModal(dialog: number) {
-    this.showDialog = dialog;
-    document.body.style.overflow = 'hidden'; // ❌ bloquea scroll
+    this.showDialog = dialog == this.showDialog ? 0 : dialog;
   }
   closeDialog() {
     this.showDialog = 0;
@@ -244,6 +298,17 @@ export class CreateProduct implements OnInit {
   onSubmit() {
     if (this.createProductForm.valid) {
 
+      const variantsArray = this.variants.value;
+
+      // Crear una copia para reordenar sin afectar el original
+      const reorderedVariants = [...variantsArray];
+
+      // Solo hacer swap si defaultVAriant no es 0
+      if (this.defaultVAriant !== 0) {
+        [reorderedVariants[0], reorderedVariants[this.defaultVAriant]] =
+          [reorderedVariants[this.defaultVAriant], reorderedVariants[0]];
+      }
+
       const body: CreateProductDto = {
         name: this.createProductForm.get('name')?.value,
         description: this.createProductForm.get('description')?.value,
@@ -253,28 +318,33 @@ export class CreateProduct implements OnInit {
         vector: this.createProductForm.get('vector')?.value, // Placeholder, handle file upload separately
         details: this.createProductForm.get('details')?.value.split('\n'),
         finishId: this.createProductForm.get('finishesId')?.value,
-        variants: (this.createProductForm.get('variants') as FormArray).controls.map(
+        variants: reorderedVariants.map(
           (variant: any): CreateSpecProductDTO =>
           ({
-            stock: variant.get('stock')?.value,
-            price: variant.get('price')?.value,
-            colorId: this.color[0]!.id,
-            image: variant.get('variantImages').value[0],
-            images: variant.get('variantImages').value
+            stock: variant.stock,
+            price: variant.price,
+            colorId: variant.colorId,
+            image: variant.variantImages[0], // La primera imagen sigue siendo la importante
+            images: variant.variantImages
 
           }))
       }
       console.log(body);
-      this.http.createProduct(body).subscribe(
-        {
-          next: val => {
-            console.log(val);
-            this.router.navigate(['dashboard/products']);
-            
-          },
+      if (!this.edit) {
+        this.http.createProduct(body).subscribe(
+          {
+            next: val => {
+              console.log(val);
+              this.router.navigate(['dashboard/products']);
+
+            },
             error: err => console.log(err)
-        }
-      );
+          }
+        );
+      }
+      else {
+        this.update(body);
+      }
     }
 
   }
@@ -288,7 +358,7 @@ export class CreateProduct implements OnInit {
       this.cloudy.uploadFile(file).subscribe(event => {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.progress = this.progress - fileProgress
-          fileProgress = Math.round(((event.loaded / event.total) * 100)/count);
+          fileProgress = Math.round(((event.loaded / event.total) * 100) / count);
           this.progress += fileProgress
           this.cdr.detectChanges();
         } else if (event.type === HttpEventType.Response) {
@@ -300,10 +370,15 @@ export class CreateProduct implements OnInit {
           urls[index] = optimizedUrl
           if (this.progress === 100) {
             var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as string[];
-            currentFiles = files.length < 5 ? currentFiles.slice((5 - files.length - currentFiles.length)) : []
+            currentFiles = files.length + currentFiles.length > 5 && files.length < 5 ? currentFiles.slice(currentFiles.length - (5 - files.length), undefined) : files.length == 5 ? [] : currentFiles;
             currentFiles.push(...urls);
             this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles)
             this.variantPreviews[this.currentVariant] = currentFiles;
+            setTimeout(() => {
+              this.progress = -1;
+              this.cdr.detectChanges();
+            }, 3000);
+
           }
 
           this.cdr.detectChanges();
@@ -334,6 +409,10 @@ export class CreateProduct implements OnInit {
           case 2:
             this.createColor.get('image')?.setValue(optimizedUrl);
         }
+        setTimeout(() => {
+          this.progress = -1;
+          this.cdr.detectChanges();
+        }, 3000);
         this.cdr.detectChanges();
       }
     });
@@ -349,7 +428,7 @@ export class CreateProduct implements OnInit {
         {
           next: val => {
             console.log(val);
-            this.showDialog = 0;
+            this.closeDialog();
             this.cdr.detectChanges();
             this.chargeComponentData();
           },
@@ -380,13 +459,15 @@ export class CreateProduct implements OnInit {
 
   }
 
-
+  removeFinish(id: string) {
+    this.finishes = this.finishes.filter(x => x.id != id)
+  }
 
   addFinish(item: Finish) {
     this.finishes.push(item);
     var current = this.createProductForm.get('finishesId')?.value
     current.push(item.id);
-    this.createProductForm.get('finishesId')?.patchValue(current); 
+    this.createProductForm.get('finishesId')?.patchValue(current);
   }
 
   onSelectColor(color: Color) {
@@ -396,8 +477,24 @@ export class CreateProduct implements OnInit {
     this.cdr.detectChanges();
   }
 
-  cancel(){
+  cancel() {
     this.router.navigate(['dashboard/products'])
+  }
+
+  update(prod: CreateProductDto) {
+    this.http.updateProduct(this.editProduct!.id, prod).subscribe(
+      {
+        next: val => {
+          console.log(val);
+          this.router.navigate(['dashboard/products']);
+        },
+        error: err => console.log(err)
+      }
+    );
+  }
+
+  showErrors() {
+    return this.createProductForm.errors as string[]
   }
 }
 

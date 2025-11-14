@@ -147,7 +147,8 @@ h1 {
     flex: none;
     width: 160px;
 }
-.column.categoría{
+
+.column.categoría {
     width: 225px;
     flex: none;
 }
@@ -247,6 +248,49 @@ h1 {
     line-height: 20px;
     /* 142.857% */
 }
+
+.filters-dorp-menu {
+    position: relative;
+}
+
+.dropdown-content {
+    display: flex;
+    width: 292px;
+    position: absolute;
+    background-color: var(--White, #FFF);
+    min-width: 160px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1;
+    top: 48px;
+    left: 0;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    display: flex;
+    padding: 10px 14px;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    cursor: pointer;
+}
+
+.dropdown-item p {
+    color: var(--Gray-900, #181D27);
+
+    /* Text md/Medium */
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 150% */
+    margin: 0px;
+}
+
+
 
 .page.active {
     background: #F0FEFF;

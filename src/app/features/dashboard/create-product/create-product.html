@@ -12,6 +12,8 @@
                 Update your photo and personal details here.
             </p>
 
+            <p>Errores: {{showErrors()}}</p>
+
 
 
             <div class="line"></div>
@@ -57,22 +59,23 @@
                             {{getCategory()}}
                         </label>
                         <img src="chevron-down.svg" alt="">
+
+                        @if(showDialog === 1){
+                        <div class="dialog" (click)="$event.stopPropagation()">
+                            @for (item of categories; track $index) {
+                            <div class="dialog-item" (click)="selectCategory(item.id)">
+                                <p>{{item.nombre}}</p>
+                            </div>
+                            }
+                        </div>
+
+                        }
                     </div>
                 </div>
                 <div class="line"></div>
             </div>
 
-            @if(showDialog === 1){
-            <div class="overlay" (click)="closeDialog()">
-                <div class="dialog" (click)="$event.stopPropagation()">
-                    @for (item of categories; track $index) {
-                    <div class="dialog-item" (click)="selectCategory(item.id)">
-                        <p>{{item.nombre}}</p>
-                    </div>
-                    }
-                </div>
-            </div>
-            }
+
 
             <div class="form-text">
                 <div class="labels">
@@ -114,6 +117,25 @@
                         </label>
                         <!-- dialog.component.html -->
                         <img src="chevron-down.svg" alt="">
+                        @if(showDialog === 2){
+
+                        <div class="dialog" (click)="$event.stopPropagation()">
+                            <div class="dialog-item" (click)="showDialog = 4">
+                                <img src="plus-circle.svg" alt="">
+                                <p>Agregar terminación</p>
+                            </div>
+
+                            @for (item of aviableFinishes; track $index) {
+                            <div class="dialog-item" (click)="addFinish(item)">
+                                <div class="avatar">
+                                    <img [src]="item.image" alt="item.text">
+                                </div>
+                                <p>{{item.text}}</p>
+                            </div>
+                            }
+                        </div>
+
+                        }
                     </div>
                     @for (finish of finishes; track $index) {
                     <div class="input-base propierty">
@@ -123,36 +145,19 @@
                             </div>
                             <p>{{finish.text}}</p>
                         </div>
-                        <img src="divide-circle.svg" alt="delete">
+                        <img src="divide-circle.svg" alt="delete" (click)="removeFinish(finish.id)">
+
                     </div>
                     }
                 </div>
                 <div class="line"></div>
             </div>
-            @if(showDialog === 2){
-            <div class="overlay" (click)="closeDialog()">
-                <div class="dialog" (click)="$event.stopPropagation()">
-                    <div class="dialog-item" (click)="showDialog = 4">
-                        <img src="plus-circle.svg" alt="">
-                        <p>Agregar terminación</p>
-                    </div>
 
-                    @for (item of aviableFinishes; track $index) {
-                    <div class="dialog-item" (click)="addFinish(item)">
-                        <div class="avatar">
-                            <img [src]="item.image" alt="item.text">
-                        </div>
-                        <p>{{item.text}}</p>
-                    </div>
-                    }
-                </div>
-            </div>
-            }
 
 
 
             <div class="form-text">
-                <label for="details">Descripción</label>
+                <label for="details">Sistema eléctrico</label>
                 <div class="desc">
                     <div class="input-base">
                         <textarea id="details" formControlName="details" class="description" maxlength="80"></textarea>
@@ -164,7 +169,7 @@
             </div>
 
             <div class="form-text">
-                <label for="name">Tipologia</label>
+                <label for="name">Tipología</label>
 
                 <div class="radio">
                     <div class="radio-option-container">
@@ -243,6 +248,25 @@
                                     Selecciona el color del producto
                                 </label>
                                 <img src="chevron-down.svg" alt="">
+                                @if(showDialog === 3){
+
+                                <div class="dialog" (click)="$event.stopPropagation()">
+                                    <div class="dialog-item" (click)="showDialog = 5">
+                                        <img src="plus-circle.svg" alt="">
+                                        <p>Agregar color</p>
+                                    </div>
+
+                                    @for (item of aviavleColors; track $index) {
+                                    <div class="dialog-item" (click)="onSelectColor(item)">
+                                        <div class="avatar">
+                                            <img [src]="item.image" alt="">
+                                        </div>
+                                        <p>{{item.name}}</p>
+                                    </div>
+                                    }
+                                </div>
+
+                                }
                             </div>
                             @if(color[currentVariant]) {
                             <div class="input-base propierty">
@@ -263,7 +287,7 @@
                     <div class="form-text">
                         <label for="price">Precio</label>
                         <div class="input-base">
-                            <input id="price" formControlName="price" type="number"/>
+                            <input id="price" formControlName="price" type="number" />
                         </div>
                         <div class="line"></div>
                     </div>
@@ -283,8 +307,8 @@
 
                     <div class="form-text">
                         <div class="labels">
-                            <label for="vector">Ícono representativo</label>
-                            <p>Comparte un ícono que sintetice su producto.</p>
+                            <label for="vector">Imágenes</label>
+                            <p>Comparte algunas imágenes del producto.</p>
                         </div>
 
                         <div class="variant-images">
@@ -325,7 +349,7 @@
             </div>
 
             <footer>
-                <button class="button-base" type="submit">
+                <button class="button-base" type="submit" [disabled]="!createProductForm.valid">
                     <label>
                         Guardar
                     </label>
@@ -339,25 +363,7 @@
                 </button>
             </footer>
 
-            @if(showDialog === 3){
-            <div class="overlay" (click)="closeDialog()">
-                <div class="dialog" (click)="$event.stopPropagation()">
-                    <div class="dialog-item" (click)="showDialog = 5">
-                        <img src="plus-circle.svg" alt="">
-                        <p>Agregar color</p>
-                    </div>
 
-                    @for (item of aviavleColors; track $index) {
-                    <div class="dialog-item" (click)="onSelectColor(item)">
-                        <div class="avatar">
-                            <img [src]="item.image" alt="">
-                        </div>
-                        <p>{{item.name}}</p>
-                    </div>
-                    }
-                </div>
-            </div>
-            }
         </form>
         <form [formGroup]="createFinish" (submit)="onCreateFinish()">
             @if(showDialog == 4){

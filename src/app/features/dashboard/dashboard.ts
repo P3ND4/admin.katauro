@@ -9,14 +9,15 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrl: './dashboard.css'
 })
 export class Dashboard {
-  constructor(private router: Router){
+  constructor(private router: Router) {
 
   }
 
-  isRoute(route: string){
+  isRoute(route: string) {
     return window.location.pathname.includes(route)
   }
-  navigate(route:string){
+  navigate(route: string) {
     this.router.navigate([route])
   }
+
 }

@@ -24,13 +24,26 @@
             <label>
                 {{cat}}
             </label>
-            <img src="x.svg" alt="" (click)="onDeleteFilter($index)" >
+            <img src="x.svg" alt="" (click)="onDeleteFilter($index)">
         </div>
         }
-        <button class="button-chips">
-            <img src="Filters lines.svg" alt="">
-            <label>Filtros</label>
-        </button>
+
+        <div class="filters-dorp-menu">
+            <button class="button-chips" (click)="filterMenu = !filterMenu">
+                <img src="Filters lines.svg" alt="">
+                <label>Filtros</label>
+            </button>
+
+            @if(filterMenu){
+            <div class="dropdown-content">
+                @for (filter of CatParser; track $index) {
+                <div class="dropdown-item" (click)="onAddFilter(filter)">
+                    <p>{{filter}}</p>
+                </div>
+                }
+            </div>
+            }
+        </div>
 
         <div class="spacing" style="flex: 1;"></div>
         <div class="input-base">
@@ -81,13 +94,10 @@
                     }
                     @if(item === '') {
                     <div class="actions">
-                        <button class="action-button">
-                            <img src="copy.svg" alt="">
-                        </button>
                         <button class="action-button" (click)="delete(prod.id)">
                             <img src="trash-2.svg" alt="">
                         </button>
-                        <button class="action-button">
+                        <button class="action-button" (click)="edit(prod.id)">
                             <img src="edit-2.svg" alt="">
                         </button>
                     </div>
@@ -124,7 +134,7 @@
                 }
             </div>
 
-            <button class="button-chips" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === pages"  >
+            <button class="button-chips" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === pages">
                 <label>Siguiente</label>
                 <img src="arrow-right.svg" alt="">
             </button>

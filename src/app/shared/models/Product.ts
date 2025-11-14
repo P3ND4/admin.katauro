@@ -3,7 +3,7 @@ export enum Category {
     wallLumin = "Luminarias de pared",
     footLumin = "Luminarias de pie",
     roofLumin = "Luminarias de techo",
-    lightBulb = "Bombillo",
+    lightBulb = "Accesorios",
     other = "Otras"
 }
 
@@ -17,7 +17,7 @@ export class Product {
     typology!: Typology;
     details!: detail[];
     variants!: Variant[];
-    finish!: Finish[];
+    finish!: {finishId: string, productId: string}[];
 }
 
 
@@ -45,7 +45,7 @@ export class Variant {
     stock!: number;
     image!: string;
     colorId?: string;
-    images!: string[];
+    images!: {id: string, link: string}[];
     color?: Color;
 }
 

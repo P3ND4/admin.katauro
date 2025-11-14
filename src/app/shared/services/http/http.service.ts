@@ -12,9 +12,9 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    //this.apiUrl = 'http://localhost:3000/';
+    this.apiUrl = 'http://localhost:3000/';
   }
-  getProducts(options?: { page?: number, category?: Category }) {
+  getProducts(options?: { page?: number, category?: string }) {
     if (options?.page && !options.category) {
       return this.httpClient.get(`${this.apiUrl}products?page=${options.page}`);
     }
@@ -35,6 +35,10 @@ export class httpService {
     return this.httpClient.get<CatModel[]>(`${this.apiUrl}products/categories`);
   }
 
+  updateProduct(id: string, prod: CreateProductDto) {
+    return this.httpClient.patch(`${this.apiUrl}products/${id}`, prod);
+  }
+
   createProduct(product: CreateProductDto) {
     return this.httpClient.post(`${this.apiUrl}products`, product);
   }
@@ -42,11 +46,11 @@ export class httpService {
   getColors() {
     return this.httpClient.get(`${this.apiUrl}products/colors`);
   }
-  createColor(color: {name: string, image: string}){
+  createColor(color: { name: string, image: string }) {
     return this.httpClient.post(`${this.apiUrl}products/colors`, color);
   }
 
-  createFinish(finish: {text: string, image: string}){
+  createFinish(finish: { text: string, image: string }) {
     return this.httpClient.post(`${this.apiUrl}products/finish`, finish);
   }
 
@@ -54,7 +58,7 @@ export class httpService {
     return this.httpClient.get(`${this.apiUrl}products/finish`);
   }
 
-  deleteProduct(id: string){
+  deleteProduct(id: string) {
     return this.httpClient.delete(`${this.apiUrl}products/${id}`);
   }
 
