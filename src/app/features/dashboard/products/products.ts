@@ -84,6 +84,7 @@ export class Products implements OnInit {
       next: val => {
         this.products = (val as Product[])//.filter(x => x.variants.length > 0);
         console.log(val);
+        this.count = this.products.length
         this.cdr.detectChanges();
       },
       error: err => console.log(err)

@@ -43,7 +43,8 @@ export class CreateProduct implements OnInit {
   edit = false;
   progress = -1;
 
-  constructor(private router: Router, private fb: FormBuilder, private cdr: ChangeDetectorRef, private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService) {
+  constructor(private router: Router, private fb: FormBuilder, private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService) {
 
     this.createColor = fb.group({
       name: ['', Validators.required],
@@ -150,7 +151,7 @@ export class CreateProduct implements OnInit {
 
   onTypologyChange(value: boolean) {
     this.typology = value;
-    if(this.typology == true) this.currentVariant = this.defaultVAriant;
+    if (this.typology == true) this.currentVariant = this.defaultVAriant;
     this.cdr.detectChanges();
   }
 
@@ -321,7 +322,7 @@ export class CreateProduct implements OnInit {
         vector: this.createProductForm.get('vector')?.value, // Placeholder, handle file upload separately
         details: this.createProductForm.get('details')?.value.split('\n'),
         finishId: this.createProductForm.get('finishesId')?.value,
-        variants:  reorderedVariants.map(
+        variants: reorderedVariants.map(
           (variant: any): CreateSpecProductDTO =>
           ({
             stock: variant.stock,
@@ -332,7 +333,7 @@ export class CreateProduct implements OnInit {
 
           }))
       }
-      body.variants = this.typology? [body.variants[0]]: body.variants
+      body.variants = this.typology ? [body.variants[0]] : body.variants
       console.log(body);
       if (!this.edit) {
         this.http.createProduct(body).subscribe(

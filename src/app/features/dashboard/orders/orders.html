@@ -1,0 +1,97 @@
+<div class="orders-main">
+    <header class="ord-header">
+        <h1>Productos</h1>
+        <div class="ord-actions">
+            <button class="button-chips">
+                <img src="upload-cloud.svg" alt="">
+                <label>
+                    Importar
+                </label>
+            </button>
+
+        </div>
+    </header>
+
+    <div class="filters">
+        @for (cat of []; track $index) {
+        <div class="button-chips">
+            <label>
+                {{cat}}
+            </label>
+            <img src="x.svg" alt="">
+        </div>
+        }
+
+        <div class="filters-dorp-menu">
+            <button class="button-chips" (click)="filterMenu = !filterMenu">
+                <img src="Filters lines.svg" alt="">
+                <label>Filtros</label>
+            </button>
+
+            @if(filterMenu){
+            <div class="dropdown-content">
+                @for (filter of []; track $index) {
+                <div class="dropdown-item">
+                    <p>{{filter}}</p>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="spacing" style="flex: 1;"></div>
+        <div class="input-base">
+            <img src="search.svg" alt="">
+            <input type="text" placeholder="Buscar" />
+        </div>
+
+    </div>
+
+    <div class="ord-container">
+        <header class="order-list-header">
+            <h2>Pedidos</h2>
+            <div class="count">
+                <p>{{count}} pedidos</p>
+            </div>
+        </header>
+
+        <div class="head-bar">
+            @for (item of ['Nº pedido', 'Fecha', 'Total', 'Tipo de entrega', 'Estado']; track
+            $index) {
+            <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+                <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                    <p>{{item}}</p>
+                </div>
+                @for (ord of orders; track $index) {
+                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                    @if (item === 'Nº pedido') {
+                    <p>{{ord.id}}</p>
+                    }
+                    @if (item === 'Fecha') {
+                    <p>{{getDate(ord)}}</p>
+                    }
+                    @if (item === 'Total') {
+                    <p>{{ord.totalPrice | currency}}</p>
+                    }
+                    @if (item === 'Tipo de entrega') {
+                    <p>{{ord.delivery? 'A domicilio': 'Retiro en tienda'}}</p>
+                    }
+                    @if (item === 'Estado') {
+                    <div class="status">
+                        <img [src]="'Activo'==='Activo' ? './_Dot_green.svg' : './_Dot_red.svg'" alt="">
+                        <p>{{'active' === 'active' ? 'Activo' : 'Inactivo'}}</p>
+                    </div>
+                    }
+                </div>
+                }
+
+
+            </div>
+            }
+        </div>
+
+
+
+    </div>
+
+</div>

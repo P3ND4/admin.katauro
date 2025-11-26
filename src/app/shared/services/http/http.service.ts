@@ -70,4 +70,8 @@ export class httpService {
     return this.httpClient.delete(`${this.apiUrl}products/colors/${id}`);
   }
 
+  getOrders() {
+    return this.httpClient.get(`${this.apiUrl}order`);
+  }
+
 }
