@@ -6,7 +6,8 @@ export class Order {
     userId!: string;
     delivery!: boolean;
     state!: string;
-    totalPrice!: number;
+    price!: number;
+    delPrice!: number;
     createdAt!: Date;
     address!: string;
     province!: string;

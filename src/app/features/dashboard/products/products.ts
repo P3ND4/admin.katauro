@@ -4,10 +4,11 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { httpService } from '../../../shared/services/http/http.service';
+import { MessageBox } from "../../../shared/components/message-box/message-box";
 
 @Component({
   selector: 'app-products',
-  imports: [CurrencyPipe, CommonModule],
+  imports: [CurrencyPipe, CommonModule, MessageBox],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -19,7 +20,8 @@ export class Products implements OnInit {
   pagesArray = [1];
   pages = 1;
   currentPage = 1;
-
+  warn: { msg: string, warn: string } | undefined;
+  toDelete: Product | undefined;
   readonly CatParser = [
     Category.footLumin,
     Category.lightBulb,
@@ -28,10 +30,7 @@ export class Products implements OnInit {
     Category.wallLumin
   ]
 
-  CategoryFilter: Category[] = [
-
-  ];
-
+  CategoryFilter: Category[] = [];
   queryParamSubs: Subscription | undefined;
   filterMenu = false;
   constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) {
@@ -122,5 +121,16 @@ export class Products implements OnInit {
       },
       error: err => console.log(err)
     });
+  }
+
+  ask(product: Product) {
+    this.toDelete = product
+    this.warn = { msg: 'Eliminar producto', warn: '¿Estás seguro que deseas realizar esta acción? Esta acción no tiene vuelta atrás.' };
+  }
+
+  onDecide(result: boolean) {
+    this.warn = undefined
+    if (result && this.toDelete) this.delete(this.toDelete.id);
+    this.toDelete = undefined;
   }
 }

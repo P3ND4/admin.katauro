@@ -8,5 +8,5 @@ export class User {
     password!: string;
     image!: string;
     phone!: number;
-    orders!: Order;
+    orders!: Order[];
 }

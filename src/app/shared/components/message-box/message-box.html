@@ -1,0 +1,19 @@
+<div class="message-main">
+    <div class="message">
+        <div class="icon">
+            <img src="alert-circle.svg" alt="">
+        </div>
+        <div class="txt">
+            <h2>{{data?.msg}}</h2>
+            <p>{{data?.warn}}</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="cancel" (click)="onAction(false)">
+            <span>Cancelar</span>
+        </div>
+        <div class="accept" (click)="onAction(true)">
+            <span>Eliminar</span>
+        </div>
+    </div>
+</div>

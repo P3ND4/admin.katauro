@@ -1,0 +1,131 @@
+.message-main {
+    display: flex;
+    width: 400px;
+    padding: 24px;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    border-radius: 12px;
+    background: var(--White, #FFF);
+
+    /* Shadow/xl */
+    box-shadow: 0 20px 24px -4px rgba(10, 13, 18, 0.08), 0 8px 8px -4px rgba(10, 13, 18, 0.03);
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    align-self: stretch;
+}
+
+.icon {
+    display: flex;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 8px solid var(--Error-50, #FEF3F2);
+    background: var(--Error-100, #FEE4E2);
+
+}
+
+.txt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.txt h2 {
+    color: var(--Gray-900, #181D27);
+    text-align: center;
+
+    /* Text lg/Semibold */
+    font-family: var(--montser-font);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+    /* 155.556% */
+    margin: 0px;
+}
+
+.txt p {
+    color: var(--Gray-600, #535862);
+    text-align: center;
+
+    /* Text sm/Regular */
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 142.857% */
+    margin: 0px;
+}
+
+.cancel {
+    display: flex;
+    padding: 10px 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid var(--Gray-300, #D5D7DA);
+    background: var(--White, #FFF);
+
+    /* Shadow/xs */
+    box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+
+    cursor: pointer;
+}
+
+
+.accept {
+    display: flex;
+    padding: 10px 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
+    border-radius: 8px;
+    border: 1px solid var(--Error-600, #D92D20);
+    background: var(--Error-600, #D92D20);
+
+    /* Shadow/xs */
+    box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+    cursor: pointer;
+}
+
+.actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.accept span,
+.cancel span {
+
+    /* Text md/Semibold */
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    /* 150% */
+}
+
+.accept span {
+    color: var(--White, #FFF);
+    ;
+}
+
+.cancel span {
+    color: var(--Gray-700, #414651);
+}

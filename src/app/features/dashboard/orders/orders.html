@@ -1,4 +1,9 @@
 <div class="orders-main">
+    @if(openOrder){
+    <div class="ord-detail">
+        <app-order-details [order]="openOrder" (close)="openOrder = undefined"></app-order-details>
+    </div>
+    }
     <header class="ord-header">
         <h1>Productos</h1>
         <div class="ord-actions">
@@ -13,12 +18,12 @@
     </header>
 
     <div class="filters">
-        @for (cat of []; track $index) {
+        @for (fil of filters; track $index) {
         <div class="button-chips">
             <label>
-                {{cat}}
+                {{fil}}
             </label>
-            <img src="x.svg" alt="">
+            <img src="x.svg" alt=""(click)="onDeleteFilter(fil)">
         </div>
         }
 
@@ -30,8 +35,9 @@
 
             @if(filterMenu){
             <div class="dropdown-content">
-                @for (filter of []; track $index) {
-                <div class="dropdown-item">
+                @for (filter of ['Más recientes', 'Antiguos', 'Realizado', 'Pendiente', 'Cancelado']; track $index) {
+                <div class="dropdown-item"
+                    (click)="['Realizado', 'Pendiente', 'Cancelado'].includes(filter) ? onStateFilter(filter) : onOrderBy(filter == 'Más recientes'? 2 : 1)">
                     <p>{{filter}}</p>
                 </div>
                 }
@@ -41,8 +47,8 @@
 
         <div class="spacing" style="flex: 1;"></div>
         <div class="input-base">
-            <img src="search.svg" alt="">
-            <input type="text" placeholder="Buscar" />
+            <img src="search.svg" alt="" (click)="onSearch()">
+            <input type="text" placeholder="Buscar" (keyup.enter)="onSearch()" #search />
         </div>
 
     </div>
@@ -59,11 +65,15 @@
             @for (item of ['Nº pedido', 'Fecha', 'Total', 'Tipo de entrega', 'Estado']; track
             $index) {
             <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+
+
                 <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
                     <p>{{item}}</p>
                 </div>
                 @for (ord of orders; track $index) {
-                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`"
+                    (click)="onOpenOrder(ord)">
+
                     @if (item === 'Nº pedido') {
                     <p>{{ord.id}}</p>
                     }
@@ -71,7 +81,7 @@
                     <p>{{getDate(ord)}}</p>
                     }
                     @if (item === 'Total') {
-                    <p>{{ord.totalPrice | currency}}</p>
+                    <p>{{ord.price + ord.delPrice | currency}}</p>
                     }
                     @if (item === 'Tipo de entrega') {
                     <p>{{ord.delivery? 'A domicilio': 'Retiro en tienda'}}</p>

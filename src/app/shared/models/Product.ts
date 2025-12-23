@@ -17,7 +17,7 @@ export class Product {
     typology!: Typology;
     details!: detail[];
     variants!: Variant[];
-    finish!: {finishId: string, productId: string}[];
+    finish!: { finishId: string, productId: string }[];
 }
 
 
@@ -40,13 +40,14 @@ export class Color {
 
 export class Variant {
     id!: string;
-    variantName!: string;
+    colorId!: string;
     price!: number;
     stock!: number;
-    image!: string;
-    colorId?: string;
-    images!: {id: string, link: string}[];
-    color?: Color;
+    image?: string;
+    images!: {link: string, id: string}[]
+    color!: Color
+    genericId!: string;
+    genericProd?: Product;
 }
 
 export class CatModel {
@@ -54,7 +55,7 @@ export class CatModel {
     nombre!: Category
 }
 
-export enum Typology{
+export enum Typology {
     simple = "Simple",
     variant = "Variante"
 }

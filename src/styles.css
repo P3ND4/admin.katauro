@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
     --montser-font: 'Montserrat', sans-serif;
@@ -100,7 +100,8 @@ body {
     cursor: pointer;
 }
 
-.button-chips label {
+.button-chips label,
+.button-chips span {
     color: var(--Gray-700, #414651);
 
     /* Text sm/Semibold */
@@ -127,7 +128,9 @@ body {
 
 
 .button-chips:active label,
-.button-chips.active label {
+.button-chips.active label,
+.button-chips:active span,
+.button-chips.active span {
     color: var(--Brand-700, #007981);
 }
 

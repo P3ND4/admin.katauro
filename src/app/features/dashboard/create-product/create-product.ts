@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, viewChild, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Category, CatModel, Color, Finish, Product, Typology } from '../../../shared/models/Product';
 import { CreateProductDto, CreateSpecProductDTO } from '../../../shared/models/create-product-dto';
 import { httpService } from '../../../shared/services/http/http.service';
@@ -42,6 +42,8 @@ export class CreateProduct implements OnInit {
   categories: CatModel[] = [];
   edit = false;
   progress = -1;
+
+
 
   constructor(private router: Router, private fb: FormBuilder, private cdr: ChangeDetectorRef,
     private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService) {

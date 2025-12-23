@@ -1,26 +1,121 @@
 <div class="main">
     <div class="details-main">
-        <header class="details-header">
-            <div class="id">
-
+        <div class="head-container">
+            <div class="cross" (click)="onClose()">
+                <img src="x.svg" alt="">
             </div>
-            <div class="actions">
-                <div class="state"></div>
-                <div class="button-chips">
-                    <img src="upload-cloud" alt="">
-                    <span>Reenviar email</span>
+            <header class="details-header">
+                <div class="id">
+                    <p>
+                        Pedido <span>{{order?.id}}</span>
+                    </p>
+                    <span class="date">Realizado el {{getDate()}}</span>
                 </div>
-            </div>
-        </header>
+                <div class="actions">
+                    <div class="input-content">
+                        <span class="input-txt"
+                            [ngClass]="{'canceled': states.canceled == order?.state, 'completed': states.completed == order?.state, 'pending': states.pending == order?.state}">
+                            {{order?.state}}
+                        </span>
+                        <img src="chevron-down.svg" alt="">
+                    </div>
+                    <div class="button-chips">
+                        <img src="upload-cloud.svg" alt="">
+                        <span>Reenviar email</span>
+                    </div>
+                </div>
+            </header>
+        </div>
 
         <div class="order">
-            <div class="products"></div>
-            <div class="client-info"></div>
+            <div class="products">
+                <h3>Resumen de pago</h3>
+                <div class="order-summary">
+                    @for (order of order?.products; track $index) {
+                    <div class="variant">
+                        <div class="image">
+                            <img [src]="order.product.image" alt="">
+                        </div>
+                        <div class="prod-details">
+
+                            <span class="p-name">
+                                {{order.product.genericProd?.name}}
+                            </span>
+                            <span class="p-cat">
+                                {{order.product.genericProd?.category?.nombre}}
+                            </span>
+                            <span class="count">Cant: {{order.count}}</span>
+                        </div>
+                        <div class="pord-price">
+                            <span class="dollars">{{order.product.price| currency}}</span>
+                            <span class="cup">{{order.product.price}}</span>
+                        </div>
+
+                    </div>
+                    }
+
+                    <div class="check">
+                        <div class="subtotal">
+                            <h3>Subtotal</h3>
+                            <h3>{{ order?.price| currency}}</h3>
+                        </div>
+                        <div class="subtotal">
+                            <h3>Transportación</h3>
+                            <h3>{{order && order.delivery? (order.delPrice | currency) : '--------'}}</h3>
+                        </div>
+                        <div class="total-price">
+                            <div class="divider"></div>
+                            <h2>Total</h2>
+                            <h2>{{ order != undefined ? ((order.price + order.delPrice) | currency) : 0 | currency }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="client-info">
+                <h3>Información del cliente</h3>
+            </div>
         </div>
     </div>
 
     <div class="client-orders">
+        <div class="head-bar">
+            @for (item of ['Nº pedido', 'Fecha', 'Total', 'Tipo de entrega', 'Estado']; track
+            $index) {
+            <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
 
+                <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                    <p>{{item}}</p>
+                </div>
+                @for (ord of order?.user?.orders; track $index) {
+                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+
+                    @if (item === 'Nº pedido') {
+                    <p>{{ord.id}}</p>
+                    }
+                    @if (item === 'Fecha') {
+                    <p>{{getDateByOrd(ord)}}</p>
+                    }
+                    @if (item === 'Total') {
+                    <p>{{ord.price + ord.delPrice | currency}}</p>
+                    }
+                    @if (item === 'Tipo de entrega') {
+                    <p>{{ord.delivery? 'A domicilio': 'Retiro en tienda'}}</p>
+                    }
+                    @if (item === 'Estado') {
+                    <div class="status">
+                        <img [src]="'Activo'==='Activo' ? './_Dot_green.svg' : './_Dot_red.svg'" alt="">
+                        <p>{{'active' === 'active' ? 'Activo' : 'Inactivo'}}</p>
+                    </div>
+                    }
+                </div>
+                }
+
+
+            </div>
+            }
+        </div>
     </div>
 
 </div>

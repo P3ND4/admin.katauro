@@ -1,4 +1,10 @@
 <div class="products-main">
+    @if (warn) {
+    <div class="warn">
+        <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+    </div>
+    }
+
     <header class="prod-header">
         <h1>Productos</h1>
         <div class="prod-actions">
@@ -94,7 +100,7 @@
                     }
                     @if(item === '') {
                     <div class="actions">
-                        <button class="action-button" (click)="delete(prod.id)">
+                        <button class="action-button" (click)="ask(prod)">
                             <img src="trash-2.svg" alt="">
                         </button>
                         <button class="action-button" (click)="edit(prod.id)">

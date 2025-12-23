@@ -2,8 +2,17 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+    position: relative;
 }
-
+.ord-detail{
+    position: absolute;
+    z-index: 1;
+    width: calc(100% - 40px);
+    left: 20px;
+    height: 100%;
+    object-position: center;
+    box-sizing: border-box;
+}
 
 .ord-header {
     display: flex;
