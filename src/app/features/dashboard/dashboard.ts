@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, RouterLinkWithHref],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
