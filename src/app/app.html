@@ -1,3 +1,8 @@
-
-
+@if(globalErrors.length > 0){
+<div class="errors-wrapepr">
+    @for (item of globalErrors; track $index) {
+    <app-error-box [errorTitle]="item.name" [errorMessage]="item.error"></app-error-box>
+    }
+</div>
+}
 <router-outlet></router-outlet>

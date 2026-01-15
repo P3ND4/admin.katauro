@@ -1,0 +1,9 @@
+<div class="container" animate.enter="animate" [ngClass]="!exitAnim ? 'animate-exit' : ''">
+    <div class="icon">
+        <img src="alert-circle.svg" alt="">
+    </div>
+    <div class="content">
+        <span>{{errorTitle}}</span>
+        <p>{{errorMessage}}</p>
+    </div>
+</div>

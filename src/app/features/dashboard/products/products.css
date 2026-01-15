@@ -4,7 +4,7 @@
     gap: 32px;
 }
 
-.warn{
+.warn {
     position: fixed;
     z-index: 100;
     width: 100%;
@@ -12,6 +12,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.details-wrapper {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 50;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
 
 .prod-header {
@@ -172,6 +186,11 @@ h1 {
     align-self: stretch;
     border-bottom: 1px solid var(--Gray-200, #E9EAEB);
     box-sizing: border-box;
+    cursor: pointer;
+}
+
+.product-item :hover {
+    cursor: pointer;
 }
 
 .actions {

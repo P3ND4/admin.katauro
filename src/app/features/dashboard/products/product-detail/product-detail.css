@@ -1,0 +1,365 @@
+h2 {
+    color: var(--Gray-700, #414651);
+
+    font-family: var(--montser-font, 'Montserrat');
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 60px;
+    margin: 0px;
+    letter-spacing: -0.96px;
+}
+
+h4 {
+    color: var(--Brand-600, #178C94);
+
+    /* Text md/Semibold */
+    font-family: var(--montser-font, 'Montserrat');
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    margin: 0px;
+}
+
+.detail-container {
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: var(--Corner-Small, 8px);
+    background: var(--Gray-50, #FAFAFA);
+}
+
+.image-loader {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0000000a 0%, #0000006e 96%);
+}
+
+.details.sk {
+    gap: 48px;
+}
+
+.sk-bar.header {
+    width: 70%;
+    height: 48px;
+    background-color: #A4A7AE;
+}
+
+.sk-bar.s-line {
+    width: 100%;
+    height: 16px;
+    background-color: #A4A7AE;
+}
+
+.sk-bar.line {
+    width: 100%;
+    height: 16px;
+    background-color: #A4A7AE;
+}
+
+.sk-bar.line.w70 {
+    width: 70%;
+    height: 16px;
+    background-color: #A4A7AE;
+}
+
+.sk-pairs {
+    width: 100%;
+    display: flex;
+    gap: 48px;
+}
+
+.sk-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.sk-bar.cube {
+    width: 16px;
+    height: 16px;
+    background-color: #A4A7AE;
+}
+
+.sk-bar.line.price {
+    height: 24px;
+}
+
+
+p {
+    color: var(--Gray-700, #414651);
+
+    /* Text xl/Regular */
+    font-family: var(--montser-font, 'Montserrat');
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 30px;
+    margin-top: 40px;
+    margin-bottom: 48px;
+}
+
+.img-container {
+    display: flex;
+    width: 644px;
+    padding: 20px 0 20px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 19.346px;
+}
+
+.cross{
+    position: absolute;
+    padding: 14px;
+    align-self: flex-end;
+    cursor: pointer;
+    top: -24px;
+}
+
+
+.detail-content {
+    position: relative;
+    margin-top: 48px;
+    display: flex;
+    padding: 24px 24px 64px 48px;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 1 0 0;
+    align-self: stretch;
+    width: 564px;
+}
+
+.details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    margin-bottom: 32px;
+}
+
+.details h2,
+.details h4 {
+    width: 100%;
+    text-align: left;
+}
+
+.button-bar {
+    position: relative;
+    display: flex;
+    padding-top: 24px;
+    height: auto;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.button-bar p {
+    color: var(--Gray-700, #414651);
+
+    /* Display sm/Semibold */
+    font-family: var(--montser-font);
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 38px;
+    margin: 0px;
+    flex: 1;
+}
+
+
+
+.price-info span {
+    color: var(--Gray-700, #414651);
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+}
+
+.divider {
+    position: absolute;
+    top: 0px;
+    height: 1px;
+    background: var(--Gray-300, #D5D7DA);
+    width: 100%;
+}
+
+.btn-section {
+    display: flex;
+    gap: 12px;
+    width: auto;
+    height: 48px;
+}
+
+.btn-section .button-base {
+    width: auto;
+}
+
+.main-image {
+    display: flex;
+    align-items: center;
+    height: 644px;
+    justify-content: center;
+    border-radius: 3.869px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sec-img-container {
+    display: flex;
+    width: 100%;
+    height: 123px;
+    gap: 7.74px;
+
+
+}
+
+.sec-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex: 1;
+    cursor: pointer;
+    /*
+   width: 122px;
+   */
+}
+
+.sec-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    width: 100%;
+}
+
+.finishing-electric {
+    display: flex;
+    width: 100%;
+    gap: 48px;
+}
+
+.finishing,
+.electric {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    flex: 1;
+}
+
+.finishing h3,
+.electric h3,
+.variants h3 {
+    color: var(--Gray-700, #414651);
+
+    /* Text lg/Semibold */
+    font-family: var(--montser-font);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+    margin: 0px;
+    /* 155.556% */
+}
+
+.finishing p,
+.electric p {
+    color: var(--Gray-700, #414651);
+
+    /* Text lg/Medium */
+    font-family: var(--montser-font);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    /* 155.556% */
+    margin: 0px;
+}
+
+.variants {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+}
+
+
+.variants h3 {
+    text-align: left;
+}
+
+.variant-list {
+    display: flex;
+    gap: 8px;
+}
+
+.color-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 0.5px solid black;
+    cursor: pointer;
+}
+
+.color-container.active {
+    border: 2px solid #178C94;
+}
+
+.color-container img {
+    min-width: 100%;
+    height: 100%;
+}
+
+.finish-details {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: left;
+    width: 100%;
+    gap: 8px;
+}
+
+.finis-image {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.finis-image img {
+    height: 100%;
+    min-width: 100%;
+}
+
+.btn-section .button-chips {
+    padding: 14px;
+}

@@ -1,4 +1,12 @@
 <div class="orders-main">
+
+    @if (loading) {
+    <div class="loader-wrapper">
+        <app-box-loader message="Cargando pedidos..."></app-box-loader>
+    </div>
+    }
+
+
     @if(openOrder){
     <div class="ord-detail">
         <app-order-details [order]="openOrder" (close)="openOrder = undefined"></app-order-details>
@@ -23,7 +31,7 @@
             <label>
                 {{fil}}
             </label>
-            <img src="x.svg" alt=""(click)="onDeleteFilter(fil)">
+            <img src="x.svg" alt="" (click)="onDeleteFilter(fil)">
         </div>
         }
 
@@ -66,7 +74,6 @@
             $index) {
             <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
 
-
                 <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
                     <p>{{item}}</p>
                 </div>
@@ -87,9 +94,11 @@
                     <p>{{ord.delivery? 'A domicilio': 'Retiro en tienda'}}</p>
                     }
                     @if (item === 'Estado') {
-                    <div class="status">
-                        <img [src]="'Activo'==='Activo' ? './_Dot_green.svg' : './_Dot_red.svg'" alt="">
-                        <p>{{'active' === 'active' ? 'Activo' : 'Inactivo'}}</p>
+                    <div class="input-txt"
+                        [ngClass]="{'pending': states.pending == ord.state, 'completed': states.completed == ord.state, 'canceled': states.canceled == ord.state}">
+                        <img [src]=" states.completed==ord.state ? 'check.svg': states.canceled == ord.state? 'x-red.svg': 'clock.svg'"
+                            alt="">
+                        <span>{{ord.state}}</span>
                     </div>
                     }
                 </div>
@@ -99,9 +108,6 @@
             </div>
             }
         </div>
-
-
-
     </div>
 
 </div>

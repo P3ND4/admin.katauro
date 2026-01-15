@@ -1,4 +1,19 @@
 <div class="products-main">
+
+    @if(loading){
+    <div class="loader-wrapper">
+        <app-box-loader message="Cargando productos..."></app-box-loader>
+    </div>
+    }
+
+    @if(details){
+    <div class="details-wrapper">
+        <app-product-detail [currentProduct]="details" (close)="details = undefined"></app-product-detail>
+    </div>
+    }
+
+
+
     @if (warn) {
     <div class="warn">
         <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
@@ -53,8 +68,8 @@
 
         <div class="spacing" style="flex: 1;"></div>
         <div class="input-base">
-            <img src="search.svg" alt="">
-            <input type="text" placeholder="Buscar" />
+            <img src="search.svg" alt="" (click)="onSearch()">
+            <input type="text" #searchProd placeholder="Buscar" (keydown.enter)="onSearch()" />
         </div>
 
     </div>
@@ -74,7 +89,8 @@
                     <p>{{item}}</p>
                 </div>
                 @for (prod of products; track $index) {
-                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`"
+                    (click)="details = prod">
                     @if (item === 'Nombre') {
                     <p>{{prod.name}}</p>
                     }
@@ -99,7 +115,7 @@
                     </div>
                     }
                     @if(item === '') {
-                    <div class="actions">
+                    <div class="actions" (click)="$event.stopImmediatePropagation()">
                         <button class="action-button" (click)="ask(prod)">
                             <img src="trash-2.svg" alt="">
                         </button>

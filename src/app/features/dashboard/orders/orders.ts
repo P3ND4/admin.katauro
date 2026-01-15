@@ -2,13 +2,16 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { ActivatedRoute, Router } from '@angular/router';
 import { httpService } from '../../../shared/services/http/http.service';
 import { Order, OrderState } from '../../../shared/models/Order';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgClass } from '@angular/common';
 import { OrderDetails } from './order-details/order-details';
 import { Subscription } from 'rxjs';
+import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../shared/services/errors/errorParser';
+import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-orders',
-  imports: [CurrencyPipe, OrderDetails],
+  imports: [CurrencyPipe, OrderDetails, NgClass, BoxLoader],
   templateUrl: './orders.html',
   styleUrl: './orders.css'
 })
@@ -23,9 +26,9 @@ export class Orders implements OnInit {
   @ViewChild('search') search!: ElementRef
   filters: string[] = []
   querySub: Subscription | undefined
+  states = OrderState
 
-
-  constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) { }
+  constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef, private errorServ: ErrorLogService) { }
 
   ngOnInit(): void {
     this.querySub = this.route.queryParams.subscribe(x => this.loadQuerys());
@@ -74,15 +77,18 @@ export class Orders implements OnInit {
 
   readData() {
 
-
+    this.loading = true;
     this.http.getOrders(this.options).subscribe({
       next: val => {
         this.orders = val as Order[];
         console.log(this.orders)
+        this.loading = false
         this.cdr.detectChanges()
       },
       error: err => {
-        console.log(err)
+        this.errorServ.addError(parseError(err));
+        this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -119,7 +125,7 @@ export class Orders implements OnInit {
       queryParams: params
     });
   }
-
+  loading = false;
   onSearch() {
     const search = this.search.nativeElement.value
     const params = {

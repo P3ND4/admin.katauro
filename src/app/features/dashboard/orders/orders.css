@@ -4,7 +4,8 @@
     gap: 32px;
     position: relative;
 }
-.ord-detail{
+
+.ord-detail {
     position: absolute;
     z-index: 1;
     width: calc(100% - 40px);
@@ -172,6 +173,7 @@ h1 {
     align-self: stretch;
     border-bottom: 1px solid var(--Gray-200, #E9EAEB);
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .actions {
@@ -307,4 +309,39 @@ h1 {
 
 .page.active label {
     color: var(--Brand-900, #175659);
+}
+
+.input-txt {
+    text-align: center;
+    display: flex;
+    gap: 4px;
+    /* Text xs/Medium */
+    font-family: var(--montser-font);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    display: flex;
+    padding: 2px 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+
+    /* 150% */
+}
+
+.input-txt.completed {
+    background: var(--Success-50, #ECFDF3);
+    color: var(--Success-700, #027A48);
+
+}
+
+.input-txt.pending {
+    color: #B54708;
+    background: var(--Warning-50, #FFFAEB);
+}
+
+.input-txt.canceled {
+    color: #B42318;
+    background: var(--Error-50, #FEF3F2);
 }

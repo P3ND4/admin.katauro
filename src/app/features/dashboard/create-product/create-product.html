@@ -1,5 +1,9 @@
 <div class="main-create">
-    
+    @if (loading) {
+    <div class="loader-wrapper">
+        <app-box-loader></app-box-loader>
+    </div>
+    }
     <h1>Productos</h1>
 
     <div class="create-product-container">
@@ -131,7 +135,8 @@
                                     <img [src]="item.image" alt="item.text">
                                 </div>
                                 <p>{{item.text}}</p>
-                                <img src="divide-circle.svg" (click)=" deleteFinish(item.id); $event.stopPropagation();">
+                                <img src="divide-circle.svg"
+                                    (click)=" deleteFinish(item.id); $event.stopPropagation();">
                             </div>
                             }
                         </div>
@@ -263,7 +268,8 @@
                                             <img [src]="item.image" alt="">
                                         </div>
                                         <p>{{item.name}}</p>
-                                        <img src="divide-circle.svg" (click)=" deleteColor(item.id); $event.stopPropagation();">
+                                        <img src="divide-circle.svg"
+                                            (click)=" deleteColor(item.id); $event.stopPropagation();">
                                     </div>
                                     }
                                 </div>
@@ -391,7 +397,7 @@
                                 <div class="upload">
                                     <img src="upload-cloud.svg" alt="">
                                 </div>
-                                
+
                                 <div class="info-upload">
                                     <p>
                                         <span class="upload-text">Haga clic para cargar</span> o arrastrar y soltar

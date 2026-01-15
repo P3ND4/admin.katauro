@@ -10,7 +10,18 @@ body {
     margin: 0;
 }
 
-
+p,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+label {
+    margin: 0px;
+}
 
 .button-base {
     display: flex;
@@ -320,4 +331,18 @@ textarea:focus {
     font-weight: 600;
     line-height: 20px;
     /* 142.857% */
+}
+
+.loader-wrapper {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100svh;
+    width: 100%;
+    z-index: 9999;
+    background-color: rgba(30, 30, 30, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }

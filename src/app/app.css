@@ -1,0 +1,14 @@
+.errors-wrapepr {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: auto;
+    bottom: 40px;
+    position: fixed;
+    z-index: 1000;
+    left: initial;
+
+    left: calc(50% - 165px);
+
+}

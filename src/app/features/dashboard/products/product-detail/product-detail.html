@@ -1,0 +1,120 @@
+<div class="detail-container">
+
+    <div class="img-container">
+        <div class="main-image">
+            @if (charged) {
+            <img class="main-img" [src]="images[selectedImage]" [alt]="currentProduct.name" />
+            }
+            @else {
+            <div class="image-loader"></div>
+            }
+        </div>
+        <div class="sec-img-container">
+            @for (item of images; track $index) {
+            <div class="sec-images">
+                @if (charged) {
+                <img [src]="item" [alt]="currentProduct.name" (click)="selectImage($index)">
+                }
+                @else {
+                <div class="image-loader"></div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    <div class="detail-content">
+        <div class="cross" (click)="onClose()">
+            <img src="x.svg" alt="">
+        </div>
+        @if(charged){
+        <div class="details">
+            <h2>{{currentProduct.name}}</h2>
+            <h4>{{currentProduct.subtitle}}</h4>
+            <p>{{currentProduct.description}}</p>
+            <div class="features">
+
+                <div class="finishing-electric">
+                    <div class="finishing">
+                        <h3>TERMINACIONES</h3>
+                        @for (item of prodFinishes; track $index) {
+                        <div class="finish-details">
+                            <p>{{item.text}}</p>
+                            <div class="finis-image">
+                                <img [src]="item.image" [alt]="item.text">
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    <div class="electric">
+                        <h3>SISTEMA ELÉCTRICO
+                        </h3>
+                        @for (item of currentProduct.details; track $index) {
+                        <p>{{item.text}}</p>
+                        }
+                    </div>
+                </div>
+                <div class="variants">
+                    <h3>COLORES</h3>
+                    <div class="variant-list">
+                        @for (item of currentProduct.variants; track $index) {
+                        <div class="color-container" (click)="variantChange($index)"
+                            [ngClass]="{'active': currentVariant === $index}">
+                            <img [src]="item.color!.image" [alt]="item.color!.name">
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }@else {
+        <div class="details sk">
+            <div class="sk-pair">
+                <div class="sk-bar header"></div>
+                <div class="sk-bar s-line"></div>
+            </div>
+            <div class="sk-pair">
+                <div class="sk-bar line"></div>
+                <div class="sk-bar line"></div>
+                <div class="sk-bar line"></div>
+                <div class="sk-bar line w70"></div>
+            </div>
+
+            <div class="sk-pairs">
+                <div class="sk-pair">
+                    <div class="sk-bar line w70"></div>
+                    <div class="sk-bar line"></div>
+                    <div class="sk-bar line"></div>
+                    <div class="sk-bar line"></div>
+                </div>
+                <div class="sk-pair">
+                    <div class="sk-bar line w70"></div>
+                    <div class="sk-bar line"></div>
+                    <div class="sk-bar line"></div>
+                    <div class="sk-bar line"></div>
+                </div>
+            </div>
+            <div class="sk-pair">
+                <div class="sk-bar line 70"></div>
+                <div class="sk-bar cube"></div>
+            </div>
+
+        </div>
+        }
+        <div class="button-bar">
+            <div class="divider"></div>
+            <div class="price-info">
+                @if(charged){
+                <p>{{ (currentProduct!.variants.length > 0 ? currentProduct!.variants[currentVariant].price : 0 ) |
+                    currency
+                    }}</p>
+                }
+                @else {
+                <div class="sk-bar line price"></div>
+                }
+                <span>Cada Luminaria</span>
+
+            </div>
+
+        </div>
+    </div>
+</div>

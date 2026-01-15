@@ -8,10 +8,13 @@ import { CloudinaryService } from '../../../shared/services/cloudinary/cloudinar
 import { HttpEventType } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../shared/services/errors/errorParser';
+import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-create-product',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, BoxLoader],
   templateUrl: './create-product.html',
   styleUrl: './create-product.css'
 })
@@ -46,7 +49,7 @@ export class CreateProduct implements OnInit {
 
 
   constructor(private router: Router, private fb: FormBuilder, private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService) {
+    private route: ActivatedRoute, private http: httpService, readonly cloudy: CloudinaryService, private errorServ: ErrorLogService) {
 
     this.createColor = fb.group({
       name: ['', Validators.required],
@@ -81,30 +84,41 @@ export class CreateProduct implements OnInit {
 
 
   }
+  loading = false;
 
   chargeComponentData() {
-
     const edit = this.route.snapshot.queryParamMap.get('edit');
     this.edit = edit == 'true';
-
+    this.loading = true
     this.http.getCategories().subscribe({
       next: (val) => {
         this.categories = val as CatModel[];
         this.categories = this.categories.filter(x => x.nombre != Category.other)
         console.log(this.categories);
         console.log(val);
+        if (!edit) this.loading = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => console.log(err)
+      error: (err) => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false;
+      }
     })
 
     this.http.getColors().subscribe({
       next: (val) => this.aviavleColors = val as Color[],
-      error: err => console.log(err)
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false
+      }
     })
 
     this.http.getFinishes().subscribe({
       next: val => this.aviableFinishes = val as Finish[],
-      error: err => console.log(err)
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false
+      }
     })
 
     if (this.edit) {
@@ -115,7 +129,12 @@ export class CreateProduct implements OnInit {
           console.log(this.editProduct);
           if (edit) this.setValuesForEdit();
         },
-        error: err => console.log(err)
+        error: err => {
+          this.errorServ.addError(parseError(err));
+          this.loading = false
+          this.cdr.detectChanges();
+          this.router.navigate(['dashboard/products']);
+        }
       });
     }
 
@@ -146,7 +165,7 @@ export class CreateProduct implements OnInit {
         this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => img.link));
         this.variantPreviews[index] = variant.images.map(img => img.link);
       });
-
+      this.loading = false;
       this.cdr.detectChanges();
     }
   }
@@ -337,15 +356,20 @@ export class CreateProduct implements OnInit {
       }
       body.variants = this.typology ? [body.variants[0]] : body.variants
       console.log(body);
+      this.loading = true;
       if (!this.edit) {
         this.http.createProduct(body).subscribe(
           {
             next: val => {
               console.log(val);
               this.router.navigate(['dashboard/products']);
+              this.loading = false;
 
             },
-            error: err => console.log(err)
+            error: err => {
+              this.errorServ.addError(parseError(err));
+              this.loading = false;
+            }
           }
         );
       }
@@ -439,7 +463,9 @@ export class CreateProduct implements OnInit {
             this.cdr.detectChanges();
             this.chargeComponentData();
           },
-          error: err => console.log(err)
+          error: err => {
+            this.errorServ.addError(parseError(err));
+          }
         }
       )
     }
@@ -454,7 +480,7 @@ export class CreateProduct implements OnInit {
           this.cdr.detectChanges()
         },
         error: err => {
-          console.log(err);
+          this.errorServ.addError(parseError(err));
           this.closeDialog()
           this.cdr.detectChanges()
         }
@@ -471,7 +497,7 @@ export class CreateProduct implements OnInit {
           this.cdr.detectChanges();
         },
         error: err => {
-          console.log(err);
+          this.errorServ.addError(parseError(err));
           this.closeDialog();
           this.cdr.detectChanges();
         }
@@ -493,7 +519,7 @@ export class CreateProduct implements OnInit {
             this.cdr.detectChanges();
             this.chargeComponentData();
           },
-          error: err => console.log(err)
+          error: err => this.errorServ.addError(parseError(err))
         }
       )
     }
@@ -529,9 +555,13 @@ export class CreateProduct implements OnInit {
       {
         next: val => {
           console.log(val);
+          this.loading = false;
           this.router.navigate(['dashboard/products']);
         },
-        error: err => console.log(err)
+        error: err => {
+          this.errorServ.addError(parseError(err));
+          this.loading = false;
+        }
       }
     );
   }

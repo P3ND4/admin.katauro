@@ -1,0 +1,43 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    align-items: center;
+    width: 236px;
+    gap: 20px;
+    box-sizing: border-box;
+    background-color: white;
+    opacity: 1;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(10, 13, 18, 0.10), 0 1px 2px 0 rgba(10, 13, 18, 0.06);
+}
+
+.circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+
+    border: solid #F0FEFF 20px;
+    background-color: #D3F3F5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+.txt {
+    color: var(--Gray-900, #181D27);
+
+    /* Text md/Semibold */
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    /* 150% */
+}

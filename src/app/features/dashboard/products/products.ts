@@ -1,14 +1,18 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Category, Product, Typology } from '../../../shared/models/Product';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { httpService } from '../../../shared/services/http/http.service';
 import { MessageBox } from "../../../shared/components/message-box/message-box";
+import { ProductDetail } from "./product-detail/product-detail";
+import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../shared/services/errors/errorParser';
+import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-products',
-  imports: [CurrencyPipe, CommonModule, MessageBox],
+  imports: [CurrencyPipe, CommonModule, MessageBox, ProductDetail, BoxLoader],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -29,30 +33,15 @@ export class Products implements OnInit {
     Category.tableLumin,
     Category.wallLumin
   ]
+  @ViewChild('searchProd') search!: ElementRef
 
   CategoryFilter: Category[] = [];
   queryParamSubs: Subscription | undefined;
   filterMenu = false;
-  constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef) {
-    //    this.products.push({
-    //      id: "ajyyhsbodihjbqouh",
-    //      name: "tubo e lu fria",
-    //      description: "un tubo que alumbra y no se calienta",
-    //      details: [],
-    //      subtitle: '',
-    //      typology: Typology.variant,
-    //      finish: [],
-    //      vector: "/assets/bombillo.svg",
-    //      category: { id: 'asda', nombre: Category.footLumin },
-    //      variants: [{
-    //        variantName: "",
-    //        price: 200,
-    //        stock: 13,
-    //        image: "/assets/Image.png",
-    //        images: [],
-    //        id: ""
-    //      }]
-    //    });
+  details: Product | undefined = undefined
+  params: { categories: undefined | string, search: undefined | string, page: undefined | number } = { categories: undefined, search: undefined, page: 1 };
+  constructor(readonly router: Router, private route: ActivatedRoute, private http: httpService, private cdr: ChangeDetectorRef, private errorServ: ErrorLogService) {
+
 
 
   }
@@ -65,28 +54,49 @@ export class Products implements OnInit {
   edit(id: string) {
     this.router.navigate(['/dashboard/create-product'], { queryParams: { id: id, edit: 'true' } });
   }
-
+  loading = false;
   private ReadData() {
+    this.loading = true;
     const cat = this.route.snapshot.queryParamMap.get('categories');
-    if (cat) {
-      this.CategoryFilter = [];
-      const catList = cat.split('-');
-      catList.map((x: string) => this.CategoryFilter.push(this.CatParser[+x < 5 && 0 <= +x ? +x : 1]))
-      this.getProducts(cat);
-    }
-    else {
-      this.getProducts();
-    }
+    this.params.categories = cat ?? undefined;
+    const search = this.route.snapshot.queryParamMap.get('search');
+    this.params.search = search ?? undefined;
+    const page = this.route.snapshot.queryParamMap.get('page');
+    this.params.page = page ? +page : 1;
+    this.CategoryFilter = [];
+    const catList = cat ? cat.split('-') : [];
+    catList.map((x: string) => this.CategoryFilter.push(this.CatParser[+x < 5 && 0 <= +x ? +x : 1]))
+
+    this.http.getPages({ categories: this.params.categories, search: this.params.search }).subscribe(
+      {
+        next: val => {
+          this.pages = val as number
+          this.getProducts();
+        },
+        error: err => {
+          this.errorServ.addError(parseError(err));
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
+      }
+    )
+
+
+
   }
-  getProducts(cat?: string) {
-    this.http.getProducts({ category: cat }).subscribe({
+  getProducts() {
+    this.http.getProducts(this.params).subscribe({
       next: val => {
         this.products = (val as Product[])//.filter(x => x.variants.length > 0);
         console.log(val);
         this.count = this.products.length
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error: err => console.log(err)
+      error: err => {
+        this.loading = false;
+        this.errorServ.addError(parseError(err));
+      }
     })
   }
 
@@ -98,7 +108,7 @@ export class Products implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
-    console.log(page);
+    this.router.navigate([], { queryParams: this.params });
   }
   onAddFilter(filter: Category) {
     if (!this.CategoryFilter.includes(filter)) {
@@ -133,4 +143,13 @@ export class Products implements OnInit {
     if (result && this.toDelete) this.delete(this.toDelete.id);
     this.toDelete = undefined;
   }
+
+  onSearch() {
+    const search = this.search.nativeElement.value
+    this.params.search = search
+    this.router.navigate([], {
+      queryParams: this.params
+    });
+  }
+
 }

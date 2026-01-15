@@ -1,9 +1,16 @@
 <div class="main">
+    @if (loading) {
+    <div class="loader-wrapper">
+        <app-box-loader [message]="'Actualizando...'"></app-box-loader>
+    </div>
+    }
+
+
     <div class="details-main">
+        <div class="cross" (click)="onClose()">
+            <img src="x.svg" alt="">
+        </div>
         <div class="head-container">
-            <div class="cross" (click)="onClose()">
-                <img src="x.svg" alt="">
-            </div>
             <header class="details-header">
                 <div class="id">
                     <p>
@@ -12,12 +19,25 @@
                     <span class="date">Realizado el {{getDate()}}</span>
                 </div>
                 <div class="actions">
-                    <div class="input-content">
+                    <div class="input-content drop" style="position: relative;"
+                        (click)=" states.canceled == order?.state? '' : isDropdownOpen = !isDropdownOpen  ;">
                         <span class="input-txt"
                             [ngClass]="{'canceled': states.canceled == order?.state, 'completed': states.completed == order?.state, 'pending': states.pending == order?.state}">
                             {{order?.state}}
                         </span>
                         <img src="chevron-down.svg" alt="">
+                        <div class="drop-down" [ngClass]="{'closed': !isDropdownOpen}">
+                            @for (state of [states.canceled, states.pending, states.completed]; track $index) {
+                            <div class="drop-item" (click)="changeState(state)">
+                                <span class="input-txt" [ngClass]=" {'canceled': states.canceled==state, 'completed' :
+                                    states.completed==state, 'pending' : states.pending==state}">
+                                    <img [src]=" states.completed==state ? 'check.svg': states.canceled == state? 'x-red.svg': 'clock.svg'"
+                                        alt="">
+                                    {{state}}
+                                </span>
+                            </div>
+                            }
+                        </div>
                     </div>
                     <div class="button-chips">
                         <img src="upload-cloud.svg" alt="">
@@ -75,6 +95,48 @@
 
             <div class="client-info">
                 <h3>Información del cliente</h3>
+                <div class="buyer-info">
+                    <div class="user">
+                        <div class="avatar">
+                            <img [src]="order?.user?.image || 'user.svg'" alt="">
+                        </div>
+                        <div class="user-info">
+                            <p class="name">{{order?.user?.name}} {{order?.user?.lastName}}</p>
+                            <span class="email">{{order?.user?.email}}</span>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <p>Teléfono</p>
+                        <span>{{order?.user?.phone}}</span>
+                    </div>
+                    @if(order?.note) {
+                    <div class="contact-info">
+                        <p>Nota adicional</p>
+                        <span>"{{order?.note?.length}}"</span>
+                    </div>
+                    }
+                </div>
+                <h3>Información de la persona que recibe</h3>
+                <div class="buyer-info">
+                    <div class="contact-info">
+                        <p>Nombre y apellidos</p>
+                        <span>{{order?.name}} {{order?.lastName}}</span>
+                    </div>
+                    <div class="contact-info">
+                        <p>email</p>
+                        <span>{{order?.email}}</span>
+                    </div>
+                    <div class="contact-info">
+                        <p>Teléfono</p>
+                        <span>{{order?.phone}}</span>
+                    </div>
+                    @if(order?.delivery) {
+                    <div class="contact-info">
+                        <p>Dirección</p>
+                        <span>{{order?.address + ', ' + order?.city + ', ' + order?.province}}</span>
+                    </div>
+                    }
+                </div>
             </div>
         </div>
     </div>

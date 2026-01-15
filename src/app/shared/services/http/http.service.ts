@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Category, CatModel } from '../../models/Product';
 import { CreateProductDto } from '../../models/create-product-dto';
+import { OrderState } from '../../models/Order';
 
 @Injectable({
   providedIn: 'root'
@@ -12,24 +13,38 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    //this.apiUrl = 'http://localhost:3000/';
+    this.apiUrl = 'http://localhost:3000/';
   }
-  getProducts(options?: { page?: number, category?: string }) {
-    if (options?.page && !options.category) {
-      return this.httpClient.get(`${this.apiUrl}products?page=${options.page}`);
+  getProducts(option?: { page?: number, categories?: string, search?: string }) {
+    var url = this.apiUrl + 'products' + (option ? '?' : '');
+
+    if (option?.categories) {
+      url += option.search || option.page ? `category=${option.categories}&` : `category=${option.categories}`;
     }
-    else if (options?.category) {
-      return options.page ? this.httpClient.get(`${this.apiUrl}products?page=${options.page}&category=${options.category}`) : this.httpClient.get(`${this.apiUrl}products?category=${options.category}`)
+    if (option?.search) {
+      url += option.page ? `search=${option.search}&` : `search=${option.search}`;
     }
-    return this.httpClient.get(`${this.apiUrl}products`)
+    if (option?.page) {
+      url += `page=${option.page}`;
+    }
+
+    return this.httpClient.get(url);
   }
 
   getProductById(id: string) {
     return this.httpClient.get(`${this.apiUrl}products/${id}`)
   }
 
-  getPages(option?: { category?: Category }) {
-    return !option?.category ? this.httpClient.get(`${this.apiUrl}products/pages`) : this.httpClient.get(`${this.apiUrl}products/pages?category=${option.category}`)
+  getPages(option?: { categories?: string, search?: string }) {
+    var url = option ? `${this.apiUrl}products/pages?` : `${this.apiUrl}products/pages`;
+
+    if (option?.categories) {
+      url += option.search ? `category=${option.categories}&` : `category=${option.categories}`;
+    }
+    if (option?.search) {
+      url += `search=${option.search}`;
+    }
+    return this.httpClient.get(url);
   }
   getCategories() {
     return this.httpClient.get<CatModel[]>(`${this.apiUrl}products/categories`);
@@ -82,6 +97,9 @@ export class httpService {
       finalPath += !option.search && !option.state ? `?order=${option.order}` : `&order=${option.order}`
     }
     return this.httpClient.get(finalPath);
+  }
+  updateOrder(id: string, state: { state: OrderState }) {
+    return this.httpClient.patch(`${this.apiUrl}order/${id}`, state);
   }
 
 }
