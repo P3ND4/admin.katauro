@@ -13,7 +13,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    this.apiUrl = 'http://localhost:3000/';
+    //this.apiUrl = 'http://localhost:3000/';
   }
   getProducts(option?: { page?: number, categories?: string, search?: string }) {
     var url = this.apiUrl + 'products' + (option ? '?' : '');
