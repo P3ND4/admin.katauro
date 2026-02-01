@@ -1,0 +1,198 @@
+<div class="main">
+    @if (loading) {
+    <div class="loader-wrapper">
+        <app-box-loader></app-box-loader>
+    </div>
+    }
+
+
+    <header class="header">
+        <h1>Promociones</h1>
+    </header>
+
+
+    <form class="create-form" [formGroup]="createForm" (submit)="onSubmit()">
+        <div class="form-text">
+            <label for="">Nombre</label>
+            <div class="input-base">
+                <input type="text" formControlName="name">
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label for="">Descripción breve</label>
+            <div class="input-container">
+                <div class="input-base">
+                    <textarea type="text" formControlName="description" maxlength="500"></textarea>
+                </div>
+                <span class="count">{{createForm.value.description.length}}/500</span>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label for="">Tipo de promoción</label>
+            <div class="input-base" (click)="openTypeOption = !openTypeOption">
+                <label for="">{{ !general? 'Por producto y categoría': 'General (toda la tienda)'}}</label>
+                <img src="chevron-down.svg" alt="">
+
+
+                @if(openTypeOption){
+                <div class="dialog">
+                    <div class="dialog-item" (click)="onChangePromotionType(false)">
+                        <p>Por producto y categoría</p>
+                    </div>
+                    <div class="dialog-item" (click)="onChangePromotionType(true)">
+                        <p>General (toda la tienda)</p>
+                    </div>
+                </div>
+                }
+
+
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label for="">Valor del descuento</label>
+            <div class="discount">
+                <div class="disc-btn" (click)="increment(1)">
+                    <img src="plus-black.svg" alt="">
+                </div>
+                <div class="discount-txt">
+                    <input type="number" formControlName="discount">
+                    <span>%</span>
+                </div>
+                <div class="disc-btn" (click)="increment(-1)">
+                    <img src="minus.svg" alt="">
+                </div>
+            </div>
+            <div class="line"></div>
+        </div>
+
+
+
+        <div class="form-text">
+            <label for="">Fecha de inicio</label>
+            <div class="input-base">
+                <img src="calendar.svg" alt="" (click)="pickDate('startDate')">
+                <input type="text" id="startDate" formControlName="startDate" placeholder="aaaa-mm-dd"
+                    pattern="\d{4}-\d{2}-\d{2}" required>
+                <input type="date" id="" #startDateInput>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label for="">Fecha de finalización</label>
+            <div class="input-base">
+                <img src="calendar.svg" alt="" (click)="pickDate('endDate')">
+                <input type="text" id="endDate" formControlName="endDate" placeholder="aaaa-mm-dd">
+                <input type="date" id="" #endDateInput>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        @if (!general) {
+
+        <div class="form-text">
+            <label for="">Categorías</label>
+            <div class="selection">
+
+                <div class="input-base" (click)="openCatOption = !openCatOption">
+                    <label for="">Selecciona las categorías para esta promoción</label>
+                    <img src="chevron-down.svg" alt="">
+                    @if(openCatOption){
+                    <div class="dialog">
+                        @for (cat of categories; track $index) {
+                        <div class="dialog-item" (click)="general = false" (click)="onSelectCat(cat)">
+                            <p>{{cat.nombre}}</p>
+                            @if(cat.id in selectedCat){
+                            <img src="check.svg">
+                            }
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+
+                @for (selected of getCategories(); track $index) {
+                <div class="input-base propierty">
+                    <div class="finish-data">
+                        <p>{{selected.nombre}}</p>
+                    </div>
+                    <img class="delete" src="divide-circle.svg" alt="delete" (click)="onRemoveCat(selected)">
+
+                </div>
+                }
+
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label for="">Productos</label>
+            <div class="selection">
+
+                <div class="input-base" (click)="onOpenSelProd()">
+                    <label for="">Selecciona las productos para esta promoción</label>
+                    <img src="chevron-down.svg" alt="">
+                    @if(openProdOption){
+                    <div class="dialog products">
+                        <div class="dialog-item">
+                            <div class="input-base" (click)="$event.stopPropagation()">
+                                <img src="search.svg" alt="" (click)="onSearch()">
+                                <input type="text" formControlName="search" #searchProd placeholder="Buscar"
+                                    (keydown.enter)="onSearch()" />
+                            </div>
+                        </div>
+                        @for (prod of filteredProd; track $index) {
+                        @for (variant of prod.variants; track $index) {
+                        <div class="dialog-item" (click)=" $event.stopPropagation(); slelectProd(variant)">
+                            <div class="image">
+                                <img [src]="variant.image" alt="">
+                            </div>
+                            <p>{{prod.name}}</p>
+                            @if (variant.id in selectedVariants) {
+                            <img src="check.svg" alt="">
+                            }
+                        </div>
+                        }
+                        }
+                    </div>
+                    }
+                </div>
+
+                @for (selected of getVariants(); track $index) {
+                <div class="input-base propierty">
+                    <div class="finish-data">
+                        <div class="image">
+                            <img [src]="selected.image" alt="">
+                        </div>
+                        <p>{{selected.genericProd?.name}}</p>
+                    </div>
+                    <img class="delete" src="divide-circle.svg" alt="delete" (click)="removeSelected(selected.id)">
+
+                </div>
+                }
+
+            </div>
+            <div class="line"></div>
+        </div>
+        }
+        <footer class="form-footer">
+            <button class="button-chips">
+                <span>Cancelar</span>
+            </button>
+
+            <button class="button-base" type="submit" [disabled]="!valid()">
+                <span>Guardar</span>
+            </button>
+
+        </footer>
+    </form>
+
+
+
+</div>

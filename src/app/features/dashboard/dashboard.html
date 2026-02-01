@@ -5,10 +5,12 @@
                 <img src="K.png" alt="katauro logo" class="logo">
             </header>
             <div class="nav-items">
-                <div class="nav-item" [ngClass]="{'active': isRoute('/dashboard/products')}" (click)="navigate('/dashboard/products')">
+                <div class="nav-item" [ngClass]="{'active': isRoute('/dashboard/products')}"
+                    (click)="navigate('/dashboard/products')">
                     <img class="nav-icon" src="bar-chart-2.svg" alt="">
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" [routerLink]="'/dashboard/promotions'"
+                    [ngClass]="{'active': isRoute('/dashboard/promotions')}">
                     <img src="tag.svg" alt="">
                 </div>
                 <div class="nav-item" [routerLink]="'/dashboard/orders'">

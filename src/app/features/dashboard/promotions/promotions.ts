@@ -1,0 +1,49 @@
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { httpService } from '../../../shared/services/http/http.service';
+import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
+import { Promotion } from '../../../shared/models/promotions';
+import { Router, RouterLink } from '@angular/router';
+import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../shared/services/errors/errorParser';
+
+
+
+@Component({
+  selector: 'app-promotions',
+  imports: [CommonModule, BoxLoader, RouterLink],
+  templateUrl: './promotions.html',
+  styleUrl: './promotions.css'
+})
+export class Promotions implements OnInit {
+  filterMenu = false;
+  proSection = true;
+  promotions: Promotion[] = []
+
+
+  loading = false;
+  constructor(private http: httpService, private cdr: ChangeDetectorRef, private router: Router, private errorServ: ErrorLogService) {
+  }
+  ngOnInit(): void {
+    this.loading = true;
+    this.http.getPromotions().subscribe({
+      next: val => {
+        this.promotions = val as Promotion[];
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    })
+  }
+
+  getDate(pDate: Date) {
+    const date = new Date(pDate)
+    return `${date.getDate()
+      }/${date.getMonth() + 1}/${date.getFullYear()} `
+  }
+  onSearch() { }
+}

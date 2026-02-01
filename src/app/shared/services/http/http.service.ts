@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Category, CatModel } from '../../models/Product';
 import { CreateProductDto } from '../../models/create-product-dto';
 import { OrderState } from '../../models/Order';
+import { CreatePromotionDto } from '../../models/promotions';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    //this.apiUrl = 'http://localhost:3000/';
+    this.apiUrl = 'http://localhost:3000/';
   }
   getProducts(option?: { page?: number, categories?: string, search?: string }) {
     var url = this.apiUrl + 'products' + (option ? '?' : '');
@@ -100,6 +101,14 @@ export class httpService {
   }
   updateOrder(id: string, state: { state: OrderState }) {
     return this.httpClient.patch(`${this.apiUrl}order/${id}`, state);
+  }
+
+  getPromotions() {
+    return this.httpClient.get(`${this.apiUrl}promotion`);
+  }
+
+  createPromo(data: CreatePromotionDto) {
+    return this.httpClient.post(`${this.apiUrl}promotion`, data);
   }
 
 }

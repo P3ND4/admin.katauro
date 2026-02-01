@@ -44,6 +44,7 @@
     margin-top: 12px;
     flex: 1;
     box-sizing: border-box;
+    overflow: auto;
 }
 
 .nav-icon {

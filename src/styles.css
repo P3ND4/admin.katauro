@@ -55,7 +55,8 @@ label {
 
 }
 
-.button-base label {
+.button-base label,
+.button-base span {
     color: var(--White, #FFF);
     /* Text md/Semibold */
     font-family: var(--montser-font);
@@ -261,6 +262,12 @@ textarea:focus {
     outline: none;
 }
 
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .input-container label {
     color: var(--Gray-700, #414651);
 
@@ -344,5 +351,50 @@ textarea:focus {
     display: flex;
     justify-content: center;
     align-items: center;
+
+}
+
+.dialog {
+    position: absolute;
+    z-index: 3;
+    left: 0px;
+    top: 100%;
+
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+    border-radius: 8px;
+    border: 1px solid var(--Gray-200, #E9EAEB);
+    background: var(--White, #FFF);
+
+    /* Shadow/lg */
+    box-shadow: 0 12px 16px -4px rgba(10, 13, 18, 0.08), 0 4px 6px -2px rgba(10, 13, 18, 0.03);
+}
+
+.dialog-item {
+    display: flex;
+    padding: 10px 14px;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dialog-item p {
+    display: flex;
+    flex: 1;
+
+    color: var(--Gray-700, #414651);
+
+    /* Text sm/Medium */
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    /* 142.857% */
+    margin: 0px;
+    cursor: pointer;
 
 }

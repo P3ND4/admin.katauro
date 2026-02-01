@@ -1,0 +1,118 @@
+<div class="main">
+    @if (loading) {
+    <div class="loader-wrapper">
+        <app-box-loader></app-box-loader>
+    </div>
+    }
+    <header class="header">
+        <h1 class="title">Promociones</h1>
+        <button class="button-base" [routerLink]="'/dashboard/create-promotion'">
+            <img src="plus.svg" alt="">
+            <span>
+                Nueva promoción
+            </span>
+        </button>
+    </header>
+
+    <div class="prom-container">
+        <div class="filters">
+            @for (fil of []; track $index) {
+            <div class="button-chips">
+                <label>
+                    {{fil}}
+                </label>
+                <img src="x.svg" alt="">
+            </div>
+            }
+
+            <div class="filters-dorp-menu">
+                <button class="button-chips" (click)="filterMenu = !filterMenu">
+                    <img src="Filters lines.svg" alt="">
+                    <label>Filtros</label>
+                </button>
+
+                @if(filterMenu){
+                <div class="dropdown-content">
+                    @for (filter of ['Más recientes', 'Antiguos', 'Realizado', 'Pendiente', 'Cancelado']; track $index)
+                    {
+                    <div class="dropdown-item">
+                        <p>{{filter}}</p>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="spacing" style="flex: 1;"></div>
+            <div class="input-base">
+                <img src="search.svg" alt="" (click)="onSearch()">
+                <input type="text" placeholder="Buscar" (keyup.enter)="onSearch()" #search />
+            </div>
+        </div>
+        <div class="nav-bar">
+            <span (click)="proSection = true" [ngClass]="{'active': proSection}">Promociones
+                @if (proSection) {<div class="selector"></div>}
+            </span>
+            <span (click)="proSection = false" [ngClass]="{'active': !proSection}">Banners y carruseles
+                @if (!proSection) {<div class="selector"></div>}
+            </span>
+            <div class="divider"></div>
+        </div>
+        @if (proSection) {
+
+        <div class="table">
+
+            <header class="prom-list-header">
+                <h2>Promociones</h2>
+                <div class="count">
+                    <p></p>
+                </div>
+            </header>
+
+            <div class="head-bar">
+                @for (item of ['Nombre', 'Vigencia', 'Tipo', 'Descuento', 'Estado', '']; track
+                $index) {
+                <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+
+                    <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+                        <p>{{item}}</p>
+                    </div>
+                    @for (promo of promotions; track $index) {
+                    <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+
+                        @if (item === 'Nombre') {
+                        <p>{{promo.name}}</p>
+                        }
+                        @if (item === 'Vigencia') {
+                        <p> {{getDate(promo.startDate)}} - {{getDate(promo.endDate)}} </p>
+                        }
+                        @if (item === 'Tipo') {
+                        <p>{{promo.Type}}</p>
+                        }
+                        @if (item === 'Descuento') {
+                        <p>{{promo.discount}}</p>
+                        }
+                        @if (item === 'Estado') {
+                        <p></p>
+                        }
+                        @if(item === '') {
+                        <div class="actions" (click)="$event.stopImmediatePropagation()">
+                            <button class="action-button">
+                                <img src="trash-2.svg" alt="">
+                            </button>
+                            <button class="action-button">
+                                <img src="edit-2.svg" alt="">
+                            </button>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+
+            </div>
+        </div>
+        }
+    </div>
+
+</div>
