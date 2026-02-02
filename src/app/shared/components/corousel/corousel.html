@@ -1,0 +1,29 @@
+<div class="carousel-container"
+  [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2, 'fourth':carouselType=== 3 }">
+  <!-- 
+    -->@if (carouselType != 3) {
+  <div class="gradient"></div>
+  }
+  <div class="slides">
+    @for (banner of data?.banners; track $index) {
+    @if (carouselType != 3) {
+    <div class="info-container"
+      [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2 ,'fourth':carouselType=== 3 }">
+      <div class="info-contet" [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2 ,'fourth': 3 }">
+        <h2 class="car-text">{{banner.name}}</h2>
+        <p class="card-info">{{banner.description}}</p>
+        @if(carouselType !=2){
+        <button class="button-chips">
+          <label>Adquirir</label>
+        </button>
+        }
+      </div>
+    </div>
+    }
+
+    <div class="slide" [ngClass]="{ 'visible': currentSlide === $index }">
+      <img [src]="banner.image" />
+    </div>
+    }
+  </div>
+</div>

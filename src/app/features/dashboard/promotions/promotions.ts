@@ -6,12 +6,13 @@ import { Promotion } from '../../../shared/models/promotions';
 import { Router, RouterLink } from '@angular/router';
 import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../shared/services/errors/errorParser';
+import { Carousels } from "./carousels/carousels";
 
 
 
 @Component({
   selector: 'app-promotions',
-  imports: [CommonModule, BoxLoader, RouterLink],
+  imports: [CommonModule, BoxLoader, RouterLink, Carousels],
   templateUrl: './promotions.html',
   styleUrl: './promotions.css'
 })

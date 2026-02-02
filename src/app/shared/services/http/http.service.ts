@@ -111,4 +111,11 @@ export class httpService {
     return this.httpClient.post(`${this.apiUrl}promotion`, data);
   }
 
+  getCarousels(){
+    return this.httpClient.get(`${this.apiUrl}promotion/carousel`);
+  }
+  updateBanner(data: any, id: number){
+    return this.httpClient.patch(`${this.apiUrl}promotion/banners/${id}`, data);
+  }
+
 }

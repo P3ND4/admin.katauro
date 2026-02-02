@@ -1,0 +1,43 @@
+.main {
+  display: flex;
+  padding-inline: 32px;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.carousel {
+  display: flex;
+  width: 635px;
+  flex-direction: column;
+  align-items: flex-start;
+
+  border-radius: 12px;
+  border: 1px solid var(--Gray-200, #E9EAEB);
+  background: var(--White, #FFF);
+
+  /* Shadow/sm */
+  box-shadow: 0 1px 3px 0 rgba(10, 13, 18, 0.10), 0 1px 2px 0 rgba(10, 13, 18, 0.06);
+
+}
+
+.car-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.car-header h2 {
+  color: var(--Gray-900, #181D27);
+
+  /* Text lg/Medium */
+  font-family: var(--montser-font);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
+  /* 155.556% */
+}
