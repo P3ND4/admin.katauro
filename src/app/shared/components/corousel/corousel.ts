@@ -19,6 +19,11 @@ export class Corousel implements OnInit, OnDestroy {
   ];
   autoSlideInterval: any;
 
+  base = {
+    title: 'Título atractivo en 2 líneas de texto',
+    description: 'Descripción corta del evento o producto que se este promocionando.'
+  }
+
   ngOnDestroy(): void {
     clearInterval(this.autoSlideInterval);
   }

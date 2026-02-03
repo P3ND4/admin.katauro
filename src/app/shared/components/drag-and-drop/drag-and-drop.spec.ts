@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Carousels } from './carousels';
-import { CommonModule } from '@angular/common';
+import { DragAndDrop } from './drag-and-drop';
 
-describe('Carousels', () => {
-  let component: Carousels;
-  let fixture: ComponentFixture<Carousels>;
+describe('DragAndDrop', () => {
+  let component: DragAndDrop;
+  let fixture: ComponentFixture<DragAndDrop>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Carousels, CommonModule]
+      imports: [DragAndDrop]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Carousels);
+    fixture = TestBed.createComponent(DragAndDrop);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

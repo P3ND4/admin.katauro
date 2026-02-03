@@ -107,15 +107,22 @@ export class httpService {
     return this.httpClient.get(`${this.apiUrl}promotion`);
   }
 
+  getPromotion(id: string) {
+    return this.httpClient.get(`${this.apiUrl}promotion/${id}`);
+  }
+
   createPromo(data: CreatePromotionDto) {
     return this.httpClient.post(`${this.apiUrl}promotion`, data);
   }
 
-  getCarousels(){
+  getCarousels() {
     return this.httpClient.get(`${this.apiUrl}promotion/carousel`);
   }
-  updateBanner(data: any, id: number){
-    return this.httpClient.patch(`${this.apiUrl}promotion/banners/${id}`, data);
+  updateBanner(data: any, id: number) {
+    return this.httpClient.patch(`${this.apiUrl}promotion/banner/${id}`, data);
+  }
+  getBanner(id: number) {
+    return this.httpClient.get(`${this.apiUrl}promotion/banners/${id}`)
   }
 
 }

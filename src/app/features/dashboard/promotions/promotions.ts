@@ -47,4 +47,7 @@ export class Promotions implements OnInit {
       }/${date.getMonth() + 1}/${date.getFullYear()} `
   }
   onSearch() { }
+  navigateEdit(id: string) {
+    this.router.navigate(['/dashboard/create-promotion'], { queryParams: { edit: id } })
+  }
 }

@@ -1,22 +1,36 @@
 <div class="main">
   @if (loading) {
-    <div class="loader-wrapper">
-      <app-box-loader></app-box-loader>
-    </div>
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+  <!---->
+  @if (edit) {
+  <div class="wrapper">
+    <app-edit-carousel (close)="edit = undefined" [data]="edit"></app-edit-carousel>
+  </div>
   }
 
 
   @for (car of carousels; track $index) {
-    <div class="carousel">
-      <header class="car-header">
-        <h2>{{car.name}}</h2>
-        <button class="button-chips">
-          <img src="edit" alt="">
-          <span>Editar</span>
-        </button>
-      </header>
-      <app-corousel style="width: 100%;" [data]="{banners: car.banners, carousel: 0}"></app-corousel>
+  <div class="carousel">
+    <header class="car-header">
+      <h2>{{names[car.name]}}</h2>
+      <button class="button-chips" (click)="edit ={banners: car.banners, name: names[car.name]}">
+        <img src="edit-3.svg" alt="">
+        <span>Editar</span>
+      </button>
+    </header>
+    <app-corousel style="width: 100%;" [currentSlide]="selected[car.name]"
+      [data]="{banners: car.banners, carousel: $index}"></app-corousel>
+    <div class="footer">
+      @for (ban of car.banners; track $index) {
+      <div class="select" [ngClass]="{'active': selected[car.name] == $index}" (click)="selected[car.name] = $index">
+        <span>{{$index + 1}}</span>
+      </div>
+      }
     </div>
+  </div>
   }
 
 

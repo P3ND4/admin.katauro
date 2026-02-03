@@ -5,7 +5,7 @@ import { fechaRealValidator } from '../../../shared/validators/DateValidator';
 import { httpService } from '../../../shared/services/http/http.service';
 import { CatModel, Product, Variant } from '../../../shared/models/Product';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CreatePromotionDto, PromoType } from '../../../shared/models/promotions';
+import { CreatePromotionDto, Promotion, PromoType } from '../../../shared/models/promotions';
 import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
 import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../shared/services/errors/errorParser';
@@ -28,8 +28,10 @@ export class CreatePromotion implements AfterViewInit, OnInit {
   products: Product[] = [];
   categories: CatModel[] = [];
   selectedCat: { [id: string]: CatModel } = {};
+  selectedVariants: { [id: string]: Variant } = {}
   filteredProd: Product[] = []
 
+  edit: Promotion | undefined;
 
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef, private http: httpService,
     private router: Router, private route: ActivatedRoute, private errorServ: ErrorLogService) {
@@ -49,7 +51,41 @@ export class CreatePromotion implements AfterViewInit, OnInit {
       this.filteredProd = this.products.filter(prod => this.match(prod.name, x));
     });
     this.loadData();
+
+    let id = this.route.snapshot.queryParamMap.get('edit');
+
+    if (id) {
+      this.loadPromo(id);
+    }
+
   }
+
+
+  loadPromo(id: string) {
+    this.http.getPromotion(id).subscribe({
+      next: val => {
+        this.edit = val as Promotion;
+        let startDate = new Date(this.edit.startDate)
+        let endDate = new Date(this.edit.endDate)
+        this.createForm.setValue({
+          name: this.edit.name,
+          description: '',
+          discount: this.edit.discount,
+          startDate: startDate.getFullYear() + '-' + startDate.getMonth().toString() + '-' + startDate.getDay().toString(),
+          endDate: endDate.getFullYear() + '-' + endDate.getMonth() + '-' + endDate.getDay(),
+          search: ['']
+        })
+        console.log(val)
+        this.edit.products.map(x => this.selectedVariants[x.productId] = x.product);
+        this.edit.categories.map(x => this.selectedCat[x.categoryId] = x.category)
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+      }
+    })
+  }
+
 
   ngAfterViewInit(): void {
 
@@ -147,7 +183,6 @@ export class CreatePromotion implements AfterViewInit, OnInit {
   }
 
 
-  selectedVariants: { [id: string]: Variant } = {}
   slelectProd(prod: Variant) {
     this.selectedVariants[prod.id] = prod;
   }

@@ -1,0 +1,116 @@
+.main {
+  display: flex;
+  padding: 24px 24px 64px 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
+  gap: 40px;
+  align-self: stretch;
+  border-radius: var(--Corner-Small, 8px);
+  background: var(--Gray-50, #FAFAFA);
+  border-radius: 8px;
+  border: 1px solid var(--Gray-200, #E9EAEB);
+  box-shadow: 0 12px 16px -4px rgba(10, 13, 18, 0.08), 0 4px 6px -2px rgba(10, 13, 18, 0.03);
+}
+
+.main-head {
+  display: flex;
+}
+
+.main-head h2 {
+  color: var(--Gray-700, #414651);
+  font-family: var(--montser-font);
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  /* 100% */
+}
+
+.banner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+  flex: 1 0 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.banner-head h3 {
+  color: var(--Gray-700, #414651);
+  font-family: var(--montser-font);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  /* 116.667% */
+}
+
+.banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  flex: 1 0 0;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.data h4 {
+  color: var(--Gray-700, #414651);
+
+  /* Text lg/Semibold */
+  font-family: var(--montser-font);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+  /* 155.556% */
+}
+
+.data p {
+  color: var(--Gray-700, #414651);
+
+  /* Text lg/Regular */
+  font-family: var(--montser-font);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  /* 155.556% */
+}
+
+.preview {
+  display: flex;
+  width: 596.975px;
+  height: 232.157px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4.146px;
+  overflow: hidden;
+}
+
+.preview img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-position: center;
+}

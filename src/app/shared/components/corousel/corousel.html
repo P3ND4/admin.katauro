@@ -8,10 +8,10 @@
     @for (banner of data?.banners; track $index) {
     @if (carouselType != 3) {
     <div class="info-container"
-      [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2 ,'fourth':carouselType=== 3 }">
+      [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2 ,'fourth':carouselType=== 3, 'visible': currentSlide ===$index }">
       <div class="info-contet" [ngClass]="{'second': carouselType == 1, 'third': carouselType == 2 ,'fourth': 3 }">
-        <h2 class="car-text">{{banner.name}}</h2>
-        <p class="card-info">{{banner.description}}</p>
+        <h2 class="car-text">{{banner.name? banner.name: base.title}}</h2>
+        <p class="card-info">{{banner.description?banner.description: base.description}}</p>
         @if(carouselType !=2){
         <button class="button-chips">
           <label>Adquirir</label>
@@ -22,7 +22,7 @@
     }
 
     <div class="slide" [ngClass]="{ 'visible': currentSlide === $index }">
-      <img [src]="banner.image" />
+      <img [src]="banner.image? banner.image: 'carousel-base.png' " />
     </div>
     }
   </div>

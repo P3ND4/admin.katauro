@@ -4,6 +4,18 @@
   gap: 24px;
   width: 100%;
   box-sizing: border-box;
+
+}
+
+
+
+.wrapper {
+  position: absolute;
+  width: 100%;
+  left: 0px;
+  z-index: 10;
+  box-sizing: border-box;
+  padding-inline: 10px;
 }
 
 .carousel {
@@ -40,4 +52,47 @@
   font-weight: 500;
   line-height: 28px;
   /* 155.556% */
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.select {
+  display: flex;
+  height: 40px;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.select:hover {
+  cursor: pointer;
+}
+
+.select span {
+  color: var(--Gray-500, #717680);
+  text-align: center;
+
+  /* Text sm/Medium */
+  font-family: var(--montser-font);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  /* 142.857% */
+}
+
+.select.active {
+  border-radius: 8px;
+  background: var(--Brand-50, #F0FEFF);
+}
+
+.select.active span {
+  color: #178C94;
 }

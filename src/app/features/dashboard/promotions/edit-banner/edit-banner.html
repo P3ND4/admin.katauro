@@ -1,0 +1,111 @@
+<div class="main">
+  @if (loading()) {
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+
+
+  <header class="header">
+    <h1>Promociones</h1>
+  </header>
+
+
+  <form class="create-form" [formGroup]="editForm" (submit)="onSubmit()">
+    <div class="form-text">
+      <label for="">Nombre</label>
+      <div class="input-base">
+        <input type="text" formControlName="name">
+      </div>
+      <div class="line"></div>
+    </div>
+
+    <div class="form-text">
+      <label for="">Descripción breve</label>
+      <div class="input-container">
+        <div class="input-base">
+          <textarea type="text" formControlName="description" maxlength="500"></textarea>
+        </div>
+        <span class="count">{{editForm.value.description.length}}/500</span>
+      </div>
+      <div class="line"></div>
+    </div>
+
+    <div class="form-text">
+      <label for="">Productos</label>
+      <div class="input-base" (click)="onOpenSelProd()">
+        @if(selectedVariant){
+        <div class="image"><img [src]="selectedVariant.image" alt=""></div>
+        <label for="">{{selectedVariant.genericProd?.name}}</label>
+        @if(calculateDiscount(selectedVariant)){
+        <div class="discount">-{{calculateDiscount(selectedVariant) }} %</div>
+        }
+        }@else {
+        <label for="">Selecciona las productos para esta promoción</label>
+        }
+        <img src="chevron-down.svg" alt="">
+        @if(openProdOption){
+        <div class="dialog products">
+          <div class="dialog-item">
+            <div class="input-base" (click)="$event.stopPropagation()">
+              <img src="search.svg" alt="">
+              <input type="text" formControlName="search" #searchProd placeholder="Buscar" />
+            </div>
+          </div>
+          @for (prod of filteredProd; track $index) {
+          @for (variant of prod.variants; track $index) {
+          <div class="dialog-item" (click)=" $event.stopPropagation(); slelectProd(variant)">
+            <div class="image">
+              <img [src]="variant.image" alt="">
+            </div>
+            <div class="data">
+              <p>{{prod.name}}</p>
+              @for (prom of filterActivePromotions(variant.promotions); track $index) {
+              <span>{{prom.name}}</span>
+              <div class="discount">-{{prom.discount + ' ' + (prom.discountType == 'percent'? '%':
+                '$')}} </div>
+              }
+            </div>
+            @if (variant.id == selectedVariant?.id) {
+            <img src="check.svg" alt="">
+            }
+          </div>
+          }
+          }
+        </div>
+        }
+      </div>
+      <div class="line"></div>
+    </div>
+
+    <div class="form-text">
+      <label for="">Banner</label>
+      <div class="image-container">
+        <app-drag-and-drop style="width: 100%;" (uploaded)="onUploaded($event.valueOf())"></app-drag-and-drop>
+        @if (editForm.get('image')?.value) {
+        <div class="banner-prev">
+          <img [src]="editForm.get('image')?.value" alt="">
+        </div>
+        }
+      </div>
+
+      <div class="line"></div>
+    </div>
+
+
+
+    <footer class="form-footer">
+      <button class="button-chips" type="button" [routerLink]="'/dashboard/promotions'">
+        <span>Cancelar</span>
+      </button>
+
+      <button class="button-base" type="submit" [disabled]="!valid()">
+        <span>Guardar</span>
+      </button>
+
+    </footer>
+  </form>
+
+
+
+</div>

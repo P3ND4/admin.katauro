@@ -1,0 +1,13 @@
+<div class="drag-n-drop-cont" (click)="onFilesSelected($event)" (dragleave)="onDragLeave($event)"
+  (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+  <div class="dnd-icon">
+    <img src="upload-cloud.svg" alt="">
+  </div>
+  <input type="file" #fileInput style="display: none;" (change)="onFileChange($event)" id="">
+  <div class="dnd-txt">
+    <p><span>Haga clic para cargar</span> o arrastrar y soltar</p>
+    <p>SVG, PNG, JPG or GIF (max. 800x400px)</p>
+  </div>
+  <div class="progress-bar" [style.width.%]="progress">
+  </div>
+</div>

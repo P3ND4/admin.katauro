@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Carousels } from './carousels';
-import { CommonModule } from '@angular/common';
+import { EditBanner } from './edit-banner';
 
-describe('Carousels', () => {
-  let component: Carousels;
-  let fixture: ComponentFixture<Carousels>;
+describe('EditBanner', () => {
+  let component: EditBanner;
+  let fixture: ComponentFixture<EditBanner>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Carousels, CommonModule]
+      imports: [EditBanner]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Carousels);
+    fixture = TestBed.createComponent(EditBanner);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

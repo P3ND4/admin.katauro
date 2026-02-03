@@ -1,0 +1,47 @@
+<div class="main">
+
+  <header class="main-head">
+    <h2>{{data.name}}</h2>
+    <img style="cursor: pointer;" src="x.svg" alt="" (click)="onClose()">
+  </header>
+
+  @for (banner of data.banners; track banner; let i = $index)
+  {
+  <div class="banner-container">
+    <header class="banner-head">
+      <h3>Banner {{i+1}}</h3>
+      <button class="button-chips" [routerLink]="`/dashboard/edit-banner/${banner.id}`">
+        <img src="edit-3.svg" alt="">
+        <span>Editar</span>
+      </button>
+    </header>
+    <div class="banner-content">
+      <div class="info">
+        <div class="data">
+          <h4>Promoción activa</h4>
+          @if (banner.product) {
+          @for (promo of filterActivePromotions(banner.product.promotions); track promo) {
+          <p>{{promo.name}}</p>
+          }
+          }
+        </div>
+
+        <div class="data">
+          <h4>Nombre</h4>
+          <p>{{banner.name? banner.name: 'Título atractivo en 2 líneas de texto'}}</p>
+        </div>
+
+        <div class="data">
+          <h4>Descripción breve</h4>
+          <p>{{banner.description?banner.description:"Descripción corta del evento o producto que se este
+            promocionando."}}</p>
+        </div>
+      </div>
+      <div class="preview">
+        <img [src]="banner.image? banner.image: 'carousel-base.png' " alt="">
+      </div>
+
+    </div>
+  </div>
+  }
+</div>
