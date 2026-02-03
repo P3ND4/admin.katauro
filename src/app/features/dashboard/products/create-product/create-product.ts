@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Category, CatModel, Color, Finish, Product, Typology } from '../../../shared/models/Product';
-import { CreateProductDto, CreateSpecProductDTO } from '../../../shared/models/create-product-dto';
-import { httpService } from '../../../shared/services/http/http.service';
-import { CloudinaryService } from '../../../shared/services/cloudinary/cloudinary.service';
+import { Category, CatModel, Color, Finish, Product, Typology } from '../../../../shared/models/Product';
+import { CreateProductDto, CreateSpecProductDTO } from '../../../../shared/models/create-product-dto';
+import { httpService } from '../../../../shared/services/http/http.service';
+import { CloudinaryService } from '../../../../shared/services/cloudinary/cloudinary.service';
 import { HttpEventType } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
-import { parseError } from '../../../shared/services/errors/errorParser';
-import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
+import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../../shared/services/errors/errorParser';
+import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-create-product',

@@ -5,6 +5,7 @@ export class Promotion {
   startDate!: Date
   endDate!: Date
   name!: string
+  description!: string
   discountType!: string
   Type!: string
   discount!: number
@@ -50,6 +51,7 @@ export interface CreatePromotionDto {
   startDate: Date
   endDate: Date
   name: string
+  description: string
   discountType: string
   Type: string
   categories: string[]

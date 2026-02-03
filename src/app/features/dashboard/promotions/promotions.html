@@ -4,6 +4,14 @@
     <app-box-loader></app-box-loader>
   </div>
   }
+
+  @if (warn) {
+  <div class="warn">
+    <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+  </div>
+  }
+
+
   <header class="header">
     <h1 class="title">Promociones</h1>
     <button class="button-base" [routerLink]="'/dashboard/create-promotion'">
@@ -97,7 +105,7 @@
             }
             @if(item === '') {
             <div class="actions" (click)="$event.stopImmediatePropagation()">
-              <button class="action-button">
+              <button class="action-button" (click)="ask(promo.promo_id)">
                 <img src="trash-2.svg" alt="">
               </button>
               <button class="action-button" (click)="navigateEdit(promo.promo_id)">

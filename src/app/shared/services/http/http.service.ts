@@ -115,6 +115,14 @@ export class httpService {
     return this.httpClient.post(`${this.apiUrl}promotion`, data);
   }
 
+  deletePromo(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}promotion/${id}`);
+  }
+  updatePromo(id: string, data: CreatePromotionDto) {
+    return this.httpClient.patch(`${this.apiUrl}promotion/${id}`, data);
+  }
+
+
   getCarousels() {
     return this.httpClient.get(`${this.apiUrl}promotion/carousel`);
   }

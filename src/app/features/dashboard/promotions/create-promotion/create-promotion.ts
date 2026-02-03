@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { fechaRealValidator } from '../../../shared/validators/DateValidator';
-import { httpService } from '../../../shared/services/http/http.service';
-import { CatModel, Product, Variant } from '../../../shared/models/Product';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CreatePromotionDto, Promotion, PromoType } from '../../../shared/models/promotions';
-import { BoxLoader } from "../../../shared/components/box-loader/box-loader";
-import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
-import { parseError } from '../../../shared/services/errors/errorParser';
+import { fechaRealValidator } from '../../../../shared/validators/DateValidator';
+import { httpService } from '../../../../shared/services/http/http.service';
+import { CatModel, Product, Variant } from '../../../../shared/models/Product';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CreatePromotionDto, Promotion, PromoType } from '../../../../shared/models/promotions';
+import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
+import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
+import { parseError } from '../../../../shared/services/errors/errorParser';
 
 @Component({
   selector: 'app-create-promotion',
-  imports: [ReactiveFormsModule, CommonModule, BoxLoader],
+  imports: [ReactiveFormsModule, CommonModule, BoxLoader, RouterLink],
   templateUrl: './create-promotion.html',
   styleUrl: './create-promotion.css'
 })
@@ -66,18 +66,20 @@ export class CreatePromotion implements AfterViewInit, OnInit {
       next: val => {
         this.edit = val as Promotion;
         let startDate = new Date(this.edit.startDate)
+        console.log(startDate);
         let endDate = new Date(this.edit.endDate)
         this.createForm.setValue({
           name: this.edit.name,
-          description: '',
+          description: this.edit.description,
           discount: this.edit.discount,
-          startDate: startDate.getFullYear() + '-' + startDate.getMonth().toString() + '-' + startDate.getDay().toString(),
-          endDate: endDate.getFullYear() + '-' + endDate.getMonth() + '-' + endDate.getDay(),
+          startDate: this.convertToDate(startDate),
+          endDate: this.convertToDate(endDate),
           search: ['']
         })
+        this.general = this.edit.Type == PromoType.general
         console.log(val)
-        this.edit.products.map(x => this.selectedVariants[x.productId] = x.product);
-        this.edit.categories.map(x => this.selectedCat[x.categoryId] = x.category)
+        this.edit.products.forEach(x => this.selectedVariants[x.productId] = x.product);
+        this.edit.categories.forEach(x => this.selectedCat[x.categoryId] = x.category)
         this.cdr.detectChanges();
       },
       error: err => {
@@ -149,19 +151,37 @@ export class CreatePromotion implements AfterViewInit, OnInit {
   onSubmit() {
     if (this.valid()) {
 
+      let StartDate = this.crearFechaConOffsetLocal(this.createForm.get('startDate')?.value)
+      let endDate = this.crearFechaConOffsetLocal(this.createForm.get('endDate')?.value)
       const data: CreatePromotionDto = {
-        startDate: new Date(this.createForm.get('startDate')?.value),
-        endDate: new Date(this.createForm.get('endDate')?.value),
+        startDate: StartDate,
+        endDate: endDate,
         name: this.createForm.value.name,
         discountType: 'percent',
         Type: this.general ? PromoType.general : PromoType.prodCat,
         categories: this.getCategories().map(x => x.id),
         products: this.getVariants().map(x => x.id),
-        discount: this.createForm.value.discount
+        discount: this.createForm.value.discount,
+        description: this.createForm.value.description
       }
 
-      console.log(data.startDate);
-      console.log(this.createForm.get('date')?.value);
+      if (this.edit) {
+
+        this.loading = true
+        this.http.updatePromo(this.edit.promo_id, data).subscribe({
+          next: val => {
+            this.loading = false;
+            this.router.navigate(['dashboard/promotions']);
+          },
+          error: err => {
+            this.loading = false;
+            this.errorServ.addError(parseError(err));
+          }
+        })
+        return;
+
+
+      }
 
       this.loading = true
       this.http.createPromo(data).subscribe({
@@ -202,7 +222,7 @@ export class CreatePromotion implements AfterViewInit, OnInit {
   }
 
   valid() {
-    return this.createForm.valid && (this.getVariants().length > 0 || [].length > 0)
+    return this.createForm.valid && this.getVariants().length > 0
   }
 
   onSelectCat(cat: CatModel) {
@@ -244,5 +264,24 @@ export class CreatePromotion implements AfterViewInit, OnInit {
     x = x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     y = y.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     return x.match(y);
+  }
+
+  crearFechaConOffsetLocal(fechaString: string) {
+    // 1. Dividir la fecha
+    const [year, month, day] = fechaString.split('-').map(Number);
+
+    // 2. Crear fecha LOCAL (sin interpretación UTC)
+    const fechaLocal = new Date(year, month - 1, day, 12, 0, 0);
+
+    // 3. Ahora tienes una fecha con offset local incluido
+    return fechaLocal;
+  }
+
+  convertToDate(date: Date) {
+    let year = date.getFullYear().toString();
+    let month = ((date.getMonth() + 1) + 100).toString().slice(1);
+    let day = (date.getDate() + 100).toString().slice(1);
+
+    return year + '-' + month + '-' + day;
   }
 }

@@ -7,12 +7,13 @@ import { Router, RouterLink } from '@angular/router';
 import { ErrorLogService } from '../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../shared/services/errors/errorParser';
 import { Carousels } from "./carousels/carousels";
+import { MessageBox } from "../../../shared/components/message-box/message-box";
 
 
 
 @Component({
   selector: 'app-promotions',
-  imports: [CommonModule, BoxLoader, RouterLink, Carousels],
+  imports: [CommonModule, BoxLoader, RouterLink, Carousels, MessageBox],
   templateUrl: './promotions.html',
   styleUrl: './promotions.css'
 })
@@ -40,6 +41,7 @@ export class Promotions implements OnInit {
       }
     })
   }
+  warn: { msg: string, warn: string } | undefined;
 
   getDate(pDate: Date) {
     const date = new Date(pDate)
@@ -49,5 +51,25 @@ export class Promotions implements OnInit {
   onSearch() { }
   navigateEdit(id: string) {
     this.router.navigate(['/dashboard/create-promotion'], { queryParams: { edit: id } })
+  }
+
+  deletePromo(id: string) {
+    this.loading = true
+    this.http.deletePromo(id).subscribe({
+      next: val => this.ngOnInit(),
+      error: err => {
+        this.errorServ.addError(parseError(err));
+      }
+    })
+  }
+  ask(id: string) {
+    this.toDelete = id
+    this.warn = { msg: 'Eliminar promoción', warn: '¿Estás seguro que deseas realizar esta acción? Esta acción no tiene vuelta atrás.' };
+  }
+  toDelete: string | undefined
+  onDecide(result: boolean) {
+    this.warn = undefined
+    if (result && this.toDelete) this.deletePromo(this.toDelete);
+    this.toDelete = undefined;
   }
 }
