@@ -1,0 +1,42 @@
+<div class="main">
+  <header class="main-head">
+    <div class="name">
+      <h2>{{promotion.name}}</h2>
+      <p>{{convertToDate(promotion.startDate)}} - {{convertToDate(promotion.endDate)}}</p>
+    </div>
+
+    <button class="button-chips">
+      <img src="edit-3.svg">
+      <span>Editar</span>
+    </button>
+  </header>
+  <div class="desc-section">
+    <div class="info-object name">
+      <h4>Nombre</h4>
+      <p>{{promotion.name}}</p>
+    </div>
+    <div class="info-object">
+      <h4>Descripción breve</h4>
+      <p>{{promotion.description}}</p>
+    </div>
+  </div>
+  <div class="desc-section-2">
+    <div class="info-object">
+      <h4>Tipo de promoción</h4>
+      <p>{{promotion.Type? 'General': 'Por categoría y producto'}}</p>
+    </div>
+    <div class="info-object">
+      <h4>Valor del descuento</h4>
+      <p>{{promotion.discount}} %</p>
+    </div>
+    <div class="info-object">
+      <h4>Fecha de inicio</h4>
+      <p>{{convertToDate(promotion.startDate)}}</p>
+    </div>
+    <div class="info-object">
+      <h4>Fecha de finalización</h4>
+      <p>{{convertToDate(promotion.endDate)}}</p>
+    </div>
+  </div>
+  <div class="promo-content"></div>
+</div>

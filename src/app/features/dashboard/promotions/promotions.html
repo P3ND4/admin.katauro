@@ -10,6 +10,11 @@
     <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
   </div>
   }
+  @if(info){
+  <div class="wrapper">
+    <app-promotion-info [promotion]="info"></app-promotion-info>
+  </div>
+  }
 
 
   <header class="header">
@@ -86,7 +91,7 @@
             <p>{{item}}</p>
           </div>
           @for (promo of promotions; track $index) {
-          <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`">
+          <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`" (click)="info = promo">
 
             @if (item === 'Nombre') {
             <p>{{promo.name}}</p>

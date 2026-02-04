@@ -8,12 +8,13 @@ import { ErrorLogService } from '../../../shared/services/errors/error.log.servi
 import { parseError } from '../../../shared/services/errors/errorParser';
 import { Carousels } from "./carousels/carousels";
 import { MessageBox } from "../../../shared/components/message-box/message-box";
+import { PromotionInfo } from "./promotion-info/promotion-info";
 
 
 
 @Component({
   selector: 'app-promotions',
-  imports: [CommonModule, BoxLoader, RouterLink, Carousels, MessageBox],
+  imports: [CommonModule, BoxLoader, RouterLink, Carousels, MessageBox, PromotionInfo],
   templateUrl: './promotions.html',
   styleUrl: './promotions.css'
 })
@@ -22,7 +23,7 @@ export class Promotions implements OnInit {
   proSection = true;
   promotions: Promotion[] = []
 
-
+  info: Promotion | undefined;
   loading = false;
   constructor(private http: httpService, private cdr: ChangeDetectorRef, private router: Router, private errorServ: ErrorLogService) {
   }
