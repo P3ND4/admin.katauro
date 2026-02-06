@@ -12,7 +12,7 @@
   }
   @if(info){
   <div class="wrapper">
-    <app-promotion-info [promotion]="info"></app-promotion-info>
+    <app-promotion-info [promotion]="info" (close)="info = undefined"></app-promotion-info>
   </div>
   }
 

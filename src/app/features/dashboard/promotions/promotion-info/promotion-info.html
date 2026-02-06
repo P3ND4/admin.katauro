@@ -1,11 +1,14 @@
 <div class="main">
   <header class="main-head">
+    <div class="cross" (click)="onClose()">
+      <img src="x.svg" alt="">
+    </div>
     <div class="name">
       <h2>{{promotion.name}}</h2>
       <p>{{convertToDate(promotion.startDate)}} - {{convertToDate(promotion.endDate)}}</p>
     </div>
 
-    <button class="button-chips">
+    <button class="button-chips" (click)="navigateToEdit()">
       <img src="edit-3.svg">
       <span>Editar</span>
     </button>
@@ -38,5 +41,26 @@
       <p>{{convertToDate(promotion.endDate)}}</p>
     </div>
   </div>
-  <div class="promo-content"></div>
+  <div class="promo-content">
+    <div class="categories">
+      <h4>Categorías</h4>
+      @for (cat of promotion.categories; track cat) {
+      <div class="item cat">
+        <span>{{cat.category.nombre}}</span>
+      </div>
+      }
+    </div>
+
+    <div class="products">
+      <h4>Productos</h4>
+      @for (prod of promotion.products; track prod) {
+      <div class="item product">
+        <div class="image">
+          <img [src]="prod.product.image" alt="">
+        </div>
+        <span> {{prod.product.genericProd?.name}} </span>
+      </div>
+      }
+    </div>
+  </div>
 </div>
