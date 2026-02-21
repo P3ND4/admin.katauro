@@ -7,6 +7,7 @@ export class CreateProductDto {
     categoryId!: string;
     typology!: Typology
     vector!: string;
+    vPublicId?: string;
     finishId!: string[]
     variants!: CreateSpecProductDTO[]
     details!: string[]
@@ -20,5 +21,5 @@ export class CreateSpecProductDTO {
     stock!: number;
     colorId!: string
     image!: string
-    images!: string[]
+    images!: { link: string, public_id?: string }[]
 }

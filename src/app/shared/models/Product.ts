@@ -15,6 +15,7 @@ export class Product {
   description!: string;
   subtitle!: string;
   vector?: string;
+  vPublicId?: string;
   category!: CatModel;
   typology!: Typology;
   details!: detail[];
@@ -46,7 +47,7 @@ export class Variant {
   price!: number;
   stock!: number;
   image?: string;
-  images!: { link: string, id: string }[]
+  images!: { link: string, id: string, public_id?: string }[]
   color!: Color
   genericId!: string;
   genericProd?: Product;

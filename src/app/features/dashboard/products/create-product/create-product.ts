@@ -22,7 +22,7 @@ export class CreateProduct implements OnInit {
   file: File | undefined;
   createFinish: FormGroup;
   createColor: FormGroup;
-  imagePreview: string[] | undefined[] = [undefined, undefined, undefined, undefined]
+  imagePreview: string[] | undefined[] = [undefined, undefined, undefined, undefined];
   isHovering = false;
   isHoveringVariant = false;
   createProductForm: FormGroup;
@@ -145,7 +145,7 @@ export class CreateProduct implements OnInit {
       this.createProductForm.get('subtitle')?.setValue(this.editProduct.subtitle);
       this.createProductForm.get('description')?.setValue(this.editProduct.description);
       this.createProductForm.get('details')?.setValue(this.editProduct.details.map(x => x.text).join('\n'));
-      this.createProductForm.get('vector')?.setValue(this.editProduct.vector);
+      this.createProductForm.get('vector')?.setValue({ vector: this.editProduct.vector, public_id: this.editProduct.vPublicId });
       this.createProductForm.get('categoryId')?.setValue(this.editProduct.category.id);
       this.createProductForm.get('finishesId')?.setValue(this.editProduct.finish.map(x => x.finishId));
       this.typology = this.editProduct.typology == Typology.simple ? true : false;
@@ -162,7 +162,7 @@ export class CreateProduct implements OnInit {
         this.color[index] = variant.color;
         this.variants.controls[index].get('stock')?.setValue(variant.stock);
         this.variants.controls[index].get('price')?.setValue(variant.price);
-        this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => img.link));
+        this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => ({ link: img.link, public_id: img.public_id })));
         this.variantPreviews[index] = variant.images.map(img => img.link);
       });
       this.loading = false;
@@ -340,19 +340,24 @@ export class CreateProduct implements OnInit {
         subtitle: this.createProductForm.get('subtitle')?.value,
         categoryId: this.createProductForm.get('categoryId')?.value, // Example category ID
         typology: this.typology ? Typology.simple : Typology.variant,
-        vector: this.createProductForm.get('vector')?.value, // Placeholder, handle file upload separately
+        vector: this.createProductForm.get('vector')?.value.vector, // Placeholder, handle file upload separately
+        vPublicId: this.createProductForm.get('vector')?.value?.vPublicId,
         details: this.createProductForm.get('details')?.value.split('\n'),
         finishId: this.createProductForm.get('finishesId')?.value,
-        variants: reorderedVariants.map(
-          (variant: any): CreateSpecProductDTO =>
-          ({
-            stock: variant.stock,
-            price: variant.price,
-            colorId: variant.colorId,
-            image: variant.variantImages[0], // La primera imagen sigue siendo la importante
-            images: variant.variantImages
 
-          }))
+        variants: reorderedVariants.map(
+          (variant: any): CreateSpecProductDTO => {
+
+            const varImg = variant.variantImages as { link: string, public_id?: string }[]
+            return {
+              stock: variant.stock,
+              price: variant.price,
+              colorId: variant.colorId,
+              image: varImg[0].link, // La primera imagen sigue siendo la importante
+              images: varImg
+
+            }
+          })
       }
       body.variants = this.typology ? [body.variants[0]] : body.variants
       console.log(body);
@@ -383,35 +388,34 @@ export class CreateProduct implements OnInit {
   uploadMulti(files: File[]) {
     this.progress = 0;
     const count = files.length
-    var urls: string[] = files.map(file => "");
+    var urls: { link: string, public_id?: string }[] = files.map(file => ({ link: '', public_id: undefined }));
     files.forEach((file, index: number) => {
       var fileProgress = 0
       this.cloudy.uploadFile(file).subscribe(event => {
         if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.progress = this.progress - fileProgress
+          this.progress = this.progress - fileProgress;
           fileProgress = Math.round(((event.loaded / event.total) * 100) / count);
-          this.progress += fileProgress
+          this.progress += fileProgress;
           this.cdr.detectChanges();
         } else if (event.type === HttpEventType.Response) {
           console.log('✅ Subida completa:', event.body);
-          const optimizedUrl = (event.body as { secure_url: string }).secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+          const res = event.body as { secure_url: string, public_id: string };
+          const optimizedUrl = res.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
           this.progress = this.progress - fileProgress
           fileProgress = Math.round(100 / count);
           this.progress += fileProgress;
-          urls[index] = optimizedUrl
+          urls[index] = { link: optimizedUrl, public_id: res.public_id }
           if (this.progress === 100) {
-            var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as string[];
+            var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
             currentFiles = files.length + currentFiles.length > 5 && files.length < 5 ? currentFiles.slice(currentFiles.length - (5 - files.length), undefined) : files.length == 5 ? [] : currentFiles;
             currentFiles.push(...urls);
             this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles)
-            this.variantPreviews[this.currentVariant] = currentFiles;
+            this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
             setTimeout(() => {
               this.progress = -1;
               this.cdr.detectChanges();
             }, 3000);
-
           }
-
           this.cdr.detectChanges();
         }
       });
@@ -427,18 +431,20 @@ export class CreateProduct implements OnInit {
         this.cdr.detectChanges();
       } else if (event.type === HttpEventType.Response) {
         console.log('✅ Subida completa:', event.body);
-        const optimizedUrl = (event.body as { secure_url: string }).secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+        const cloud = event.body as { secure_url: string, public_id: string };
+        const optimizedUrl = cloud.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
         this.progress = 100;
         this.imagePreview[i] = optimizedUrl
         switch (i) {
           case 0:
-            this.createProductForm.get('vector')?.setValue(optimizedUrl);
+            this.createProductForm.get('vector')?.setValue({ vector: optimizedUrl, vPublicId: cloud.public_id });
+
             break;
           case 1:
-            this.createFinish.get('image')?.setValue(optimizedUrl);
+            this.createFinish.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
             break;
           case 2:
-            this.createColor.get('image')?.setValue(optimizedUrl);
+            this.createColor.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
         }
         setTimeout(() => {
           this.progress = -1;
@@ -451,10 +457,13 @@ export class CreateProduct implements OnInit {
 
   onCreateFinish() {
     if (this.createFinish.valid) {
+      const image = this.createFinish.get('image')?.value as { image: string, public_id: string };
+
       const finish = {
         text: this.createFinish.get('name')?.value,
-        image: this.createFinish.get('image')?.value
-      }
+        image: image.image,
+        public_id: image.public_id
+      };
       this.http.createFinish(finish).subscribe(
         {
           next: val => {
@@ -509,7 +518,8 @@ export class CreateProduct implements OnInit {
     if (this.createColor.valid) {
       const color = {
         name: this.createColor.get('name')?.value,
-        image: this.createColor.get('image')?.value
+        image: this.createColor.get('image')?.value?.image,
+        public_id: this.createColor.get('image')?.value?.public_id
       }
       this.http.createColor(color).subscribe(
         {

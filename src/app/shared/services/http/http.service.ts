@@ -62,11 +62,11 @@ export class httpService {
   getColors() {
     return this.httpClient.get(`${this.apiUrl}products/colors`);
   }
-  createColor(color: { name: string, image: string }) {
+  createColor(color: { name: string, image: string, public_id?: string }) {
     return this.httpClient.post(`${this.apiUrl}products/colors`, color);
   }
 
-  createFinish(finish: { text: string, image: string }) {
+  createFinish(finish: { text: string, image: string, public_id?: string }) {
     return this.httpClient.post(`${this.apiUrl}products/finish`, finish);
   }
 
