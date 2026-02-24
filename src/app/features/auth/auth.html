@@ -1,0 +1,25 @@
+<div class="main">
+    @if(loading){
+    <div class="loader-wrapper">
+        <app-box-loader></app-box-loader>
+    </div>
+    }
+    <form [formGroup]="passForm" (ngSubmit)="onSubmit()">
+        <header>
+            <h2>
+                Iniciar sesión
+            </h2>
+            <P>¡Bienvenido de nuevo! Introduce tu contraseña.</P>
+        </header>
+
+        <div class="input-container">
+            <label>Contraseña</label>
+            <div class="input-content">
+                <input type="password" formControlName="password" name="password" id="password"
+                    placeholder="Introduce tu contraseña" required>
+            </div>
+        </div>
+
+        <button type="submit" class="button-base" [disabled]="passForm.invalid"><span>Iniciar sesión</span></button>
+    </form>
+</div>

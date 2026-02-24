@@ -570,7 +570,9 @@ export class CreateProduct implements OnInit {
         },
         error: err => {
           this.errorServ.addError(parseError(err));
+          console.log(err);
           this.loading = false;
+          this.cdr.detectChanges()
         }
       }
     );

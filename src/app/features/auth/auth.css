@@ -1,0 +1,51 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    width: 100%;
+    height: 100svh;
+}
+
+form {
+    display: flex;
+    padding: 48px 16px;
+    flex-direction: column;
+   
+    gap: 32px;
+  
+    width: 343px;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+h2 {
+    color: var(--Gray-900, #181D27);
+
+    /* Display xs/Semibold */
+    font-family: var(--montser-font);
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+    /* 133.333% */
+}
+
+header p {
+    color: var(--Gray-600, #535862);
+
+    /* Text md/Regular */
+    font-family: var(--montser-font);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+}

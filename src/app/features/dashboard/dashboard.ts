@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { AuthService } from '../../shared/services/auth/auth-service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,9 +9,14 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
-export class Dashboard {
-  constructor(private router: Router) {
+export class Dashboard implements OnInit {
+  constructor(private router: Router, private auth: AuthService) {
 
+  }
+  ngOnInit(): void {
+    this.auth.isLoggedIn().add(() => {
+      if (!this.auth.isLogged()) this.router.navigate(['login']);
+    });
   }
 
   isRoute(route: string) {
