@@ -4,6 +4,27 @@
     gap: 32px;
 }
 
+.prod-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.head-bar-item.imagen {
+    min-height: 43px;
+}
+
+.product-item.imagen {
+    justify-content: center;
+    align-items: center;
+}
+
+.prod-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 .details-wrapper {
     position: absolute;
@@ -164,6 +185,11 @@ h1 {
 
 .column.categoría {
     width: 225px;
+    flex: none;
+}
+
+.column.imagen{
+    width: 93px;
     flex: none;
 }
 

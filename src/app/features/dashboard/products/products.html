@@ -83,14 +83,21 @@
         </header>
 
         <div class="head-bar">
-            @for (item of ['Nombre', 'Categoría', 'Precio', 'Stock', 'Tipología', 'Estado', '']; track $index) {
+            @for (item of ['imagen','Nombre', 'Categoría', 'Precio', 'Stock', 'Tipología', 'Estado', '']; track $index)
+            {
             <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
                 <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
-                    <p>{{item}}</p>
+                    <p>{{item == 'imagen'? '': item}}</p>
                 </div>
                 @for (prod of products; track $index) {
                 <div [className]="`product-item ${item === '' ? 'action' : item.toLowerCase()}`"
                     (click)="details = prod">
+                    @if(item === 'imagen') {
+                    <div class="prod-image">
+                        <img [src]="prod.variants.length > 0 ? prod.variants[0].images[0].link : 'placeholder-image.png'"
+                            alt="Imagen del producto">
+                    </div>
+                    }
                     @if (item === 'Nombre') {
                     <p>{{prod.name}}</p>
                     }
