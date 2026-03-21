@@ -334,10 +334,10 @@
                                     <p>SVG, PNG, JPG or GIF</p>
                                 </div>
                             </div>
-                            <div class="imges-container">
-                                @for (preview of variantPreviews[currentVariant]; track $index) {
-                                <div class="images">
-                                    <img [src]="preview" class="icon-preview" alt="preview">
+                            <div cdkDropList (cdkDropListDropped)="reorder($event)" class="imges-container">
+                                @for (preview of getVariantsImages(currentVariant); track preview) {
+                                <div cdkDrag [cdkDragData]="preview" class="images" [attr.data-index]="$index">
+                                    <img [src]="preview.link" class="icon-preview" alt="preview">
                                 </div>
                                 }
                             </div>

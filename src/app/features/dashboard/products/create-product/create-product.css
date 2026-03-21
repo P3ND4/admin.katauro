@@ -175,7 +175,8 @@ textarea {
     background: var(--Gray-100, #F5F5F5);
     box-sizing: border-box;
 }
-.input-base{
+
+.input-base {
     position: relative;
 }
 
@@ -345,17 +346,18 @@ input[type=number] {
     height: 96.2px;
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 7.738px;
-    align-self: stretch;
     border-radius: 8px;
     overflow: hidden;
-    width: 512;
+    width: 512px;
 }
 
 .images {
     height: 100%;
     width: 96.2px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .images img {
@@ -468,6 +470,7 @@ input[type=number] {
 .switch.non-active {
     transform: translate(-48%);
 }
+
 .togle.non-active {
     background-color: white;
 }
@@ -522,7 +525,7 @@ footer {
     z-index: 3;
     left: 0px;
     top: 100%;
-    
+
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -559,7 +562,7 @@ footer {
     /* 142.857% */
     margin: 0px;
     cursor: pointer;
-    
+
 }
 
 .creation-dialog {

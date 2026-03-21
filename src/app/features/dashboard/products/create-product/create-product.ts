@@ -11,10 +11,10 @@ import { Subscription } from 'rxjs';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../../shared/services/errors/errorParser';
 import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
-
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-create-product',
-  imports: [ReactiveFormsModule, CommonModule, BoxLoader],
+  imports: [ReactiveFormsModule, CommonModule, BoxLoader, DragDropModule],
   templateUrl: './create-product.html',
   styleUrl: './create-product.css'
 })
@@ -85,6 +85,38 @@ export class CreateProduct implements OnInit {
 
   }
   loading = false;
+
+  reorder(event: CdkDragDrop<any[]>) {
+    const list = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
+
+    const dropX = event.dropPoint.x;
+    const dropY = event.dropPoint.y;
+
+    const elements = document.querySelectorAll('.images');
+
+    let targetIndex = list.length - 1;
+
+    elements.forEach((el: any) => {
+      const rect = el.getBoundingClientRect();
+      if (
+        dropX >= rect.left &&
+        dropX <= rect.right &&
+        dropY >= rect.top &&
+        dropY <= rect.bottom
+      ) {
+        targetIndex = Number(el.dataset.index);
+      }
+    });
+    const previousIndex = event.previousIndex;
+    console.log(previousIndex, ' => ', targetIndex);
+
+    const dragged = list[previousIndex];
+    list.splice(previousIndex, 1);
+    list.splice(targetIndex, 0, dragged);
+    this.variants.controls[this.currentVariant].get('variantImages')?.setValue(list);
+  }
+
+
 
   chargeComponentData() {
     const edit = this.route.snapshot.queryParamMap.get('edit');
@@ -158,6 +190,7 @@ export class CreateProduct implements OnInit {
       }
       this.currentVariant = 0;
       this.editProduct.variants.forEach((variant, index) => {
+        this.variants.controls[index].get('id')?.setValue(variant.id);
         this.variants.controls[index].get('colorId')?.setValue(variant.color?.id);
         this.color[index] = variant.color;
         this.variants.controls[index].get('stock')?.setValue(variant.stock);
@@ -292,8 +325,9 @@ export class CreateProduct implements OnInit {
     return this.imagePreview[i];
   }
 
-  addVariant() {
+  addVariant(id?: string) {
     const variantGroup = this.fb.group({
+      id: [id ?? undefined],
       stock: [0, Validators.required],
       price: [0, Validators.required],
       colorId: ['', Validators.required],
@@ -304,8 +338,12 @@ export class CreateProduct implements OnInit {
   }
 
 
-  get variants() {
+  public get variants() {
     return this.createProductForm.get('variants') as FormArray;
+  }
+
+  getVariantsImages(variant: number) {
+    return this.variants.controls[variant].get('variantImages')?.value as { link: string, public_id?: string }[];
   }
 
 
@@ -350,6 +388,7 @@ export class CreateProduct implements OnInit {
 
             const varImg = variant.variantImages as { link: string, public_id?: string }[]
             return {
+              id: variant.id,
               stock: variant.stock,
               price: variant.price,
               colorId: variant.colorId,
