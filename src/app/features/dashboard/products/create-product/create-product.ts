@@ -160,6 +160,7 @@ export class CreateProduct implements OnInit {
           this.editProduct = val as Product;
           console.log(this.editProduct);
           if (edit) this.setValuesForEdit();
+          console.log(val);
         },
         error: err => {
           this.errorServ.addError(parseError(err));
@@ -177,7 +178,7 @@ export class CreateProduct implements OnInit {
       this.createProductForm.get('subtitle')?.setValue(this.editProduct.subtitle);
       this.createProductForm.get('description')?.setValue(this.editProduct.description);
       this.createProductForm.get('details')?.setValue(this.editProduct.details.map(x => x.text).join('\n'));
-      this.createProductForm.get('vector')?.setValue({ vector: this.editProduct.vector, public_id: this.editProduct.vPublicId });
+      this.createProductForm.get('vector')?.setValue({ vector: this.editProduct.vector, vPublicId: this.editProduct.vPublicId });
       this.createProductForm.get('categoryId')?.setValue(this.editProduct.category.id);
       this.createProductForm.get('finishesId')?.setValue(this.editProduct.finish.map(x => x.finishId));
       this.typology = this.editProduct.typology == Typology.simple ? true : false;
@@ -195,7 +196,7 @@ export class CreateProduct implements OnInit {
         this.color[index] = variant.color;
         this.variants.controls[index].get('stock')?.setValue(variant.stock);
         this.variants.controls[index].get('price')?.setValue(variant.price);
-        this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => ({ link: img.link, public_id: img.public_id })));
+        this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => ({ link: img.link, public_id: img.publicId })));
         this.variantPreviews[index] = variant.images.map(img => img.link);
       });
       this.loading = false;
@@ -418,6 +419,7 @@ export class CreateProduct implements OnInit {
         );
       }
       else {
+        console.log(body);
         this.update(body);
       }
     }

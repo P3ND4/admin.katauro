@@ -47,7 +47,7 @@ export class Variant {
   price!: number;
   stock!: number;
   image?: string;
-  images!: { link: string, id: string, public_id?: string }[]
+  images!: { link: string, id: string, publicId?: string }[]
   color!: Color
   genericId!: string;
   genericProd?: Product;
