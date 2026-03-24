@@ -71,6 +71,8 @@ export class Products implements OnInit {
       {
         next: val => {
           this.pages = val as number
+          this.pagesArray = Array(this.pages).fill(0).map((x, i) => i + 1);
+          console.log(this.pagesArray);
           this.getProducts();
         },
         error: err => {
@@ -108,6 +110,7 @@ export class Products implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
+    this.params.page = page;
     this.router.navigate([], { queryParams: this.params });
   }
   onAddFilter(filter: Category) {
@@ -123,13 +126,17 @@ export class Products implements OnInit {
   }
 
   delete(id: string) {
+    this.loading = true;
     this.http.deleteProduct(id).subscribe({
       next: val => {
-        console.log(val);
+        this.loading = false;
         this.ReadData();
         this.cdr.detectChanges();
       },
-      error: err => console.log(err)
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false;
+      }
     });
   }
 
