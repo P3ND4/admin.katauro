@@ -358,6 +358,7 @@ input[type=number] {
     width: 96.2px;
     overflow: hidden;
     flex-shrink: 0;
+    position: relative;
 }
 
 .images img {
@@ -619,6 +620,16 @@ footer {
 .upload-img-prop {
     display: flex;
     width: 100%;
+}
+
+.delete-var-image {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+.delete-var-image:hover {
+    cursor: pointer;
 }
 
 .creat-actions {

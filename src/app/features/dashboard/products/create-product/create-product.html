@@ -337,6 +337,9 @@
                             <div cdkDropList (cdkDropListDropped)="reorder($event)" class="imges-container">
                                 @for (preview of getVariantsImages(currentVariant); track preview) {
                                 <div cdkDrag [cdkDragData]="preview" class="images" [attr.data-index]="$index">
+                                    <div class="delete-var-image">
+                                        <img src="divide-circle.svg" alt="" (click)="deleteVarImage($index)">
+                                    </div>
                                     <img [src]="preview.link" class="icon-preview" alt="preview">
                                 </div>
                                 }

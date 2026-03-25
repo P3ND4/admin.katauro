@@ -601,6 +601,14 @@ export class CreateProduct implements OnInit {
     this.router.navigate(['dashboard/products'])
   }
 
+  deleteVarImage(index: number) {
+    var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
+    currentFiles.splice(index, 1);
+    this.variants.controls[this.currentVariant].get('variantImages')?.setValue(currentFiles);
+    this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
+  }
+
+
   update(prod: CreateProductDto) {
     this.http.updateProduct(this.editProduct!.id, prod).subscribe(
       {
