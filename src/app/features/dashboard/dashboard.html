@@ -5,19 +5,25 @@
                 <img src="K.png" alt="katauro logo" class="logo">
             </header>
             <div class="nav-items">
-                <div class="nav-item" [ngClass]="{'active': isRoute('/dashboard/products')}"
+                <div class="nav-item products" [ngClass]="{'active': isRoute('/dashboard/products')}"
                     (click)="navigate('/dashboard/products')">
-                    <img class="nav-icon" src="bar-chart-2.svg" alt="">
+                    <div class="nav-icon" src="luminarias.svg" alt=""></div>
                 </div>
-                <div class="nav-item" [routerLink]="'/dashboard/promotions'"
+                <div class="nav-item users" [routerLink]="'/dashboard/users'"
+                    [ngClass]="{'active': isRoute('/dashboard/users')}">
+                    <div class="nav-icon" src="users.svg" alt=""></div>
+                </div>
+                <div class="nav-item promotions" [routerLink]="'/dashboard/promotions'"
                     [ngClass]="{'active': isRoute('/dashboard/promotions')}">
-                    <img src="tag.svg" alt="">
+                    <div class="nav-icon" src="tag.svg" alt=""></div>
                 </div>
-                <div class="nav-item" [routerLink]="'/dashboard/orders'">
-                    <img src="layout.svg" alt="">
+                <div class="nav-item orders" [routerLink]="'/dashboard/orders'"
+                    [ngClass]="{'active': isRoute('/dashboard/orders')}">
+                    <div class="nav-icon" src="layout.svg" alt=""></div>
                 </div>
-                <div class="nav-item">
-                    <img src="users.svg" alt="">
+                <div class="nav-item blogs" [routerLink]="'/dashboard/blogs'"
+                    [ngClass]="{'active': isRoute('/dashboard/blogs')}">
+                    <div class="nav-icon" alt=""></div>
                 </div>
             </div>
         </div>

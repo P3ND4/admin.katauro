@@ -330,7 +330,7 @@ export class CreateProduct implements OnInit {
     const variantGroup = this.fb.group({
       id: [id ?? undefined],
       stock: [0, Validators.required],
-      price: [0, Validators.required],
+      price: [0.00, Validators.required],
       colorId: ['', Validators.required],
       variantImages: [[], [Validators.required, Validators.minLength(5)]]  // para los archivos
     });

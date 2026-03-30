@@ -72,7 +72,6 @@ export class Products implements OnInit {
         next: val => {
           this.pages = val as number
           this.pagesArray = Array(this.pages).fill(0).map((x, i) => i + 1);
-          console.log(this.pagesArray);
           this.getProducts();
         },
         error: err => {
@@ -90,7 +89,6 @@ export class Products implements OnInit {
     this.http.getProducts(this.params).subscribe({
       next: val => {
         this.products = (val as Product[])//.filter(x => x.variants.length > 0);
-        console.log(val);
         this.count = this.products.length
         this.loading = false;
         this.cdr.detectChanges();

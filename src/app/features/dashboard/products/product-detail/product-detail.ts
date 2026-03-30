@@ -3,13 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { httpService } from '../../../../shared/services/http/http.service';
 import { Finish, Product } from '../../../../shared/models/Product';
 import { Subscription } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../../shared/services/errors/errorParser';
+import { CustomCurrencyPipe } from '../../../../shared/pipes/myCurrencyPipe';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, CustomCurrencyPipe],
+  providers: [CurrencyPipe],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css'
 })

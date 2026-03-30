@@ -33,7 +33,13 @@
     display: flex;
     padding: 12px;
     cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    width: 48px;
+    box-sizing: border-box;
 }
+
 
 .route {
     display: flex;
@@ -48,9 +54,52 @@
 }
 
 .nav-icon {
-    stroke-width: 2px;
-    stroke: var(--Brand-300, #98CDD2);
+
+    width: 24px;
+    height: 24px;
+    background-color: #98CDD2;
+
+    -webkit-mask-image: url('/luminarias.svg');
+    mask-image: url('/luminarias.svg');
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
+
+    -webkit-mask-position: center;
+    mask-position: center;
 }
+
+.nav-item.promotions .nav-icon {
+    -webkit-mask-image: url('/tag.svg');
+    mask-image: url('/tag.svg');
+}
+
+.nav-item.active .nav-icon {
+    background-color: #FFFFFF;
+}
+
+
+
+.nav-item.orders .nav-icon {
+    -webkit-mask-image: url('/orders.svg');
+    mask-image: url('/orders.svg');
+}
+
+.nav-item.users .nav-icon {
+    -webkit-mask-image: url('/users.svg');
+    mask-image: url('/users.svg');
+}
+
+.nav-item.blogs .nav-icon {
+    -webkit-mask-image: url('/users.svg');
+    mask-image: url('/layout.svg');
+}
+
+
+
 
 .nav-items-container {
     position: fixed;

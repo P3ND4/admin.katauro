@@ -105,8 +105,10 @@
             <div class="price-info">
                 @if(charged){
                 <p>{{ (currentProduct!.variants.length > 0 ? currentProduct!.variants[currentVariant].price : 0 ) |
-                    currency
-                    }}</p>
+                    customCurrency
+                    }}
+                    <span [style.fontWeight]="600" class="currency">USD</span>    
+                </p>
                 }
                 @else {
                 <div class="sk-bar line price"></div>

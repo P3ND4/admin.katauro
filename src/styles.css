@@ -55,6 +55,7 @@ label {
 
 }
 
+
 .button-base label,
 .button-base span {
   color: var(--White, #FFF);
@@ -251,7 +252,17 @@ textarea {
   font-weight: 400;
   line-height: 24px;
   /* 150% */
+}
 
+.input-base span {
+  color: var(--Gray-500, #717680);
+
+  /* Text md/Regular */
+  font-family: var(--montser-font, sans-serif);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
 
 }
 
