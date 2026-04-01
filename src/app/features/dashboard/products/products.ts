@@ -88,8 +88,8 @@ export class Products implements OnInit {
   getProducts() {
     this.http.getProducts(this.params).subscribe({
       next: val => {
-        this.products = (val as Product[])//.filter(x => x.variants.length > 0);
-        this.count = this.products.length
+        this.products = (val as { products: Product[] }).products//.filter(x => x.variants.length > 0);
+        this.count = (val as { total: number }).total;
         this.loading = false;
         this.cdr.detectChanges();
       },

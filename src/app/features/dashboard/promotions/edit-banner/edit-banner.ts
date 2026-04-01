@@ -93,7 +93,7 @@ export class EditBanner implements OnInit {
 
     this.http.getProducts().subscribe({
       next: (val) => {
-        this.products = val as Product[];
+        this.products = (val as { products: Product[] }).products;
         this.filteredProd = this.products;
         this.loadProd = false;
         this.cdr.detectChanges();

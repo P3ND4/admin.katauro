@@ -119,7 +119,7 @@ export class CreatePromotion implements AfterViewInit, OnInit {
   loadProd() {
     this.http.getProducts().subscribe({
       next: (val) => {
-        this.products = val as Product[];
+        this.products = (val as { products: Product[] }).products;
         this.filteredProd = this.products;
         this.loading = false;
         this.cdr.detectChanges();
