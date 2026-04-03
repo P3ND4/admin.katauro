@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,7 +8,7 @@ import { Tags } from '../../../../shared/models/tags.entity';
 
 @Component({
   selector: 'app-create-blog',
-  imports: [CommonModule, ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal],
+  imports: [ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal],
   templateUrl: './create-blog.html',
   styleUrl: './create-blog.css',
 })

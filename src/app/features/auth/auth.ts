@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorLogService } from '../../shared/services/errors/error.log.service';
@@ -8,7 +8,7 @@ import { BoxLoader } from "../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-auth',
-  imports: [ReactiveFormsModule, CommonModule, BoxLoader],
+  imports: [ReactiveFormsModule, BoxLoader],
   templateUrl: './auth.html',
   styleUrl: './auth.css'
 })

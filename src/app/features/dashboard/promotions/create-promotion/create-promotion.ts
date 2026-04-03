@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { fechaRealValidator } from '../../../../shared/validators/DateValidator';
@@ -12,7 +12,7 @@ import { parseError } from '../../../../shared/services/errors/errorParser';
 
 @Component({
   selector: 'app-create-promotion',
-  imports: [ReactiveFormsModule, CommonModule, BoxLoader, RouterLink],
+  imports: [ReactiveFormsModule, BoxLoader, RouterLink],
   templateUrl: './create-promotion.html',
   styleUrl: './create-promotion.css'
 })
