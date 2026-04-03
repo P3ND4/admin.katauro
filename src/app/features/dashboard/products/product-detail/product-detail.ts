@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { httpService } from '../../../../shared/services/http/http.service';
-import { Finish, Product } from '../../../../shared/models/Product';
+import { Finish, Product } from '../../../../shared/models/product/Product';
 import { Subscription } from 'rxjs';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';

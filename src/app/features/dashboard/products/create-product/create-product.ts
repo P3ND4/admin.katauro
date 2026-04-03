@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Category, CatModel, Color, Finish, Product, Typology } from '../../../../shared/models/Product';
-import { CreateProductDto, CreateSpecProductDTO } from '../../../../shared/models/create-product-dto';
+import { Category, CatModel, Color, Finish, Product, Typology } from '../../../../shared/models/product/Product';
+import { CreateProductDto, CreateSpecProductDTO } from '../../../../shared/models/product/create-product-dto';
 import { httpService } from '../../../../shared/services/http/http.service';
 import { CloudinaryService } from '../../../../shared/services/cloudinary/cloudinary.service';
 import { HttpEventType } from '@angular/common/http';

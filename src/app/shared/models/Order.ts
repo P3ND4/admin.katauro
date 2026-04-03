@@ -1,4 +1,4 @@
-import { Variant } from "./Product";
+import { Variant } from "./product/Product";
 import { User } from "./User";
 
 export class Order {

@@ -1,0 +1,96 @@
+<div class="main">
+    <header class="header">
+        <h1>Crear Blog</h1>
+    </header>
+
+    <form class="create-form" [formGroup]="createForm" (submit)="onSubmit()">
+        <div class="form-text">
+            <label for="title">Título</label>
+            <div class="set">
+                <div class="input-base">
+                    <input id="title" type="text" formControlName="title" placeholder="Escribe el título" />
+                </div>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label>Etiquetas</label>
+            <div class="selection">
+                <div class="input-base" (click)="toggleTagOption()">
+                    <label>
+                        Selecciona etiquetas
+                    </label>
+                    <img src="chevron-down.svg" alt="" />
+                </div>
+                @if(openTagOption){
+                <div class="dialog" (click)="$event.stopPropagation()">
+                    <div class="dialog-item add-tag-option" (click)="openCreateTagModal(); $event.stopPropagation()">
+                        <img src="plus-circle.svg" alt="" />
+                        <p>Crear etiqueta</p>
+                    </div>
+                    @for (tag of tags; track $index) {
+                    <div class="dialog-item" (click)="onSelectTag(tag); $event.stopPropagation()">
+                        <p>{{tag.name}}</p>
+                        @if(tag.id in selectedTags){
+                        <img src="check.svg" alt="selected" />
+                        }
+                    </div>
+                    }
+                </div>
+                }
+
+                <div class="selected-tags">
+                    @for (selected of getSelectedTags(); track $index) {
+                    <div class="items">
+                        <div class="tag-data">
+                            <p>{{selected.name}}</p>
+                        </div>
+                        <img class="delete" src="divide-circle.svg" alt="delete" (click)="onRemoveTag(selected)" />
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="form-text">
+            <label>Imagen destacada</label>
+            <div class="set">
+                <app-drag-and-drop (uploaded)="onImageUploaded($event)"></app-drag-and-drop>
+                @if(imageUrl){
+                <div class="image-preview">
+                    <img [src]="imageUrl" alt="Preview" />
+                </div>
+                }
+            </div>
+            <div class="line"></div>
+        </div>
+
+
+        <div class="form-text">
+            <label>Content</label>
+            <div class="set">
+                
+                <div [innerHTML]="createForm.get('content')?.value"></div>
+            </div>
+
+            <div class="line"></div>
+        </div>
+
+
+        <footer class="form-footer">
+            <button class="button-chips" type="button" [routerLink]="'/dashboard/blogs'">
+                <span>Cancelar</span>
+            </button>
+            <button class="button-base" type="submit" [disabled]="!valid()">
+                <span>Guardar</span>
+            </button>
+        </footer>
+    </form>
+
+    @if(showCreateTagModal) {
+    <app-create-tag-modal (tagCreated)="onTagCreated($event)" (closed)="onTagModalClosed()">
+    </app-create-tag-modal>
+    }
+</div>

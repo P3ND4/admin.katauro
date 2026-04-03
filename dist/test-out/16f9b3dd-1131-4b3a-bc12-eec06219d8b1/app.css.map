@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.css"],
+  "sourcesContent": [".errors-wrapepr {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 8px;\r\n\r\n    width: auto;\r\n    bottom: 40px;\r\n    position: fixed;\r\n    z-index: 1000;\r\n    left: initial;\r\n\r\n    left: calc(50% - 165px);\r\n\r\n}"],
+  "mappings": ";AAAA,CAAC;AACG,WAAS;AACT,kBAAgB;AAChB,OAAK;AAEL,SAAO;AACP,UAAQ;AACR,YAAU;AACV,WAAS;AACT,QAAM;AAEN,QAAM,KAAK,IAAI,EAAE;AAErB;",
+  "names": []
+}

@@ -9,7 +9,9 @@ export const routes: Routes = [
       { path: 'orders', loadComponent: () => import('./features/dashboard/orders/orders').then(m => m.Orders) },
       { path: 'promotions', loadComponent: () => import('./features/dashboard/promotions/promotions').then(m => m.Promotions) },
       { path: 'create-promotion', loadComponent: () => import('./features/dashboard/promotions/create-promotion/create-promotion').then(m => m.CreatePromotion) },
-      { path: 'edit-banner/:id', loadComponent: () => import('./features/dashboard/promotions/edit-banner/edit-banner').then(m => m.EditBanner) }
+      { path: 'edit-banner/:id', loadComponent: () => import('./features/dashboard/promotions/edit-banner/edit-banner').then(m => m.EditBanner) },
+      { path: 'blogs', loadComponent: () => import('./features/dashboard/blogs/blogs').then(m => m.Blogs) },
+      { path: 'create-blog', loadComponent: () => import('./features/dashboard/blogs/create-blog/create-blog').then(m => m.CreateBlog) },
     ]
   },
   { path: 'login', loadComponent: () => import('./features/auth/auth').then(m => m.Auth) },

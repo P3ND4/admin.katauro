@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Category, Product, Typology } from '../../../shared/models/Product';
+import { Category, Product, Typology } from '../../../shared/models/product/Product';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs';

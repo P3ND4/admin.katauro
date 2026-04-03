@@ -1,0 +1,46 @@
+<div class="overlay" (click)="onCancel()">
+  <form class="creation-dialog" [formGroup]="createTagForm" (submit)="onSubmit()" (click)="$event.stopPropagation()">
+    <h2>Agregar etiqueta</h2>
+    
+    <div class="input-container">
+      <label class="form-label">Nombre</label>
+      <div class="input-content">
+        <input type="text" formControlName="name" placeholder="Metal blanco" />
+      </div>
+    </div>
+
+    <div class="input-container color-container">
+      <label class="form-label">Color</label>
+      <div class="input-content" (click)="showColorDropdown = !showColorDropdown">
+        <div class="color-input">
+          <div class="color-dot" [style.background-color]="selectedColor?.hex"></div>
+          <span>{{ selectedColor?.name }}</span>
+          <img src="chevron-down.svg" alt="" />
+        </div>
+      </div>
+      
+      @if(showColorDropdown) {
+        <div class="color-dropdown" (click)="$event.stopPropagation()">
+          @for (color of availableColors; track $index) {
+            <div class="color-option" (click)="onSelectColor(color)">
+              <div class="color-dot" [style.background-color]="color.hex"></div>
+              <span>{{ color.name }}</span>
+              @if(selectedColor?.hex === color.hex) {
+                <img src="check.svg" alt="selected" />
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="creat-actions">
+      <button class="button-chips" style="flex: 1;" type="button" (click)="onCancel()">
+        <label>Cancelar</label>
+      </button>
+      <button class="button-base" style="flex: 1;" type="submit" [disabled]="!createTagForm.valid">
+        <label>Guardar</label>
+      </button>
+    </div>
+  </form>
+</div>

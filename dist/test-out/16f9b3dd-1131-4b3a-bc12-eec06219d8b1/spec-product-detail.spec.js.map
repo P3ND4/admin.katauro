@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/features/dashboard/products/product-detail/product-detail.spec.ts"],
+  "sourcesContent": ["import { ComponentFixture, TestBed } from '@angular/core/testing';\r\n\r\nimport { ProductDetail } from './product-detail';\r\n\r\ndescribe('ProductDetail', () => {\r\n  let component: ProductDetail;\r\n  let fixture: ComponentFixture<ProductDetail>;\r\n\r\n  beforeEach(async () => {\r\n    await TestBed.configureTestingModule({\r\n      imports: [ProductDetail]\r\n    })\r\n    .compileComponents();\r\n\r\n    fixture = TestBed.createComponent(ProductDetail);\r\n    component = fixture.componentInstance;\r\n    fixture.detectChanges();\r\n  });\r\n\r\n  it('should create', () => {\r\n    expect(component).toBeTruthy();\r\n  });\r\n});\r\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA;;;AAEA;AAEA,aAAS,iBAAiB,MAAK;AAC7B,UAAI;AACJ,UAAI;AAEJ,iBAAW,MAAW;AACpB,cAAM,QAAQ,uBAAuB;UACnC,SAAS,CAAC,aAAa;SACxB,EACA,kBAAiB;AAElB,kBAAU,QAAQ,gBAAgB,aAAa;AAC/C,oBAAY,QAAQ;AACpB,gBAAQ,cAAa;MACvB,EAAC;AAED,SAAG,iBAAiB,MAAK;AACvB,eAAO,SAAS,EAAE,WAAU;MAC9B,CAAC;IACH,CAAC;;;",
+  "names": []
+}

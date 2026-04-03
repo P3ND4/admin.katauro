@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { fechaRealValidator } from '../../../../shared/validators/DateValidator';
 import { httpService } from '../../../../shared/services/http/http.service';
-import { CatModel, Product, Variant } from '../../../../shared/models/Product';
+import { CatModel, Product, Variant } from '../../../../shared/models/product/Product';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CreatePromotionDto, Promotion, PromoType } from '../../../../shared/models/promotions';
 import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";

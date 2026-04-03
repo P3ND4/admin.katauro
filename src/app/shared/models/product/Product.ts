@@ -1,4 +1,4 @@
-import { Promotion } from "./promotions";
+import { Promotion } from "../promotions";
 
 export enum Category {
   tableLumin = "Luminarias de mesa",

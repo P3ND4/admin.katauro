@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CatModel } from '../../models/Product';
-import { CreateProductDto } from '../../models/create-product-dto';
+import { CatModel } from '../../models/product/Product';
+import { CreateProductDto } from '../../models/product/create-product-dto';
 import { OrderState } from '../../models/Order';
 import { CreatePromotionDto } from '../../models/promotions';
 

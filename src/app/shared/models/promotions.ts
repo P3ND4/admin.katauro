@@ -1,4 +1,4 @@
-import { CatModel, Variant } from "./Product"
+import { CatModel, Variant } from "./product/Product"
 
 export class Promotion {
   promo_id!: string

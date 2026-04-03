@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Product, Variant } from '../../../../shared/models/Product';
+import { Product, Variant } from '../../../../shared/models/product/Product';
 import { httpService } from '../../../../shared/services/http/http.service';
 import { parseError } from '../../../../shared/services/errors/errorParser';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/services/errors/error.log.service.ts"],
+  "sourcesContent": ["import { Injectable, signal } from '@angular/core';\r\nimport { BehaviorSubject } from 'rxjs';\r\n\r\n@Injectable({\r\n  providedIn: 'root',\r\n})\r\nexport class ErrorLogService {\r\n  private _errors = new BehaviorSubject<{ name: string, error: string }[]>([]);\r\n  public errors = this._errors.asObservable()\r\n\r\n  addError(error: { name: string, error: string }) {\r\n    const current = this._errors.getValue();\r\n    this._errors.next(current.concat([error]));\r\n    setTimeout(() => {\r\n      const current = this._errors.getValue();\r\n      if (current) {\r\n        const current = this._errors.value;\r\n        current.pop();\r\n        this._errors.next(current);\r\n      }\r\n    }, 10000)\r\n  }\r\n}\r\n"],
+  "mappings": ";;;;;;;;;;;IAMa;;;;;AANb;AACA;AAKO,IAAM,kBAAN,MAAMA,iBAAe;MAClB,UAAU,IAAI,gBAAmD,CAAA,CAAE;MACpE,SAAS,KAAK,QAAQ,aAAY;MAEzC,SAAS,OAAsC;AAC7C,cAAM,UAAU,KAAK,QAAQ,SAAQ;AACrC,aAAK,QAAQ,KAAK,QAAQ,OAAO,CAAC,KAAK,CAAC,CAAC;AACzC,mBAAW,MAAK;AACd,gBAAMC,WAAU,KAAK,QAAQ,SAAQ;AACrC,cAAIA,UAAS;AACX,kBAAMA,WAAU,KAAK,QAAQ;AAC7B,YAAAA,SAAQ,IAAG;AACX,iBAAK,QAAQ,KAAKA,QAAO;UAC3B;QACF,GAAG,GAAK;MACV;;AAfW,sBAAe,WAAA;MAH3B,WAAW;QACV,YAAY;OACb;OACY,eAAe;;;",
+  "names": ["ErrorLogService", "current"]
+}
