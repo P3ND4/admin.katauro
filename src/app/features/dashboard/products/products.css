@@ -171,11 +171,11 @@ h1 {
 .column {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 0 1 auto;
 }
 
 .column.nombre {
-    min-width: 312px;
+    flex: 1 0 auto;
 }
 
 .column.action {
@@ -206,6 +206,7 @@ h1 {
     cursor: pointer;
 }
 
+
 .product-item :hover {
     cursor: pointer;
 }
@@ -222,6 +223,10 @@ h1 {
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;
+}
+
+.action-button:hover {
+    background-color: var(--Gray-100, #F5F5F5);
 }
 
 .status {

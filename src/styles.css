@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
+
 :root {
   --montser-font: 'Montserrat', sans-serif;
 }
@@ -252,6 +253,24 @@ textarea {
   font-weight: 400;
   line-height: 24px;
   /* 150% */
+}
+
+.input-container .count {
+  color: var(--Gray-600, #535862);
+
+  /* Text sm/Regular */
+  font-family: var(--montser-font);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  /* 142.857% */
+}
+
+
+textarea {
+  field-sizing: content;
+  resize: none;
 }
 
 .input-base span {

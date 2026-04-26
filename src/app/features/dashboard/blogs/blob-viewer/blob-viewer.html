@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div class="main">
+        <div class="close-btn" (click)="close()">
+            <img src="x.svg" alt="close" />
+        </div>
+
+        <header class="header">
+
+            <div class="title">
+                <div class="date-n-name">
+                    <p>{{blog.createdAt | date: 'd MMM y'}}</p>
+                    <h1>{{blog.title}}</h1>
+                </div>
+                <div class="tags">
+                    @for (tag of blog.tags; track $index) {
+                    <div class="tag-txt" [style.backgroundColor]="tag.tag.bgColor">
+                        <p [style.color]="tag.tag.color">{{tag.tag.name}}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="header-image">
+                <img [src]="blog.images[0].link" alt="avatar" class="avatar">
+            </div>
+
+        </header>
+
+        <div class="blog-preview">
+            <h2>Introducción</h2>
+
+            <p>{{blog.introduction}}</p>
+
+
+            @for (item of getContent(); track $index) {
+            <div class="ql-editor" [innerHTML]="item.content"></div>
+            }
+        </div>
+
+    </div>
+</div>

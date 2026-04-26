@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ErrorLogService } from './shared/services/errors/error.log.service';
 import { ErrorBox } from "./shared/components/error-box/error-box";

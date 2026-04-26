@@ -4,6 +4,8 @@ import { CatModel } from '../../models/product/Product';
 import { CreateProductDto } from '../../models/product/create-product-dto';
 import { OrderState } from '../../models/Order';
 import { CreatePromotionDto } from '../../models/promotions';
+import { Blog as CreateBlogDTO } from '../../models/blog/DTO\'s/blog.entity';
+import { CreateTag as CreateTagDTO } from '../../models/blog/DTO\'s/tags.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    //this.apiUrl = 'http://localhost:3000/';
+    this.apiUrl = 'http://localhost:3500/';
   }
 
   meAdmin() {
@@ -144,5 +146,60 @@ export class httpService {
 
   getBanner(id: number) {
     return this.httpClient.get(`${this.apiUrl}promotion/banners/${id}`, { withCredentials: true });
+  }
+
+  getBlogs(option?: { page?: number, tags?: string, search?: string, sortBy?: string }) {
+    var url = this.apiUrl + 'blogs' + (option ? '?' : '');
+
+    if (option?.sortBy) {
+      url += option.tags || option.search || option.page ? `sortBy=${option.sortBy}&` : `sortBy=${option.sortBy}`;
+    }
+    if (option?.tags) {
+      url += option.search || option.page ? `tags=${option.tags}&` : `tags=${option.tags}`;
+    }
+    if (option?.search) {
+      url += option.page ? `search=${option.search}&` : `search=${option.search}`;
+    }
+    if (option?.page) {
+      url += `page=${option.page}`;
+    }
+
+    return this.httpClient.get(url, { withCredentials: true });
+  }
+
+  getBlogPages(option?: { tags?: string, search?: string }) {
+    var url = option ? `${this.apiUrl}blogs/pages/total?` : `${this.apiUrl}blogs/pages/total`;
+
+    if (option?.tags) {
+      url += option.search ? `tags=${option.tags}&` : `tags=${option.tags}`;
+    }
+    if (option?.search) {
+      url += `search=${option.search}`;
+    }
+    return this.httpClient.get(url, { withCredentials: true });
+  }
+
+  getBlog(id: string) {
+    return this.httpClient.get(`${this.apiUrl}blogs/${id}`, { withCredentials: true });
+  }
+
+  createBlog(data: CreateBlogDTO) {
+    return this.httpClient.post(`${this.apiUrl}blogs`, data, { withCredentials: true });
+  }
+
+  updateBlog(id: string, data: CreateBlogDTO) {
+    return this.httpClient.patch(`${this.apiUrl}blogs/${id}`, data, { withCredentials: true });
+  }
+
+  deleteBlog(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}blogs/${id}`, { withCredentials: true });
+  }
+
+  createTag(data: CreateTagDTO) {
+    return this.httpClient.post(`${this.apiUrl}blogs/tags`, data, { withCredentials: true });
+  }
+
+  getTags() {
+    return this.httpClient.get(`${this.apiUrl}blogs/tags/all`, { withCredentials: true });
   }
 }

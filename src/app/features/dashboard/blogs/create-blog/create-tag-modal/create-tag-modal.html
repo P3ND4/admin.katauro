@@ -1,0 +1,34 @@
+<div class="overlay">
+  <form class="creation-dialog" [formGroup]="createTagForm" (submit)="onSubmit()" (click)="$event.stopPropagation()">
+    <h2>Agregar etiqueta</h2>
+
+    <div class="input-container">
+      <label class="form-label">Nombre</label>
+      <div class="input-base">
+        <input type="text" formControlName="name" placeholder="Metal blanco" />
+      </div>
+    </div>
+
+    <div class="input-container">
+      <label class="form-label">Color de fuente</label>
+      <div class="input-base" style="cursor: pointer;" title="Elige el color de fondo"
+        [style.background-color]="bgColorValue" (click)="openColorOption()">
+
+        <label for="fontColor" title="Elige el color de fuente" [style.color]="fontColor">Ejemplo de texto</label>
+        <input id="fontColor" style="opacity: 0; width: 0px;" type="color" [value]="fontColor"
+          (change)="onColorChange($event)" />
+        <input type="color" style="opacity: 0;  width: 0px;" [value]="bgColorValue" #bgColor
+          (change)="onColorChange($event, 'background')" />
+      </div>
+    </div>
+
+    <div class="creat-actions">
+      <button class="button-chips" style="flex: 1;" type="button" (click)="onCancel()">
+        <label>Cancelar</label>
+      </button>
+      <button class="button-base" style="flex: 1;" type="submit" [disabled]="!createTagForm.valid">
+        <label>Guardar</label>
+      </button>
+    </div>
+  </form>
+</div>

@@ -266,6 +266,10 @@ h1 {
     cursor: pointer;
 }
 
+.action-button:hover {
+    background-color: var(--Gray-100, #F5F5F5);
+}
+
 .status {
     display: flex;
     padding: 2px 8px 2px 6px;

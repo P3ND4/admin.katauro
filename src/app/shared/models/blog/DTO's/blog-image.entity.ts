@@ -1,11 +1,8 @@
 import { Blog } from './blog.entity';
 
-export class BlogImage {
-  id!: string;
+export class CreateBlogImage {
   link!: string;
   publicId?: string;
   position!: number;
-  blogId!: string;
-  blog?: Blog;
   alt?: string;
 }

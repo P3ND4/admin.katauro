@@ -1,1 +1,136 @@
-<p>blogs works!</p>
+<div class="main">
+  @if (loading) {
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+
+  @if (warn) {
+  <div class="warn">
+    <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+  </div>
+  }
+
+  @if(details){
+  <div class="details-wrapper">
+    <app-blob-viewer [blog]="details" (closed)="details = undefined"></app-blob-viewer>
+  </div>
+  }
+
+  <header class="header">
+    <h1 class="title">Blogs</h1>
+    <button class="button-base" (click)="navigateCreate()">
+      <img src="plus.svg" alt="">
+      <span>
+        Nuevo Blog
+      </span>
+    </button>
+  </header>
+
+  <div class="blog-container">
+    <div class="filters">
+      @for (tagId of selectedTags; track $index) {
+      <div class="button-chips">
+        <label>
+          {{tags.find(t => t.id === tagId)?.name || tagId}}
+        </label>
+        <img src="x.svg" alt="" (click)="onDeleteTag($index)">
+      </div>
+      }
+
+      <div class="filters-dorp-menu">
+        <button class="button-chips" (click)="filterMenu = !filterMenu">
+          <img src="Filters lines.svg" alt="">
+          <label>Filtros</label>
+        </button>
+
+        @if(filterMenu){
+        <div class="dropdown-content">
+          <div style="padding: 10px; border-bottom: 1px solid #e0e0e0;">
+            <p style="font-weight: 600; font-size: 12px; margin: 0 0 8px 0;">Ordenar por:</p>
+            @for (option of ['desc', 'asc']; track $index) {
+            <div class="dropdown-item" (click)="onSortChange(option)">
+              <p>{{option === 'desc' ? 'Más recientes' : 'Antiguos'}}</p>
+            </div>
+            }
+          </div>
+          <div style="padding: 10px;">
+            <p style="font-weight: 600; font-size: 12px; margin: 0 0 8px 0;">Filtrar por tags:</p>
+            @for (tag of tags; track tag.id) {
+            <div class="dropdown-item" (click)="onAddTag(tag.id)">
+              <p>{{tag.name}}</p>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="spacing" style="flex: 1;"></div>
+      <div class="input-base">
+        <img src="search.svg" alt="" (click)="onSearch()">
+        <input type="text" placeholder="Buscar" (keyup.enter)="onSearch()" #searchBlog />
+      </div>
+    </div>
+
+    <div class="table">
+
+      <header class="blog-list-header">
+        <h2>Blogs</h2>
+        <div class="count">
+          <p>{{count}} blogs</p>
+        </div>
+      </header>
+
+      <div class="head-bar">
+        @for (item of ['Título', 'Fecha de creación', 'Introducción', '']; track $index) {
+        <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+
+          <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+            <p>{{item}}</p>
+          </div>
+          @for (blog of blogs; track $index) {
+          <div [className]="`blog-item ${item === '' ? 'action' : item.toLowerCase()}`" (click)="item !== '' && (details = blog)">
+
+            @if (item === 'Título') {
+            <p>{{blog.title}}</p>
+            }
+            @if (item === 'Fecha de creación') {
+            <p>{{getDate(blog.createdAt)}}</p>
+            }
+            @if (item === 'Introducción') {
+            <p>{{blog.introduction}}</p>
+            }
+            @if(item === '') {
+            <div class="actions" (click)="$event.stopImmediatePropagation()">
+              <button class="action-button" (click)="ask(blog.id)">
+                <img src="trash-2.svg" alt="">
+              </button>
+              <button class="action-button" (click)="navigateEdit(blog.id)">
+                <img src="edit-2.svg" alt="">
+              </button>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+
+      </div>
+
+      @if (pages > 1) {
+      <div class="pagination">
+        @for (page of pagesArray; track page) {
+        <button 
+          [class.active]="page === currentPage"
+          (click)="onPageChange(page)"
+          class="page-button">
+          {{page}}
+        </button>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+</div>
