@@ -723,3 +723,47 @@ footer {
     line-height: 20px;
     /* 142.857% */
 }
+
+.model-viewer-container {
+    width: 100%;
+    height: 320px;
+    background: var(--Gray-50, #FAFAFA);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.model-3d-preview-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--Gray-200, #E9EAEB);
+}
+
+.delete-model-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    transition: background 0.2s ease;
+}
+
+.delete-model-btn:hover {
+    background: #fff;
+}
+
+.delete-model-btn img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}

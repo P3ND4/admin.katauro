@@ -1,6 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CloudinaryService } from '../../services/cloudinary/cloudinary.service';
 import { HttpEventType } from '@angular/common/http';
+import { ErrorLogService } from '../../services/errors/error.log.service';
+import { parseError } from '../../services/errors/errorParser';
 
 @Component({
   selector: 'app-drag-and-drop',
@@ -10,12 +12,15 @@ import { HttpEventType } from '@angular/common/http';
 })
 export class DragAndDrop {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @Input() accept = 'image/*';
+  @Input() label = 'SVG, PNG, JPG or GIF (max. 800x400px)';
+  @Input() optimize = true;
   progress = -1
   imagePreview: string = '';
   isHovering: boolean = false;
   @Output() uploaded = new EventEmitter<{ secure_url: string, public_id: string }>();
 
-  constructor(private cloudy: CloudinaryService, private cdr: ChangeDetectorRef) { }
+  constructor(private cloudy: CloudinaryService, private cdr: ChangeDetectorRef, private errorServ: ErrorLogService) { }
 
 
 
@@ -43,21 +48,30 @@ export class DragAndDrop {
   }
   upload(file: File) {
     this.progress = 0;
-    this.cloudy.uploadFile(file).subscribe(event => {
-      if (event.type === HttpEventType.UploadProgress && event.total) {
-        this.progress = Math.round((event.loaded / event.total) * 100);
-        this.cdr.detectChanges();
-      } else if (event.type === HttpEventType.Response) {
-        console.log('✅ Subida completa:', event.body);
-        const body = event.body as { secure_url: string, public_id: string };
-        const optimizedUrl = body.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
-        this.progress = 100;
-        this.imagePreview = optimizedUrl
-        this.uploaded.emit({ secure_url: optimizedUrl, public_id: body.public_id });
-        setTimeout(() => {
-          this.progress = 0;
+    this.cloudy.uploadFile(file).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress = Math.round((event.loaded / event.total) * 100);
           this.cdr.detectChanges();
-        }, 3000);
+        } else if (event.type === HttpEventType.Response) {
+          console.log('✅ Subida completa:', event.body);
+          const body = event.body as { secure_url: string, public_id: string };
+          const resultUrl = this.optimize
+            ? body.secure_url.replace('/upload/', '/upload/q_auto,f_auto/')
+            : body.secure_url;
+          this.progress = 100;
+          this.imagePreview = resultUrl;
+          this.uploaded.emit({ secure_url: resultUrl, public_id: body.public_id });
+          setTimeout(() => {
+            this.progress = -1;
+            this.cdr.detectChanges();
+          }, 3000);
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        this.errorServ.addError(parseError(err));
+        this.progress = -1;
         this.cdr.detectChanges();
       }
     });

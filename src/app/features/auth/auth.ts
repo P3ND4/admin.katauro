@@ -10,6 +10,7 @@ import { BoxLoader } from "../../shared/components/box-loader/box-loader";
   selector: 'app-auth',
   imports: [ReactiveFormsModule, BoxLoader],
   templateUrl: './auth.html',
+  
   styleUrl: './auth.css'
 })
 export class Auth {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Category, CatModel, Color, Finish, Product, Typology } from '../../../../shared/models/product/Product';
 import { CreateProductDto, CreateSpecProductDTO } from '../../../../shared/models/product/create-product-dto';
@@ -11,12 +11,14 @@ import { Subscription } from 'rxjs';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../../shared/services/errors/errorParser';
 import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
+import { DragAndDrop } from "../../../../shared/components/drag-and-drop/drag-and-drop";
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-create-product',
-  imports: [ReactiveFormsModule, CommonModule, BoxLoader, DragDropModule],
+  imports: [ReactiveFormsModule, CommonModule, BoxLoader, DragDropModule, DragAndDrop],
   templateUrl: './create-product.html',
-  styleUrl: './create-product.css'
+  styleUrl: './create-product.css',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CreateProduct implements OnInit {
   file: File | undefined;
@@ -198,6 +200,7 @@ export class CreateProduct implements OnInit {
         this.variants.controls[index].get('price')?.setValue(variant.price);
         this.variants.controls[index].get('variantImages')?.patchValue(variant.images.map(img => ({ link: img.link, public_id: img.publicId })));
         this.variantPreviews[index] = variant.images.map(img => img.link);
+        this.variants.controls[index].get('variantModels3D')?.patchValue(variant.models3D?.map(m => ({ url: m.url, public_id: m.publicId })) || []);
       });
       this.loading = false;
       this.cdr.detectChanges();
@@ -332,7 +335,8 @@ export class CreateProduct implements OnInit {
       stock: [0, Validators.required],
       price: [0.00, Validators.required],
       colorId: ['', Validators.required],
-      variantImages: [[], [Validators.required, Validators.minLength(5)]]  // para los archivos
+      variantImages: [[], [Validators.required, Validators.minLength(5)]],  // para los archivos
+      variantModels3D: [[]]  // para los modelos 3D
     });
     this.variants.push(variantGroup);
     this.color.push(undefined);
@@ -388,13 +392,15 @@ export class CreateProduct implements OnInit {
           (variant: any): CreateSpecProductDTO => {
 
             const varImg = variant.variantImages as { link: string, public_id?: string }[]
+            const varModels = variant.variantModels3D as { url: string, public_id?: string }[]
             return {
               id: variant.id,
               stock: variant.stock,
               price: variant.price,
               colorId: variant.colorId,
               image: varImg[0].link, // La primera imagen sigue siendo la importante
-              images: varImg
+              images: varImg,
+              models3D: varModels || []
 
             }
           })
@@ -428,69 +434,93 @@ export class CreateProduct implements OnInit {
 
   uploadMulti(files: File[]) {
     this.progress = 0;
-    const count = files.length
-    var urls: { link: string, public_id?: string }[] = files.map(file => ({ link: '', public_id: undefined }));
+    const count = files.length;
+    let completedCount = 0;
+    var urls: { link: string, public_id?: string }[] = files.map(() => ({ link: '', public_id: undefined }));
+
+    const finalizeUpload = () => {
+      if (completedCount !== count) return;
+      const successfulUrls = urls.filter(u => u.link !== '');
+      if (successfulUrls.length > 0) {
+        var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
+        currentFiles = successfulUrls.length + currentFiles.length > 5 && successfulUrls.length < 5 ? currentFiles.slice(currentFiles.length - (5 - successfulUrls.length), undefined) : successfulUrls.length == 5 ? [] : currentFiles;
+        currentFiles.push(...successfulUrls);
+        this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles);
+        this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
+      }
+      setTimeout(() => {
+        this.progress = -1;
+        this.cdr.detectChanges();
+      }, 3000);
+    };
+
     files.forEach((file, index: number) => {
-      var fileProgress = 0
-      this.cloudy.uploadFile(file).subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.progress = this.progress - fileProgress;
-          fileProgress = Math.round(((event.loaded / event.total) * 100) / count);
-          this.progress += fileProgress;
-          this.cdr.detectChanges();
-        } else if (event.type === HttpEventType.Response) {
-          console.log('✅ Subida completa:', event.body);
-          const res = event.body as { secure_url: string, public_id: string };
-          const optimizedUrl = res.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
-          this.progress = this.progress - fileProgress
-          fileProgress = Math.round(100 / count);
-          this.progress += fileProgress;
-          urls[index] = { link: optimizedUrl, public_id: res.public_id }
-          if (this.progress === 100) {
-            var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
-            currentFiles = files.length + currentFiles.length > 5 && files.length < 5 ? currentFiles.slice(currentFiles.length - (5 - files.length), undefined) : files.length == 5 ? [] : currentFiles;
-            currentFiles.push(...urls);
-            this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles)
-            this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
-            setTimeout(() => {
-              this.progress = -1;
-              this.cdr.detectChanges();
-            }, 3000);
+      var fileProgress = 0;
+      this.cloudy.uploadFile(file).subscribe({
+        next: (event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            this.progress = this.progress - fileProgress;
+            fileProgress = Math.round(((event.loaded / event.total) * 100) / count);
+            this.progress += fileProgress;
+            this.cdr.detectChanges();
+          } else if (event.type === HttpEventType.Response) {
+            console.log('✅ Subida completa:', event.body);
+            const res = event.body as { secure_url: string, public_id: string };
+            const optimizedUrl = res.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+            this.progress = this.progress - fileProgress;
+            fileProgress = Math.round(100 / count);
+            this.progress += fileProgress;
+            urls[index] = { link: optimizedUrl, public_id: res.public_id };
+            completedCount++;
+            finalizeUpload();
+            this.cdr.detectChanges();
           }
+        },
+        error: (err) => {
+          this.errorServ.addError(parseError(err));
+          this.progress = this.progress - fileProgress;
+          completedCount++;
+          finalizeUpload();
           this.cdr.detectChanges();
         }
       });
-    })
-
+    });
   }
 
   upload(file: File, i: number) {
     this.progress = 0;
-    this.cloudy.uploadFile(file).subscribe(event => {
-      if (event.type === HttpEventType.UploadProgress && event.total) {
-        this.progress = Math.round((event.loaded / event.total) * 100);
-        this.cdr.detectChanges();
-      } else if (event.type === HttpEventType.Response) {
-        console.log('✅ Subida completa:', event.body);
-        const cloud = event.body as { secure_url: string, public_id: string };
-        const optimizedUrl = cloud.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
-        this.progress = 100;
-        this.imagePreview[i] = optimizedUrl
-        switch (i) {
-          case 0:
-            this.createProductForm.get('vector')?.setValue({ vector: optimizedUrl, vPublicId: cloud.public_id });
-
-            break;
-          case 1:
-            this.createFinish.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
-            break;
-          case 2:
-            this.createColor.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
-        }
-        setTimeout(() => {
-          this.progress = -1;
+    this.cloudy.uploadFile(file).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress = Math.round((event.loaded / event.total) * 100);
           this.cdr.detectChanges();
-        }, 3000);
+        } else if (event.type === HttpEventType.Response) {
+          console.log('✅ Subida completa:', event.body);
+          const cloud = event.body as { secure_url: string, public_id: string };
+          const optimizedUrl = cloud.secure_url.replace('/upload/', '/upload/q_auto,f_auto/');
+          this.progress = 100;
+          this.imagePreview[i] = optimizedUrl
+          switch (i) {
+            case 0:
+              this.createProductForm.get('vector')?.setValue({ vector: optimizedUrl, vPublicId: cloud.public_id });
+
+              break;
+            case 1:
+              this.createFinish.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
+              break;
+            case 2:
+              this.createColor.get('image')?.setValue({ image: optimizedUrl, public_id: cloud.public_id });
+          }
+          setTimeout(() => {
+            this.progress = -1;
+            this.cdr.detectChanges();
+          }, 3000);
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        this.errorServ.addError(parseError(err));
+        this.progress = -1;
         this.cdr.detectChanges();
       }
     });
@@ -608,6 +638,23 @@ export class CreateProduct implements OnInit {
     this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
   }
 
+  onModelUploaded(event: { secure_url: string, public_id: string }) {
+    var currentModels = this.variants.controls[this.currentVariant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
+    currentModels.push({ url: event.secure_url, public_id: event.public_id });
+    this.variants.controls[this.currentVariant].get('variantModels3D')?.setValue(currentModels);
+    this.cdr.detectChanges();
+  }
+
+  deleteModel3D(index: number) {
+    var currentModels = this.variants.controls[this.currentVariant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
+    currentModels.splice(index, 1);
+    this.variants.controls[this.currentVariant].get('variantModels3D')?.setValue(currentModels);
+    this.cdr.detectChanges();
+  }
+
+  getVariantModels3D(variant: number) {
+    return this.variants.controls[variant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
+  }
 
   update(prod: CreateProductDto) {
     this.http.updateProduct(this.editProduct!.id, prod).subscribe(

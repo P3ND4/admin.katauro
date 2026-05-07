@@ -48,6 +48,7 @@ export class Variant {
   stock!: number;
   image?: string;
   images!: { link: string, id: string, publicId?: string }[]
+  models3D?: { id: string, url: string, publicId?: string, position: number }[]
   color!: Color
   genericId!: string;
   genericProd?: Product;

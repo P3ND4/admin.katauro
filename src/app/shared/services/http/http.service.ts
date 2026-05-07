@@ -15,7 +15,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    //this.apiUrl = 'http://localhost:3500/';
+    this.apiUrl = 'http://localhost:3500/';
   }
 
   meAdmin() {

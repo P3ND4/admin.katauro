@@ -23,4 +23,5 @@ export class CreateSpecProductDTO {
     colorId!: string
     image!: string
     images!: { link: string, public_id?: string }[]
+    models3D!: { url: string, public_id?: string }[]
 }
