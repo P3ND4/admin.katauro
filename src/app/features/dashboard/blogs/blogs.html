@@ -17,23 +17,37 @@
   </div>
   }
 
+  @if(statsDetailBlogId){
+  <div class="details-wrapper">
+    <app-blog-stats-detail [blogId]="statsDetailBlogId" (closed)="closeStatsDetail()"></app-blog-stats-detail>
+  </div>
+  }
+
   <header class="header">
-    <h1 class="title">Blogs</h1>
+    <h1 class="title">Blog</h1>
     <button class="button-base" (click)="navigateCreate()">
       <img src="plus.svg" alt="">
-      <span>
-        Nuevo Blog
-      </span>
+      <span>Crear nuevo artículo</span>
     </button>
   </header>
 
+  <!-- Tabs -->
+  <div class="tabs-nav">
+    <div class="tab" [class.active]="activeTab === 'publicaciones'" (click)="setTab('publicaciones')">
+      <span>Mis publicaciones</span>
+    </div>
+    <div class="tab" [class.active]="activeTab === 'estadisticas'" (click)="setTab('estadisticas')">
+      <span>Estadísticas</span>
+    </div>
+  </div>
+
+  <!-- TAB 1: Mis publicaciones -->
+  @if (activeTab === 'publicaciones') {
   <div class="blog-container">
     <div class="filters">
       @for (tagId of selectedTags; track $index) {
       <div class="button-chips">
-        <label>
-          {{tags.find(t => t.id === tagId)?.name || tagId}}
-        </label>
+        <label>{{tags.find(t => t.id === tagId)?.name || tagId}}</label>
         <img src="x.svg" alt="" (click)="onDeleteTag($index)">
       </div>
       }
@@ -74,7 +88,6 @@
     </div>
 
     <div class="table">
-
       <header class="blog-list-header">
         <h2>Blogs</h2>
         <div class="count">
@@ -85,13 +98,11 @@
       <div class="head-bar">
         @for (item of ['Título', 'Fecha de creación', 'Introducción', '']; track $index) {
         <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
-
           <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
             <p>{{item}}</p>
           </div>
           @for (blog of blogs; track $index) {
           <div [className]="`blog-item ${item === '' ? 'action' : item.toLowerCase()}`" (click)="item !== '' && (details = blog)">
-
             @if (item === 'Título') {
             <p>{{blog.title}}</p>
             }
@@ -115,16 +126,12 @@
           }
         </div>
         }
-
       </div>
 
       @if (pages > 1) {
       <div class="pagination">
         @for (page of pagesArray; track page) {
-        <button 
-          [class.active]="page === currentPage"
-          (click)="onPageChange(page)"
-          class="page-button">
+        <button [class.active]="page === currentPage" (click)="onPageChange(page)" class="page-button">
           {{page}}
         </button>
         }
@@ -132,5 +139,108 @@
       }
     </div>
   </div>
+  }
+
+  <!-- TAB 2: Estadísticas -->
+  @if (activeTab === 'estadisticas') {
+  <div class="stats-container">
+    @if (statsLoading) {
+    <div class="loader-wrapper">
+      <app-box-loader></app-box-loader>
+    </div>
+    }
+
+    @if (!statsLoading && !statsOverview) {
+    <div class="stats-empty">
+      <p>No se pudieron cargar las estadísticas. Verifica que el servidor esté funcionando.</p>
+    </div>
+    }
+
+    @if (statsOverview) {
+    <!-- KPIs -->
+    <div class="stats-kpis">
+      <div class="kpi-card">
+        <span class="kpi-label">Total de Visitas</span>
+        <span class="kpi-value">{{statsOverview.totalVisits}}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Usuarios únicos</span>
+        <span class="kpi-value">{{statsOverview.uniqueUsers}}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Tiempo promedio</span>
+        <span class="kpi-value">{{formatTime(statsOverview.avgTimeSeconds)}}</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Artículos publicados</span>
+        <span class="kpi-value">{{statsOverview.totalArticles}}</span>
+      </div>
+    </div>
+
+    <!-- Top Article + Chart row -->
+    <div class="stats-row">
+      @if (statsOverview.topArticle) {
+      <div class="top-article-card">
+        <div class="top-article-icon">
+          <img src="image.svg" alt="">
+        </div>
+        <div class="top-article-info">
+          <span class="top-label">Artículo más leído</span>
+          <span class="top-title">{{statsOverview.topArticle.title}}</span>
+          <span class="top-visits">{{statsOverview.topArticle.visits}} visitas</span>
+        </div>
+      </div>
+      }
+
+      <div class="chart-card">
+        <div class="chart-tabs">
+          <span class="chart-tab" [class.active]="chartSubTab === 'visitas'" (click)="setChartSubTab('visitas')">Visitas</span>
+          <span class="chart-tab" [class.active]="chartSubTab === 'lectores'" (click)="setChartSubTab('lectores')">Lectores</span>
+          <span class="chart-tab" [class.active]="chartSubTab === 'engagement'" (click)="setChartSubTab('engagement')">Engagement</span>
+        </div>
+        <div class="chart-title">Evolución de Métricas</div>
+        @if (chartOptions) {
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [colors]="chartOptions.colors"
+          [stroke]="chartOptions.stroke" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
+          [xaxis]="chartOptions.xaxis" [yaxis]="chartOptions.yaxis" [tooltip]="chartOptions.tooltip">
+        </apx-chart>
+        }
+      </div>
+    </div>
+
+    <!-- Articles table -->
+    @if (statsArticles) {
+    <div class="stats-articles-section">
+      <h3>Mis artículos</h3>
+      <div class="stats-table-header">
+        <span class="col col-name">Nombre</span>
+        <span class="col col-date">Fecha</span>
+        <span class="col col-visits">Visitas</span>
+        <span class="col col-time">Tiempo de lectura</span>
+        <span class="col col-engagement">Engagement</span>
+        <span class="col col-action">Acción</span>
+      </div>
+      @for (article of statsArticles; track article.id) {
+      <div class="stats-table-row">
+        <span class="col col-name">{{article.title}}</span>
+        <span class="col col-date">{{getDate(article.createdAt)}}</span>
+        <span class="col col-visits">{{article.totalVisits}}</span>
+        <span class="col col-time">{{formatTime(article.avgTimeSeconds)}}</span>
+        <span class="col col-engagement">
+          <div class="engagement-bar">
+            <div class="engagement-fill" [style.width.%]="article.engagementRate"></div>
+          </div>
+          <span class="engagement-pct">{{article.engagementRate}}%</span>
+        </span>
+        <span class="col col-action">
+          <button class="button-chips" (click)="openStatsDetail(article.id)">Ver detalles</button>
+        </span>
+      </div>
+      }
+    </div>
+    }
+    }
+  </div>
+  }
 
 </div>

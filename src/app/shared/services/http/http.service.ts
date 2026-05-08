@@ -15,7 +15,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-  //  this.apiUrl = 'http://localhost:3500/';
+    this.apiUrl = 'http://localhost:3500/';
   }
 
   meAdmin() {
@@ -201,5 +201,21 @@ export class httpService {
 
   getTags() {
     return this.httpClient.get(`${this.apiUrl}blogs/tags/all`, { withCredentials: true });
+  }
+
+  getBlogStatsOverview() {
+    return this.httpClient.get(`${this.apiUrl}blogs/stats/overview`, { withCredentials: true });
+  }
+
+  getBlogStatsTimeline(months?: number) {
+    return this.httpClient.get(`${this.apiUrl}blogs/stats/timeline${months ? `?months=${months}` : ''}`, { withCredentials: true });
+  }
+
+  getBlogStatsArticles() {
+    return this.httpClient.get(`${this.apiUrl}blogs/stats/articles`, { withCredentials: true });
+  }
+
+  getBlogAnalytics(id: string) {
+    return this.httpClient.get(`${this.apiUrl}blogs/${id}/analytics`, { withCredentials: true });
   }
 }

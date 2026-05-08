@@ -8,41 +8,46 @@ import { ErrorLogService } from '../../../shared/services/errors/error.log.servi
 import { parseError } from '../../../shared/services/errors/errorParser';
 import { MessageBox } from "../../../shared/components/message-box/message-box";
 import { BlobViewer } from "./blob-viewer/blob-viewer";
+import { BlogStatsDetail } from "./blog-stats-detail/blog-stats-detail";
 import { Subscription } from 'rxjs';
+import { NgApexchartsModule, ChartType } from 'ng-apexcharts';
 
 @Component({
   selector: 'app-blogs',
-  imports: [CommonModule, BoxLoader, MessageBox, BlobViewer],
+  imports: [CommonModule, BoxLoader, MessageBox, BlobViewer, BlogStatsDetail, NgApexchartsModule],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css',
 })
 export class Blogs implements OnInit {
+  activeTab: 'publicaciones' | 'estadisticas' = 'publicaciones';
+
   filterMenu = false;
   blogs: Blog[] = [];
-  
   count = 0;
   pagesArray = [1];
   pages = 1;
   currentPage = 1;
-  
   loading = false;
   warn: { msg: string, warn: string } | undefined;
   toDelete: string | undefined;
   details: Blog | undefined = undefined;
-  
   tags: any[] = [];
   selectedTags: string[] = [];
   sortBy: string = 'desc';
-  
   @ViewChild('searchBlog') search!: ElementRef;
-  
   queryParamSubs: Subscription | undefined;
-  params: { tags: undefined | string, search: undefined | string, sortBy: undefined | string, page: undefined | number } = { 
-    tags: undefined, 
-    search: undefined, 
-    sortBy: undefined,
-    page: 1 
+  params: { tags: undefined | string, search: undefined | string, sortBy: undefined | string, page: undefined | number } = {
+    tags: undefined, search: undefined, sortBy: undefined, page: 1
   };
+
+  statsOverview: any;
+  statsTimeline: any;
+  statsArticles: any[] = [];
+  statsLoaded = false;
+  chartSubTab: 'visitas' | 'lectores' | 'engagement' = 'visitas';
+  chartOptions: any;
+  statsLoading = false;
+  statsDetailBlogId: string | undefined;
 
   constructor(
     private http: httpService,
@@ -50,13 +55,120 @@ export class Blogs implements OnInit {
     readonly router: Router,
     private route: ActivatedRoute,
     private errorServ: ErrorLogService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadTags();
     this.queryParamSubs = this.route.queryParamMap.subscribe(() => {
       this.ReadData();
     });
+  }
+
+  setTab(tab: 'publicaciones' | 'estadisticas'): void {
+    this.activeTab = tab;
+    if (tab === 'estadisticas') {
+      this.loadStats();
+    }
+  }
+
+  openStatsDetail(blogId: string): void {
+    this.statsDetailBlogId = blogId;
+  }
+
+  closeStatsDetail(): void {
+    this.statsDetailBlogId = undefined;
+  }
+
+  private loadStats(): void {
+    if (this.statsLoaded) return;
+    this.statsLoaded = true;
+    this.statsLoading = true;
+
+    let completed = 0;
+    const checkDone = () => {
+      completed++;
+      if (completed >= 3) {
+        this.statsLoading = false;
+        this.cdr.detectChanges();
+      }
+    };
+
+    this.http.getBlogStatsOverview().subscribe({
+      next: val => {
+        this.statsOverview = val;
+        checkDone();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        checkDone();
+      }
+    });
+
+    this.http.getBlogStatsTimeline(12).subscribe({
+      next: val => {
+        this.statsTimeline = val;
+        this.buildChart();
+        checkDone();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        checkDone();
+      }
+    });
+
+    this.http.getBlogStatsArticles().subscribe({
+      next: val => {
+        this.statsArticles = val as any[];
+        checkDone();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        checkDone();
+      }
+    });
+  }
+
+  setChartSubTab(sub: 'visitas' | 'lectores' | 'engagement'): void {
+    this.chartSubTab = sub;
+    this.buildChart();
+  }
+
+  private buildChart(): void {
+    if (!this.statsTimeline) return;
+    const t = this.statsTimeline;
+    let seriesName = '';
+    let data: number[] = [];
+    let color = '';
+
+    switch (this.chartSubTab) {
+      case 'visitas':
+        seriesName = 'Visitas';
+        data = t.visits ?? [];
+        color = '#007981';
+        break;
+      case 'lectores':
+        seriesName = 'Lectores';
+        data = t.readers ?? [];
+        color = '#178C94';
+        break;
+      case 'engagement':
+        seriesName = 'Engagement %';
+        data = t.engagement ?? [];
+        color = '#F5A623';
+        break;
+    }
+
+    this.chartOptions = {
+      series: [{ name: seriesName, data }],
+      chart: { type: 'line' as ChartType, height: 280, toolbar: { show: false }, fontFamily: 'var(--montser-font, Montserrat)' },
+      colors: [color],
+      stroke: { curve: 'smooth', width: 3 },
+      markers: { size: 4 },
+      grid: { borderColor: '#E9EAEB', strokeDashArray: 4 },
+      xaxis: { categories: t.labels ?? [], labels: { style: { colors: '#535862', fontSize: '12px' } } },
+      yaxis: { labels: { style: { colors: '#535862', fontSize: '12px' } } },
+      tooltip: { theme: 'light' },
+    };
   }
 
   private ReadData(): void {
@@ -71,23 +183,20 @@ export class Blogs implements OnInit {
     const page = this.route.snapshot.queryParamMap.get('page');
     this.params.page = page ? +page : 1;
     this.currentPage = this.params.page;
-    
     this.selectedTags = tags ? tags.split(',') : [];
 
-    this.http.getBlogPages({ tags: this.params.tags, search: this.params.search }).subscribe(
-      {
-        next: val => {
-          this.pages = val as number;
-          this.pagesArray = Array(this.pages).fill(0).map((x, i) => i + 1);
-          this.getBlogs();
-        },
-        error: err => {
-          this.errorServ.addError(parseError(err));
-          this.loading = false;
-          this.cdr.detectChanges();
-        }
+    this.http.getBlogPages({ tags: this.params.tags, search: this.params.search }).subscribe({
+      next: val => {
+        this.pages = val as number;
+        this.pagesArray = Array(this.pages).fill(0).map((x, i) => i + 1);
+        this.getBlogs();
+      },
+      error: err => {
+        this.errorServ.addError(parseError(err));
+        this.loading = false;
+        this.cdr.detectChanges();
       }
-    );
+    });
   }
 
   private getBlogs(): void {
@@ -123,20 +232,23 @@ export class Blogs implements OnInit {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   }
 
+  formatTime(seconds: number): string {
+    if (!seconds || seconds < 60) return `${seconds ?? 0}s`;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}min ${s}s`;
+  }
+
   onSearch(): void {
     const searchValue = this.search.nativeElement.value;
     this.params.search = searchValue || undefined;
-    this.router.navigate([], {
-      queryParams: this.params
-    });
+    this.router.navigate([], { queryParams: this.params });
   }
 
   onSortChange(sortValue: string): void {
     this.sortBy = sortValue;
     this.params.sortBy = sortValue;
-    this.router.navigate([], {
-      queryParams: this.params
-    });
+    this.router.navigate([], { queryParams: this.params });
   }
 
   onAddTag(tagId: string): void {

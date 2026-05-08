@@ -1,0 +1,112 @@
+<div class="wrapper">
+  @if (loading) {
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+
+  @if (analytics) {
+  <div class="detail-main">
+    <div class="close-btn" (click)="close()">
+      <img src="x.svg" alt="close" />
+    </div>
+
+    @if (analytics.blog) {
+    <header class="detail-header">
+      <div class="header-left">
+        <p class="blog-date">{{analytics.blog.createdAt | date : 'd MMM y'}}</p>
+        <h1 class="blog-title">{{analytics.blog.title}}</h1>
+        <div class="blog-tags">
+          @for (tag of analytics.blog.tags; track tag.id) {
+          <span class="detail-tag" [style.backgroundColor]="tag.bgColor" [style.color]="tag.color">{{tag.name}}</span>
+          }
+        </div>
+      </div>
+      @if (analytics.blog.images && analytics.blog.images.length > 0) {
+      <div class="header-image">
+        <img [src]="analytics.blog.images[0].link" alt="blog image" />
+      </div>
+      }
+    </header>
+    }
+
+    <div class="detail-body">
+      <!-- KPIs 2x2 -->
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <span class="kpi-label">Total de Visitas</span>
+          <span class="kpi-value">{{analytics.totalVisits}}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Usuarios unicos</span>
+          <span class="kpi-value">{{analytics.uniqueUsers}}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Tiempo promedio</span>
+          <span class="kpi-value">{{formatTime(analytics.avgTimeSeconds)}}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">CTR</span>
+          <span class="kpi-value">{{analytics.ctr}}%</span>
+        </div>
+      </div>
+
+      <div class="cards-row">
+        <!-- Scroll Depth -->
+        <div class="metric-card">
+          <h3 class="card-title">Profundidad de scroll</h3>
+          <div class="scroll-bars">
+            @for (level of [25, 50, 75, 100]; track level) {
+            <div class="scroll-bar-item">
+              <span class="scroll-label">{{level}}%</span>
+              <div class="scroll-bar-track">
+                <div class="scroll-bar-fill" [style.width.%]="analytics.scrollDepthDistribution[level]"></div>
+              </div>
+              <span class="scroll-pct">{{analytics.scrollDepthDistribution[level]}}%</span>
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Engagement -->
+        <div class="metric-card">
+          <h3 class="card-title">Engagement</h3>
+          <div class="engagement-stats">
+            <div class="engagement-item">
+              <span class="engagement-label">Lectura completa</span>
+              <span class="engagement-value">{{analytics.readPercentage}}%</span>
+            </div>
+            <div class="engagement-item">
+              <span class="engagement-label">Tasa de Rebote</span>
+              <span class="engagement-value">{{analytics.bounceRate}}%</span>
+            </div>
+            <div class="engagement-item">
+              <span class="engagement-label">Compartidos</span>
+              <span class="engagement-value">{{analytics.totalShares}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interacciones -->
+        <div class="metric-card">
+          <h3 class="card-title">Interacciones</h3>
+          <div class="interactions-list">
+            <div class="interaction-item">
+              <span class="interaction-label">Clicks en Enlaces</span>
+              <span class="interaction-value">{{analytics.totalLinkClicks}}</span>
+            </div>
+            <div class="interaction-item">
+              <span class="interaction-label">Clicks en Imagenes</span>
+              <span class="interaction-value">{{analytics.totalImageClicks}}</span>
+            </div>
+            <div class="interaction-item">
+              <span class="interaction-label">Clicks en CTA</span>
+              <span class="interaction-value">{{analytics.totalCtaClicks}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

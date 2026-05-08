@@ -28,6 +28,8 @@
     "@angular/platform-browser": "^21.2.7",
     "@angular/router": "^21.2.7",
     "@google/model-viewer": "^4.2.0",
+    "apexcharts": "^5.11.0",
+    "ng-apexcharts": "^2.4.0",
     "ngx-quill": "^30.0.1",
     "quill": "^2.0.2",
     "rxjs": "~7.8.0",
