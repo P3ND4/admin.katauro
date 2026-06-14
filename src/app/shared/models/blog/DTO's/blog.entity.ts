@@ -12,4 +12,6 @@ export class Blog {
     BlogView!: CreateBlogView[];
     tags!: string[];
     introduction!: string;
+    publishedDate?: Date;
+    draft?: boolean;
 }

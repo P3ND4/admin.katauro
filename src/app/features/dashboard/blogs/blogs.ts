@@ -232,6 +232,29 @@ export class Blogs implements OnInit {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   }
 
+  getStatus(blog: Blog): { text: string; color: string } {
+    if (blog.draft) {
+      return { text: 'Borrador', color: '#F59E0B' };
+    }
+    if (blog.publishedDate) {
+      const pub = new Date(blog.publishedDate);
+      const now = new Date();
+      pub.setHours(0, 0, 0, 0);
+      now.setHours(0, 0, 0, 0);
+      if (pub > now) {
+        return { text: 'Programado', color: '#3B82F6' };
+      }
+    }
+    return { text: 'Publicado', color: '#10B981' };
+  }
+
+  getDisplayDate(blog: Blog): string {
+    if (blog.publishedDate) {
+      return this.getDate(blog.publishedDate);
+    }
+    return this.getDate(blog.createdAt);
+  }
+
   formatTime(seconds: number): string {
     if (!seconds || seconds < 60) return `${seconds ?? 0}s`;
     const m = Math.floor(seconds / 60);

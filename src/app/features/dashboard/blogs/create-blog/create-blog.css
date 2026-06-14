@@ -237,3 +237,67 @@ h1 {
     position: fixed;
     height: 100vh;
 }
+
+.block-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: white;
+    border-radius: 8px;
+    transition: box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.block-wrapper:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.block-wrapper .added {
+    flex: 1;
+    margin-left: 0;
+}
+
+.drag-handle {
+    cursor: grab;
+    padding: 16px 4px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.drag-handle img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Estado al arrastrar */
+.cdk-drag-preview {
+    opacity: 0.95;
+    background: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    border-radius: 8px;
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.content-container.cdk-drop-list-dragging .block-wrapper:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

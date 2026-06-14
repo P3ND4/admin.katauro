@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DragAndDrop } from '../../../../shared/components/drag-and-drop/drag-and-drop';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateTagModal } from './create-tag-modal/create-tag-modal';
 import { Tags } from '../../../../shared/models/blog/tags.entity';
 import { QuillModule } from 'ngx-quill';
@@ -19,7 +20,7 @@ import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
 
 @Component({
   selector: 'app-create-blog',
-  imports: [ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal, QuillModule, AddBlock, BlobViewer, BoxLoader],
+  imports: [ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal, QuillModule, AddBlock, BlobViewer, BoxLoader, DragDropModule],
   templateUrl: './create-blog.html',
   styleUrl: './create-blog.css',
 })
@@ -32,6 +33,7 @@ export class CreateBlog implements OnInit {
   imageUrl = '';
   imagePublicId = '';
   loading = false;
+  todayDate: string = new Date().toISOString().split('T')[0];
 
   addItemOption = false;
   edit: Blog | undefined;
@@ -68,6 +70,7 @@ export class CreateBlog implements OnInit {
         publicId: ['1', [Validators.required]],
       }),
       introduction: ['', [Validators.required]],
+      publishedDate: [''],
       content: fb.array([]),
     });
   }
@@ -86,18 +89,22 @@ export class CreateBlog implements OnInit {
       next: (val) => {
         this.edit = val as Blog;
         console.log('Blog a editar:', this.edit);
+
+        const mainImage = this.edit.images.find(img => img.position === -1) || this.edit.images[0];
+
         // Cargar datos principales del formulario
         this.createForm.patchValue({
           title: this.edit.title,
           introduction: this.edit.introduction,
+          publishedDate: this.edit.publishedDate ? new Date(this.edit.publishedDate).toISOString().split('T')[0] : '',
           image: {
-            url: this.edit.images[0]?.link || '',
-            publicId: this.edit.images[0]?.publicId || '1',
+            url: mainImage?.link || '',
+            publicId: mainImage?.publicId || '1',
           }
         });
 
-        this.imageUrl = this.edit.images[0]?.link || '';
-        this.imagePublicId = this.edit.images[0]?.publicId || '1';
+        this.imageUrl = mainImage?.link || '';
+        this.imagePublicId = mainImage?.publicId || '1';
 
         // Cargar tags seleccionados
         this.edit.tags.forEach(blogTag => {
@@ -110,12 +117,11 @@ export class CreateBlog implements OnInit {
         // Crear un array con todos los bloques (imágenes y texto) ordenados por posición
         const allBlocks: any[] = [];
 
-        // Agregar imágenes (excepto la primera que es el header)
+        // Agregar imágenes de bloques (excluyendo la imagen principal que tiene position: -1)
 
-        if (this.edit.images.length > 1) {
+        const contentImages = this.edit.images.filter(img => img.position !== -1);
 
-
-          this.edit.images.slice(1).forEach((img) => {
+        contentImages.forEach((img) => {
             allBlocks.push({
               type: 'image',
               position: img.position,
@@ -126,7 +132,6 @@ export class CreateBlog implements OnInit {
               }
             });
           });
-        }
 
         // Agregar bloques de texto
         this.edit.blogContent.forEach((content) => {
@@ -232,6 +237,23 @@ export class CreateBlog implements OnInit {
     contentArray.removeAt(index);
   }
 
+  reorderBlocks(event: CdkDragDrop<any[]>): void {
+    const previousIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+
+    if (previousIndex === currentIndex) return;
+
+    const control = this.contentBlocks.at(previousIndex);
+    this.contentBlocks.removeAt(previousIndex);
+    this.contentBlocks.insert(currentIndex, control);
+
+    this.contentBlocks.controls.forEach((ctrl, index) => {
+      ctrl.get('position')?.setValue(index);
+    });
+
+    this.cdr.detectChanges();
+  }
+
   public get contentBlocks(): FormArray {
     return this.createForm.get('content') as FormArray;
   }
@@ -311,12 +333,30 @@ export class CreateBlog implements OnInit {
   ssHtml: SafeHtml = '';
   onSubmit(): void {
     if (!this.valid()) return;
+    this.saveBlog(false);
+  }
+
+  onSaveDraft(): void {
+    if (!this.createForm.valid) return;
+    this.saveBlog(true);
+  }
+
+  private saveBlog(isDraft: boolean): void {
     const mainImage = this.createForm.value.image as { url: string, publicId: string };
     var images: BlogImage[] = [{ link: mainImage.url, alt: this.createForm.value.title, position: -1, publicId: mainImage.publicId, id: '1', blogId: '1' }];
+    images = [...images, ...this.createForm.value.content.filter((block: any) => block.type === 'image').map((img: any) => ({
+      link: img.url,
+      alt: img.altText || this.createForm.value.title,
+      position: img.position,
+      publicId: img.publicId,
+      id: '1',
+      blogId: '1'
+    }))];
     const contentBlocks = this.createForm.value.content.filter((block: any) => block.type === 'text').map((block: any) => ({
       text: block.text,
       position: block.position,
     }));
+    const rawDate = this.createForm.value.publishedDate;
     const blogData: CreateBlogDTO = {
       title: this.createForm.value.title,
       blogContent: contentBlocks,
@@ -324,6 +364,8 @@ export class CreateBlog implements OnInit {
       images: images,
       BlogView: [],
       introduction: this.createForm.value.introduction,
+      publishedDate: rawDate ? new Date(rawDate) : undefined,
+      draft: isDraft,
     };
 
     this.loading = true;
@@ -343,7 +385,6 @@ export class CreateBlog implements OnInit {
         this.loading = false;
       }
     });
-
   }
 
   viewBlog(): void {

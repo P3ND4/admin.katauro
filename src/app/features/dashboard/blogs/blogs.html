@@ -96,21 +96,39 @@
       </header>
 
       <div class="head-bar">
-        @for (item of ['Título', 'Fecha de creación', 'Introducción', '']; track $index) {
+        @for (item of ['imagen','Título', 'Tags', 'Estado', 'Fecha', '']; track $index) {
         <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
           <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
-            <p>{{item}}</p>
+            <p>{{item == 'imagen'? '': item}}</p>
           </div>
           @for (blog of blogs; track $index) {
           <div [className]="`blog-item ${item === '' ? 'action' : item.toLowerCase()}`" (click)="item !== '' && (details = blog)">
+            @if(item === 'imagen') {
+            <div class="blog-image">
+              <img [src]="blog.images[0]?.link || 'placeholder-image.png'" alt="Imagen del blog">
+            </div>
+            }
             @if (item === 'Título') {
             <p>{{blog.title}}</p>
             }
-            @if (item === 'Fecha de creación') {
-            <p>{{getDate(blog.createdAt)}}</p>
+            @if (item === 'Tags') {
+            <div class="tag-list">
+              @for (blogTag of blog.tags; track blogTag.tagId) {
+              <span class="tag-pill" [style.backgroundColor]="blogTag.tag?.bgColor" [style.color]="blogTag.tag?.color">
+                {{blogTag.tag?.name}}
+              </span>
+              }
+            </div>
             }
-            @if (item === 'Introducción') {
-            <p>{{blog.introduction}}</p>
+            @if (item === 'Estado') {
+            <p>
+              <span [style.color]="getStatus(blog).color" style="font-weight: 600;">
+                {{getStatus(blog).text}}
+              </span>
+            </p>
+            }
+            @if (item === 'Fecha') {
+            <p>{{getDisplayDate(blog)}}</p>
             }
             @if(item === '') {
             <div class="actions" (click)="$event.stopImmediatePropagation()">

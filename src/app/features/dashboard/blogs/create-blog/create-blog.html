@@ -102,12 +102,25 @@
             <div class="line"></div>
         </div>
 
+        <div class="form-text">
+            <label for="publishedDate">Fecha de publicación</label>
+            <div class="set">
+                <div class="input-base">
+                    <input id="publishedDate" type="date" formControlName="publishedDate" [min]="todayDate" />
+                </div>
+            </div>
+            <div class="line"></div>
+        </div>
 
 
-        <div formArrayName="content" class="content-container">
+
+        <div formArrayName="content" class="content-container" cdkDropList (cdkDropListDropped)="reorderBlocks($event)">
             @for (content of contentBlocks.controls; track content) {
 
-            <div [formGroupName]="$index">
+            <div [formGroupName]="$index" cdkDrag cdkDragLockAxis="y" class="block-wrapper">
+                <div class="drag-handle" cdkDragHandle>
+                    <img src="more-vertical.svg" alt="arrastrar">
+                </div>
 
                 @if(content.value.type === 'text') {
                 <div class="form-text added">
@@ -177,8 +190,11 @@
             <button class="button-chips" type="button" [routerLink]="'/dashboard/blogs'">
                 <span>Cancelar</span>
             </button>
+            <button class="button-chips" type="button" (click)="onSaveDraft()">
+                <span>Guardar borrador</span>
+            </button>
             <button class="button-base" type="submit">
-                <span>Guardar</span>
+                <span>Publicar</span>
             </button>
         </footer>
     </form>
