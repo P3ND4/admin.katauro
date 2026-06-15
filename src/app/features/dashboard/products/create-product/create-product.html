@@ -352,6 +352,13 @@
                         <div class="line"></div>
                     </div>
 
+                    @if (limitWarning) {
+                    <div class="limit-warning">
+                        <img src="alert-triangle.svg" alt="">
+                        <span>{{limitWarning}}</span>
+                    </div>
+                    }
+
                     <div class="form-text">
                         <div class="labels">
                             <label>Modelo 3D</label>

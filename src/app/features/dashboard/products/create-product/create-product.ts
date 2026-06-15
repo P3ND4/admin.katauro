@@ -21,6 +21,8 @@ import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CreateProduct implements OnInit {
+  MAX_VISUAL_ITEMS = 5;
+  limitWarning = '';
   file: File | undefined;
   createFinish: FormGroup;
   createColor: FormGroup;
@@ -242,8 +244,15 @@ export class CreateProduct implements OnInit {
       this.isHoveringVariant = false;
       if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
         var files = [...event.dataTransfer.files];
-        if (files.length > 5) {
-          files = files.slice(0, 5);
+        const remaining = this.getRemainingSlots(this.currentVariant);
+        if (remaining <= 0) {
+          this.limitWarning = 'Has alcanzado el límite de 5 ítems visuales. Elimina una imagen o el modelo 3D para agregar más.';
+          this.cdr.detectChanges();
+          return;
+        }
+        if (files.length > remaining) {
+          this.limitWarning = `Solo puedes agregar ${remaining} ítem(s) más. Límite alcanzado.`;
+          files = files.slice(0, remaining);
         }
         this.uploadMulti(files);
         event.dataTransfer.clearData();
@@ -281,8 +290,15 @@ export class CreateProduct implements OnInit {
     if (option == undefined) {
       if (input.files && input.files.length > 0) {
         var files = [...input.files];
-        if (files.length > 5) {
-          files = files.slice(0, 5);
+        const remaining = this.getRemainingSlots(this.currentVariant);
+        if (remaining <= 0) {
+          this.limitWarning = 'Has alcanzado el límite de 5 ítems visuales. Elimina una imagen o el modelo 3D para agregar más.';
+          this.cdr.detectChanges();
+          return;
+        }
+        if (files.length > remaining) {
+          this.limitWarning = `Solo puedes agregar ${remaining} ítem(s) más. Límite alcanzado.`;
+          files = files.slice(0, remaining);
         }
         this.uploadMulti(files);
       }
@@ -349,6 +365,25 @@ export class CreateProduct implements OnInit {
 
   getVariantsImages(variant: number) {
     return this.variants.controls[variant].get('variantImages')?.value as { link: string, public_id?: string }[];
+  }
+
+  getVariantModels3D(variant: number) {
+    return this.variants.controls[variant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
+  }
+
+  getVisualItemCount(variant: number): number {
+    const images = this.getVariantsImages(variant)?.length || 0;
+    const models = this.getVariantModels3D(variant)?.length || 0;
+    return images + models;
+  }
+
+  getRemainingSlots(variant: number): number {
+    return this.MAX_VISUAL_ITEMS - this.getVisualItemCount(variant);
+  }
+
+  clearLimitWarning(): void {
+    this.limitWarning = '';
+    this.cdr.detectChanges();
   }
 
 
@@ -443,7 +478,7 @@ export class CreateProduct implements OnInit {
       const successfulUrls = urls.filter(u => u.link !== '');
       if (successfulUrls.length > 0) {
         var currentFiles = this.variants.controls[this.currentVariant].get('variantImages')?.value as { link: string, public_id?: string }[];
-        currentFiles = successfulUrls.length + currentFiles.length > 5 && successfulUrls.length < 5 ? currentFiles.slice(currentFiles.length - (5 - successfulUrls.length), undefined) : successfulUrls.length == 5 ? [] : currentFiles;
+        currentFiles = successfulUrls.length + currentFiles.length > this.MAX_VISUAL_ITEMS && successfulUrls.length < this.MAX_VISUAL_ITEMS ? currentFiles.slice(currentFiles.length - (this.MAX_VISUAL_ITEMS - successfulUrls.length), undefined) : successfulUrls.length == this.MAX_VISUAL_ITEMS ? [] : currentFiles;
         currentFiles.push(...successfulUrls);
         this.variants.controls[this.currentVariant].get('variantImages')?.patchValue(currentFiles);
         this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
@@ -636,9 +671,16 @@ export class CreateProduct implements OnInit {
     currentFiles.splice(index, 1);
     this.variants.controls[this.currentVariant].get('variantImages')?.setValue(currentFiles);
     this.variantPreviews[this.currentVariant] = currentFiles.map(x => typeof x == 'string' ? x : x.link);
+    this.clearLimitWarning();
   }
 
   onModelUploaded(event: { secure_url: string, public_id: string }) {
+    const remaining = this.getRemainingSlots(this.currentVariant);
+    if (remaining <= 0) {
+      this.limitWarning = 'Has alcanzado el límite de 5 ítems visuales. Elimina una imagen para poder agregar el modelo 3D.';
+      this.cdr.detectChanges();
+      return;
+    }
     var currentModels = this.variants.controls[this.currentVariant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
     currentModels.push({ url: event.secure_url, public_id: event.public_id });
     this.variants.controls[this.currentVariant].get('variantModels3D')?.setValue(currentModels);
@@ -649,11 +691,8 @@ export class CreateProduct implements OnInit {
     var currentModels = this.variants.controls[this.currentVariant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
     currentModels.splice(index, 1);
     this.variants.controls[this.currentVariant].get('variantModels3D')?.setValue(currentModels);
+    this.clearLimitWarning();
     this.cdr.detectChanges();
-  }
-
-  getVariantModels3D(variant: number) {
-    return this.variants.controls[variant].get('variantModels3D')?.value as { url: string, public_id?: string }[];
   }
 
   update(prod: CreateProductDto) {
