@@ -1,0 +1,209 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    position: relative;
+    min-height: 100vh;
+    font-family: var(--montser-font);
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+}
+
+.blog-list-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.blog-list-header h2 {
+    color: var(--Gray-900, #181D27);
+    font-family: var(--montser-font);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    margin: 0;
+}
+
+.count {
+    padding: 2px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--Gray-300, #D5D7DA);
+    background: var(--Gray-50, #FAFAFA);
+}
+
+.count p {
+    color: var(--Gray-600, #535862);
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    margin: 0;
+}
+
+.head-bar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+}
+
+.column.provincia {
+    flex: 2;
+}
+
+.column.municipio {
+    flex: 2;
+}
+
+.column.precio {
+    flex: 1;
+}
+
+.column.estado {
+    flex: none;
+    width: 100px;
+}
+
+.column.action {
+    flex: none;
+    width: 100px;
+}
+
+.head-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 12px;
+    border-bottom: 1px solid var(--Gray-300, #D5D7DA);
+}
+
+.head-bar-item p {
+    font-family: var(--montser-font);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.6px;
+    margin: 0;
+}
+
+.blog-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-bottom: 1px solid var(--Gray-200, #E9EAEB);
+    cursor: pointer;
+    min-height: 40px;
+    transition: background-color 0.15s;
+}
+
+.blog-item:hover {
+    background-color: var(--Gray-50, #FAFAFA);
+}
+
+.blog-item p {
+    color: var(--Gray-900, #181D27);
+    font-family: var(--montser-font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.15s;
+}
+
+.action-button:hover {
+    background-color: var(--Gray-200, #E9EAEB);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 32px;
+}
+
+.title {
+    color: var(--Gray-900, #181D27);
+    font-family: var(--montser-font);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 38px;
+    margin: 0;
+}
+
+
+
+.toggle-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.toggle-cell .togle {
+    display: flex;
+    width: 36px;
+    height: 20px;
+    border-radius: 12px;
+    background-color: #178C94;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-cell .togle.non-active {
+    background-color: #D5D7DA;
+}
+
+.toggle-cell .switch {
+    display: flex;
+    width: 36px;
+    height: 20px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: -2px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    background-color: #178C94;
+    transition: transform 0.3s ease-in-out;
+}
+
+.toggle-cell .switch.non-active {
+    transform: translate(-48%);
+    background-color: white;
+}
+
+.toggle-cell .switch img {
+    width: 16px;
+    height: 16px;
+}

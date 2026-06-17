@@ -1,0 +1,46 @@
+<div class="overlay" (click)="onCancel()">
+  <form class="creation-dialog" [formGroup]="createForm" (submit)="onSubmit()" (click)="$event.stopPropagation()">
+    <h2>{{deliveryPrice ? 'Editar configuración de envío' : 'Agregar configuración de envío'}}</h2>
+
+    <div class="input-container">
+      <label class="form-label">Provincia</label>
+      <div class="input-content">
+        <input type="text" formControlName="province" placeholder="Ej: La Habana" />
+      </div>
+    </div>
+
+    <div class="input-container">
+      <label class="form-label">Municipio</label>
+      <div class="input-content">
+        <input type="text" formControlName="municipality" placeholder="Ej: Plaza" />
+      </div>
+    </div>
+
+    <div class="input-container">
+      <label class="form-label">Precio (USD)</label>
+      <div class="input-content price-input">
+        <span class="currency">$</span>
+        <input type="number" formControlName="price" placeholder="0.00" step="0.01" min="0" />
+        <span class="currency-label">USD</span>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <label class="form-label">Activo</label>
+      <div class="togle" [class.non-active]="!isActive" (click)="isActive = !isActive">
+        <div class="switch" [class.non-active]="!isActive">
+          <img src="Button.svg" alt="">
+        </div>
+      </div>
+    </div>
+
+    <div class="creat-actions">
+      <button class="button-chips" style="flex: 1;" type="button" (click)="onCancel()">
+        <label>Cancelar</label>
+      </button>
+      <button class="button-base" style="flex: 1;" type="submit" [disabled]="!createForm.valid">
+        <label>{{deliveryPrice ? 'Guardar' : 'Crear'}}</label>
+      </button>
+    </div>
+  </form>
+</div>

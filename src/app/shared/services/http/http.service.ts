@@ -218,4 +218,20 @@ export class httpService {
   getBlogAnalytics(id: string) {
     return this.httpClient.get(`${this.apiUrl}blogs/${id}/analytics`, { withCredentials: true });
   }
+
+  getDeliveryPrices() {
+    return this.httpClient.get(`${this.apiUrl}delivery-prices`, { withCredentials: true });
+  }
+
+  createDeliveryPrice(data: any) {
+    return this.httpClient.post(`${this.apiUrl}delivery-prices`, data, { withCredentials: true });
+  }
+
+  updateDeliveryPrice(id: string, data: any) {
+    return this.httpClient.patch(`${this.apiUrl}delivery-prices/${id}`, data, { withCredentials: true });
+  }
+
+  deleteDeliveryPrice(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}delivery-prices/${id}`, { withCredentials: true });
+  }
 }

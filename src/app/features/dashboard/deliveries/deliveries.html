@@ -1,0 +1,76 @@
+<div class="main">
+  @if (loading) {
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+
+  @if (warn) {
+  <div class="warn">
+    <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+  </div>
+  }
+
+  @if (showCreateModal) {
+  <app-create-delivery-modal [deliveryPrice]="editDeliveryPrice" (created)="onDeliveryPriceCreated()"
+    (closed)="onModalClosed()">
+  </app-create-delivery-modal>
+  }
+
+  <header class="header">
+    <h1 class="title">Envío a domicilio</h1>
+    <button class="button-base" (click)="onCreate()">
+      <img src="plus.svg" alt="">
+      <span>Agregar configuración</span>
+    </button>
+  </header>
+
+  <div class="table">
+    <header class="blog-list-header">
+      <h2>Tarifa por Provincias y Municipios</h2>
+    </header>
+
+    <div class="head-bar">
+      @for (item of ['Provincia', 'Municipio', 'Precio', 'Estado', '']; track $index) {
+      <div [className]="`column ${item === '' ? 'action' : item.toLowerCase()}`">
+        <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase()}`">
+          <p>{{item}}</p>
+        </div>
+        @for (dp of deliveryPrices; track dp.id) {
+        <div [className]="`blog-item ${item === '' ? 'action' : item.toLowerCase()}`"
+          >
+          @if (item === 'Provincia') {
+          <p>{{dp.province}}</p>
+          }
+          @if (item === 'Municipio') {
+          <p>{{dp.municipality}}</p>
+          }
+          @if (item === 'Precio') {
+          <p>${{dp.price?.toFixed(2)}} USD</p>
+          }
+          @if (item === 'Estado') {
+          <div class="toggle-cell" (click)="$event.stopPropagation()">
+            <div class="togle" [class.non-active]="!dp.active" (click)="toggleActive(dp)">
+              <div class="switch" [class.non-active]="!dp.active">
+                <img src="Button.svg" alt="">
+              </div>
+            </div>
+          </div>
+          }
+          @if(item === '') {
+          <div class="actions" (click)="$event.stopImmediatePropagation()">
+            <button class="action-button" (click)="ask(dp.id)">
+              <img src="trash-2.svg" alt="">
+            </button>
+            <button class="action-button" (click)="onEdit(dp)">
+              <img src="edit-2.svg" alt="">
+            </button>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>

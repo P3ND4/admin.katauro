@@ -98,6 +98,10 @@
     mask-image: url('/layout.svg');
 }
 
+.nav-item.deliveries .nav-icon {
+    -webkit-mask-image: url('/truck.svg');
+    mask-image: url('/truck.svg');
+}
 
 
 
