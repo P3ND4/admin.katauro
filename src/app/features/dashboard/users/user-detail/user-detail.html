@@ -1,0 +1,81 @@
+<div class="user-detail-panel">
+  <div class="detail-header">
+    <h2>Cliente</h2>
+    <button class="close-btn" (click)="onClose()">
+      <img src="x.svg" alt="Cerrar">
+    </button>
+  </div>
+
+  <div class="client-info">
+    <div class="client-header">
+      <div class="client-avatar">
+        @if (user?.image) {
+        <img [src]="user.image" alt="">
+        } @else {
+        <div class="avatar-placeholder">{{ (user?.name?.charAt(0) || '?').toUpperCase() }}</div>
+        }
+      </div>
+      <div class="client-title">
+        <h3>{{user?.name}} {{user?.lastName}}</h3>
+        <p>{{user?.email}}</p>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Nombre completo</label>
+        <p>{{user?.name}} {{user?.lastName}}</p>
+      </div>
+      <div class="info-item">
+        <label>Correo Electrónico</label>
+        <p>{{user?.email}}</p>
+      </div>
+      <div class="info-item">
+        <label>Teléfono</label>
+        <p>{{user?.phone || '---'}}</p>
+      </div>
+      <div class="info-item">
+        <label>Dirección</label>
+        <p>{{user?.address || '---'}}</p>
+      </div>
+      <div class="info-item">
+        <label>Fecha de Alta</label>
+        <p>{{getDate(user?.createdAt)}}</p>
+      </div>
+      <div class="info-item">
+        <label>Último Acceso</label>
+        <p>{{getDate(user?.updatedAt)}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="orders-section">
+    <h3>Historial de pedidos</h3>
+    @if (user?.orders && user.orders.length > 0) {
+    <div class="orders-table">
+      <div class="orders-header">
+        <div class="order-col">Nº pedido</div>
+        <div class="order-col">Fecha</div>
+        <div class="order-col">Total</div>
+        <div class="order-col">Tipo de entrega</div>
+        <div class="order-col">Estado</div>
+      </div>
+      @for (order of user.orders; track order.id) {
+      <div class="order-row">
+        <div class="order-col">{{order.id?.substring(0, 8)}}</div>
+        <div class="order-col">{{getDate(order.createdAt)}}</div>
+        <div class="order-col">${{getTotal(order).toFixed(2)}} USD</div>
+        <div class="order-col">{{order.delivery ? 'A domicilio' : 'Retiro en tienda'}}</div>
+        <div class="order-col">
+          <span class="status-badge" [style.color]="getOrderState(order.state).color">
+            {{getOrderState(order.state).text}}
+          </span>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="no-orders">Este cliente no tiene pedidos registrados.</p>
+    }
+  </div>
+</div>

@@ -13,6 +13,7 @@ export const routes: Routes = [
       { path: 'blogs', loadComponent: () => import('./features/dashboard/blogs/blogs').then(m => m.Blogs) },
       { path: 'create-blog', loadComponent: () => import('./features/dashboard/blogs/create-blog/create-blog').then(m => m.CreateBlog) },
       { path: 'deliveries', loadComponent: () => import('./features/dashboard/deliveries/deliveries').then(m => m.Deliveries) },
+      { path: 'users', loadComponent: () => import('./features/dashboard/users/users').then(m => m.Users) },
     ]
   },
   { path: 'login', loadComponent: () => import('./features/auth/auth').then(m => m.Auth) },

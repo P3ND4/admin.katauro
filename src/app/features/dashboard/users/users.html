@@ -1,0 +1,122 @@
+<div class="main">
+  @if (loading) {
+  <div class="loader-wrapper">
+    <app-box-loader></app-box-loader>
+  </div>
+  }
+
+  @if (warn) {
+  <div class="warn">
+    <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+  </div>
+  }
+
+  @if (showUserDetail) {
+  <div class="detail-overlay">
+    <app-user-detail [user]="selectedUser" (close)="onCloseDetail()"></app-user-detail>
+  </div>
+  }
+
+  <header class="header">
+    <h1 class="title">Clientes</h1>
+  </header>
+
+  <div class="filters">
+    @for (fil of filters; track $index) {
+    <div class="button-chips">
+      <label>{{fil}}</label>
+      <img src="x.svg" alt="" (click)="onDeleteFilter(fil)">
+    </div>
+    }
+    <div class="filters-dorp-menu">
+      <button class="button-chips" (click)="filterMenu = !filterMenu">
+        <img src="Filters lines.svg" alt="">
+        <label>Filtros</label>
+      </button>
+      @if(filterMenu){
+      <div class="dropdown-content">
+        <div class="dropdown-item" (click)="onOrderBy('desc')">
+          <p>Más recientes</p>
+        </div>
+        <div class="dropdown-item" (click)="onOrderBy('asc')">
+          <p>Antiguos</p>
+        </div>
+      </div>
+      }
+    </div>
+    <div class="spacing" style="flex: 1;"></div>
+    <div class="input-base">
+      <img src="search.svg" alt="" (click)="onSearch()">
+      <input type="text" placeholder="Buscar" (keyup.enter)="onSearch()" #searchUser />
+    </div>
+  </div>
+
+  <div class="table">
+    <header class="user-list-header">
+      <h2>Lista de clientes</h2>
+      <div class="count">
+        <p>{{getCount()}}</p>
+      </div>
+    </header>
+
+    <div class="head-bar">
+      @for (item of ['Nombre', 'Teléfono', 'Total de pedidos', 'Gasto total', '']; track $index) {
+      <div [className]="`column ${item === '' ? 'action' : item.toLowerCase().replace(/ /g, '-')}`">
+        <div [className]="`head-bar-item ${item === '' ? 'action' : item.toLowerCase().replace(/ /g, '-')}`">
+          <p>{{item}}</p>
+        </div>
+        @for (user of users; track user.id) {
+        <div [className]="`user-item ${item === '' ? 'action' : item.toLowerCase().replace(/ /g, '-')}`"
+          (click)="item !== '' && onView(user)">
+          @if (item === 'Nombre') {
+          <div class="user-info">
+            <div class="user-avatar">
+              @if (user.image) {
+              <img [src]="user.image" alt="">
+              } @else {
+              <div class="avatar-placeholder">{{ (user.name?.charAt(0) || '?').toUpperCase() }}</div>
+              }
+            </div>
+            <div class="user-details">
+              <p class="user-name">{{user.name}} {{user.lastName}}</p>
+              <p class="user-email">{{user.email}}</p>
+            </div>
+          </div>
+          }
+          @if (item === 'Teléfono') {
+          <p>{{user.phone || '---'}}</p>
+          }
+          @if (item === 'Total de pedidos') {
+          <p>{{getOrderCount(user)}}</p>
+          }
+          @if (item === 'Gasto total') {
+          <p>${{getTotalSpent(user).toFixed(2)}} USD</p>
+          }
+          @if (item === '') {
+          <div class="actions" (click)="$event.stopImmediatePropagation()">
+            <button class="action-button" (click)="ask(user.id)">
+              <img src="trash-2.svg" alt="">
+            </button>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+  @if (pages > 1) {
+  <div class="pagination">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
+    <div class="pages">
+      @for (page of pagesArray; track $index) {
+      <div class="page" [ngClass]="{'active': currentPage == page}" (click)="onPageChange(page)">
+        <label>{{page}}</label>
+      </div>
+      }
+    </div>
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === pages">Siguiente</button>
+  </div>
+  }
+</div>

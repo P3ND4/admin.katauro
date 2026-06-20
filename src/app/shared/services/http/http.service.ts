@@ -15,7 +15,7 @@ export class httpService {
   apiUrl: string = 'https://api.katauro.com/';
 
   constructor(private httpClient: HttpClient) {
-    this.apiUrl = 'http://localhost:3000/';
+    //this.apiUrl = 'http://localhost:3000/';
   }
 
   meAdmin() {
@@ -233,5 +233,27 @@ export class httpService {
 
   deleteDeliveryPrice(id: string) {
     return this.httpClient.delete(`${this.apiUrl}delivery-prices/${id}`, { withCredentials: true });
+  }
+
+  getUsers(options?: { search?: string, order?: string, page?: number }) {
+    let url = `${this.apiUrl}users`;
+    const params: string[] = [];
+    if (options?.search) params.push(`search=${encodeURIComponent(options.search)}`);
+    if (options?.order) params.push(`order=${options.order}`);
+    if (options?.page) params.push(`page=${options.page}`);
+    if (params.length > 0) url += `?${params.join('&')}`;
+    return this.httpClient.get(url, { withCredentials: true });
+  }
+
+  getUser(id: string) {
+    return this.httpClient.get(`${this.apiUrl}users/${id}`, { withCredentials: true });
+  }
+
+  deleteUser(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}users/${id}`, { withCredentials: true });
+  }
+
+  updateUser(id: string, data: any) {
+    return this.httpClient.patch(`${this.apiUrl}users/${id}`, data, { withCredentials: true });
   }
 }
