@@ -40,7 +40,9 @@ export class BlobViewer implements OnInit {
     })) : [];
     console.log('Contenido de texto procesado:', this.blog.blogContent);
     const textContent: BlogContent[] = this.blog.blogContent.map((content) => ({
-      content: content.text,
+      content: content.text
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\u00A0/g, ' '),
       position: content.position
     }));
 

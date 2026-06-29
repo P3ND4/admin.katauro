@@ -41,7 +41,7 @@
                             <p>Crear etiqueta</p>
                         </div>
                         @for (tag of tags; track $index) {
-                        <div class="dialog-item" (click)="onSelectTag(tag); $event.stopPropagation()">
+                        <div class="dialog-item tag-item" (click)="onSelectTag(tag); $event.stopPropagation()">
                             <div class="tag-txt" [style.backgroundColor]="tag.bgColor">
                                 <p [style.color]="tag.color">
                                     {{tag.name}}
@@ -50,6 +50,10 @@
                             @if(tag.id in selectedTags){
                             <img src="check.svg" alt="selected" />
                             }
+                            <div class="tag-actions">
+                                <img src="edit-2.svg" alt="editar" (click)="onEditTag(tag); $event.stopPropagation()" />
+                                <img src="trash-2.svg" alt="borrar" (click)="onDeleteTag(tag); $event.stopPropagation()" />
+                            </div>
                         </div>
                         }
 
@@ -181,6 +185,17 @@
 
 
 
+        @if(validationErrors.length > 0) {
+        <div class="validation-errors">
+            <p>Por favor, corrige los siguientes errores:</p>
+            <ul>
+                @for(error of validationErrors; track $index) {
+                <li>{{error}}</li>
+                }
+            </ul>
+        </div>
+        }
+
         <footer class="form-footer">
 
             <button class="button-chips" type="button" (click)="viewBlog()">
@@ -200,8 +215,14 @@
     </form>
 
     @if(showCreateTagModal) {
-    <app-create-tag-modal (tagCreated)="onTagCreated($event)" (closed)="onTagModalClosed()">
+    <app-create-tag-modal [tag]="editingTag" (tagCreated)="onTagCreated($event)" (tagUpdated)="onTagUpdated($event)" (closed)="onTagModalClosed()">
     </app-create-tag-modal>
+    }
+
+    @if(warn) {
+    <div class="warn">
+        <app-message-box [data]="warn" (acept)="onDecide($event.valueOf())"></app-message-box>
+    </div>
     }
 
 

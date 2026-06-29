@@ -71,6 +71,13 @@ export class Products implements OnInit {
       {
         next: val => {
           this.pages = val as number
+          
+          // Si la página actual ya no existe (ej: borraron el último producto de la página), ajustar
+          if (this.params.page && this.params.page > this.pages) {
+            this.params.page = this.pages || 1;
+            this.currentPage = this.params.page;
+          }
+          
           this.pagesArray = Array(this.pages).fill(0).map((x, i) => i + 1);
           this.getProducts();
         },

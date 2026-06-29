@@ -1,6 +1,6 @@
 <div class="overlay">
   <form class="creation-dialog" [formGroup]="createTagForm" (submit)="onSubmit()" (click)="$event.stopPropagation()">
-    <h2>Agregar etiqueta</h2>
+    <h2>{{ tag ? 'Editar etiqueta' : 'Agregar etiqueta' }}</h2>
 
     <div class="input-container">
       <label class="form-label">Nombre</label>

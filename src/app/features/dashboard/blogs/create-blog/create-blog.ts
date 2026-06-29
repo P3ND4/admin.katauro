@@ -17,10 +17,11 @@ import { httpService } from '../../../../shared/services/http/http.service';
 import { ErrorLogService } from '../../../../shared/services/errors/error.log.service';
 import { parseError } from '../../../../shared/services/errors/errorParser';
 import { BoxLoader } from "../../../../shared/components/box-loader/box-loader";
+import { MessageBox } from "../../../../shared/components/message-box/message-box";
 
 @Component({
   selector: 'app-create-blog',
-  imports: [ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal, QuillModule, AddBlock, BlobViewer, BoxLoader, DragDropModule],
+  imports: [ReactiveFormsModule, DragAndDrop, RouterLink, CreateTagModal, QuillModule, AddBlock, BlobViewer, BoxLoader, DragDropModule, MessageBox],
   templateUrl: './create-blog.html',
   styleUrl: './create-blog.css',
 })
@@ -28,12 +29,16 @@ export class CreateBlog implements OnInit {
   createForm: FormGroup;
   openTagOption = false;
   showCreateTagModal = false;
+  editingTag: Tags | undefined;
+  toDeleteTag: Tags | undefined;
   tags: Tags[] = [];
   selectedTags: { [key: string]: Tags } = {};
   imageUrl = '';
   imagePublicId = '';
   loading = false;
   todayDate: string = new Date().toISOString().split('T')[0];
+  warn: { msg: string, warn: string } | undefined;
+  validationErrors: string[] = [];
 
   addItemOption = false;
   edit: Blog | undefined;
@@ -284,6 +289,63 @@ export class CreateBlog implements OnInit {
 
   onTagModalClosed(): void {
     this.showCreateTagModal = false;
+    this.editingTag = undefined;
+  }
+
+  onEditTag(tag: Tags): void {
+    this.editingTag = tag;
+    this.showCreateTagModal = true;
+  }
+
+  onTagUpdated(event: { id: string, tag: CreateTag }): void {
+    this.http.updateTag(event.id, event.tag).subscribe({
+      next: () => {
+        this.loadTags();
+        this.showCreateTagModal = false;
+        this.editingTag = undefined;
+      },
+      error: (err) => {
+        this.errorService.addError(parseError(err));
+        this.showCreateTagModal = false;
+        this.editingTag = undefined;
+      }
+    });
+  }
+
+  onDeleteTag(tag: Tags): void {
+    this.toDeleteTag = tag;
+    // Usar el mismo warn que ya existe en el componente
+    this.warn = {
+      msg: 'Eliminar etiqueta',
+      warn: `¿Eliminar "${tag.name}"? Se quitará de todos los blogs que la usen.`
+    };
+  }
+
+  onConfirmDeleteTag(result: boolean): void {
+    if (result && this.toDeleteTag) {
+      this.http.deleteTag(this.toDeleteTag.id).subscribe({
+        next: () => {
+          if (this.selectedTags[this.toDeleteTag!.id]) {
+            delete this.selectedTags[this.toDeleteTag!.id];
+          }
+          this.loadTags();
+          this.toDeleteTag = undefined;
+        },
+        error: (err) => {
+          this.errorService.addError(parseError(err));
+          this.toDeleteTag = undefined;
+        }
+      });
+    } else {
+      this.toDeleteTag = undefined;
+    }
+  }
+
+  onDecide(result: boolean): void {
+    this.warn = undefined;
+    if (this.toDeleteTag) {
+      this.onConfirmDeleteTag(result);
+    }
   }
 
   onSelectTag(tag: Tags): void {
@@ -327,17 +389,65 @@ export class CreateBlog implements OnInit {
     });
   }
 
+  markAllAsTouched(): void {
+    this.createForm.markAllAsTouched();
+    const contentArray = this.createForm.get('content') as FormArray;
+    contentArray.controls.forEach(control => {
+      if (control instanceof FormGroup) {
+        control.markAllAsTouched();
+      } else {
+        control.markAsTouched();
+      }
+    });
+  }
+
+  checkValidation(requireTagsAndImage: boolean): boolean {
+    this.validationErrors = [];
+    this.markAllAsTouched();
+
+    if (this.createForm.get('title')?.invalid) {
+      this.validationErrors.push('El título es obligatorio.');
+    }
+    if (this.createForm.get('introduction')?.invalid) {
+      this.validationErrors.push('La introducción es obligatoria.');
+    }
+    if (requireTagsAndImage && !this.imageUrl) {
+      this.validationErrors.push('La imagen destacada es obligatoria.');
+    }
+    if (requireTagsAndImage && this.getSelectedTags().length === 0) {
+      this.validationErrors.push('Debe seleccionar al menos una etiqueta.');
+    }
+
+    const contentArray = this.createForm.get('content') as FormArray;
+    if (contentArray.length === 0 && requireTagsAndImage) {
+      this.validationErrors.push('Debe agregar al menos un bloque de contenido.');
+    }
+
+    contentArray.controls.forEach((ctrl, index) => {
+      if (ctrl.invalid) {
+        const type = ctrl.get('type')?.value;
+        if (type === 'text') {
+          this.validationErrors.push(`El bloque de texto #${index + 1} está vacío.`);
+        } else if (type === 'image') {
+          this.validationErrors.push(`El bloque de imagen #${index + 1} necesita una imagen.`);
+        }
+      }
+    });
+
+    return this.validationErrors.length === 0;
+  }
+
   valid(): boolean {
     return this.createForm.valid && this.getSelectedTags().length > 0 && !!this.imageUrl;
   }
   ssHtml: SafeHtml = '';
   onSubmit(): void {
-    if (!this.valid()) return;
+    if (!this.checkValidation(true)) return;
     this.saveBlog(false);
   }
 
   onSaveDraft(): void {
-    if (!this.createForm.valid) return;
+    if (!this.checkValidation(false)) return;
     this.saveBlog(true);
   }
 

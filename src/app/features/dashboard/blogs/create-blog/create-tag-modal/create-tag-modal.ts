@@ -1,9 +1,8 @@
-import { Component, EventEmitter, Output, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Tags } from '../../../../../shared/models/blog/tags.entity';
 import { CreateTag } from '../../../../../shared/models/blog/DTO\'s/tags.entity';
-import { V } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-create-tag-modal',
@@ -12,11 +11,12 @@ import { V } from '@angular/cdk/keycodes';
   styleUrl: './create-tag-modal.css'
 })
 export class CreateTagModal implements OnInit {
+  @Input() tag?: Tags;
   @Output() tagCreated = new EventEmitter<CreateTag>();
+  @Output() tagUpdated = new EventEmitter<{ id: string, tag: CreateTag }>();
   @Output() closed = new EventEmitter<void>();
   @ViewChild('bgColor', { static: true }) colorInput!: ElementRef<HTMLInputElement>;
   createTagForm: FormGroup;
-
 
   showColorDropdown = false;
   selectedColor: { name: string; hex: string } | null = null;
@@ -50,7 +50,15 @@ export class CreateTagModal implements OnInit {
     this.colorInput.nativeElement.click();
   }
   ngOnInit(): void {
-
+    if (this.tag) {
+      this.fontColor = this.tag.color;
+      this.bgColorValue = this.tag.bgColor;
+      this.createTagForm.patchValue({
+        name: this.tag.name,
+        colorHex: this.tag.color,
+        bgColor: this.tag.bgColor
+      });
+    }
   }
   onSelectColor(color: { name: string; hex: string }): void {
     this.selectedColor = color;
@@ -60,13 +68,16 @@ export class CreateTagModal implements OnInit {
 
   onSubmit(): void {
     if (this.createTagForm.valid) {
-      const newTag: CreateTag = {
+      const tagData: CreateTag = {
         name: this.createTagForm.value.name,
         color: this.fontColor,
         bgColor: this.bgColorValue
       };
-      this.tagCreated.emit(newTag);
-    
+      if (this.tag) {
+        this.tagUpdated.emit({ id: this.tag.id, tag: tagData });
+      } else {
+        this.tagCreated.emit(tagData);
+      }
       this.createTagForm.reset();
     }
   }

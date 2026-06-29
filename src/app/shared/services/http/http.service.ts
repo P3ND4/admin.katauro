@@ -149,38 +149,38 @@ export class httpService {
   }
 
   getBlogs(option?: { page?: number, tags?: string, search?: string, sortBy?: string }) {
-    var url = this.apiUrl + 'blogs' + (option ? '?' : '');
+    var url = this.apiUrl + 'blogs?includeDrafts=true';
 
     if (option?.sortBy) {
-      url += option.tags || option.search || option.page ? `sortBy=${option.sortBy}&` : `sortBy=${option.sortBy}`;
+      url += `&sortBy=${option.sortBy}`;
     }
     if (option?.tags) {
-      url += option.search || option.page ? `tags=${option.tags}&` : `tags=${option.tags}`;
+      url += `&tags=${option.tags}`;
     }
     if (option?.search) {
-      url += option.page ? `search=${option.search}&` : `search=${option.search}`;
+      url += `&search=${option.search}`;
     }
     if (option?.page) {
-      url += `page=${option.page}`;
+      url += `&page=${option.page}`;
     }
 
     return this.httpClient.get(url, { withCredentials: true });
   }
 
   getBlogPages(option?: { tags?: string, search?: string }) {
-    var url = option ? `${this.apiUrl}blogs/pages/total?` : `${this.apiUrl}blogs/pages/total`;
+    var url = `${this.apiUrl}blogs/pages/total?includeDrafts=true`;
 
     if (option?.tags) {
-      url += option.search ? `tags=${option.tags}&` : `tags=${option.tags}`;
+      url += `&tags=${option.tags}`;
     }
     if (option?.search) {
-      url += `search=${option.search}`;
+      url += `&search=${option.search}`;
     }
     return this.httpClient.get(url, { withCredentials: true });
   }
 
   getBlog(id: string) {
-    return this.httpClient.get(`${this.apiUrl}blogs/${id}`, { withCredentials: true });
+    return this.httpClient.get(`${this.apiUrl}blogs/${id}?includeDrafts=true`, { withCredentials: true });
   }
 
   createBlog(data: CreateBlogDTO) {
@@ -201,6 +201,14 @@ export class httpService {
 
   getTags() {
     return this.httpClient.get(`${this.apiUrl}blogs/tags/all`, { withCredentials: true });
+  }
+
+  updateTag(id: string, data: CreateTagDTO) {
+    return this.httpClient.patch(`${this.apiUrl}blogs/tags/${id}`, data, { withCredentials: true });
+  }
+
+  deleteTag(id: string) {
+    return this.httpClient.delete(`${this.apiUrl}blogs/tags/${id}`, { withCredentials: true });
   }
 
   getBlogStatsOverview() {
